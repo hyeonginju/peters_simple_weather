@@ -1,0 +1,19 @@
+import 'kma_forecast_item.dart';
+
+/// "지금" 카드용 현재 날씨 데이터. 단기예보의 현재 시간 슬롯을 기반으로 하되,
+/// 기온/날씨상태는 초단기실황(getUltraSrtNcst)으로 덮어쓴 값이다.
+class WeatherSnapshot {
+  final double temperature;
+  final SkyCondition sky;
+  final PrecipitationType precipitationType;
+  final double precipitationAmount;
+  final int precipitationProbability;
+
+  const WeatherSnapshot({
+    required this.temperature,
+    required this.sky,
+    required this.precipitationType,
+    required this.precipitationAmount,
+    required this.precipitationProbability,
+  });
+}

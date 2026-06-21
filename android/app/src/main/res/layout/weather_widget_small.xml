@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/widget_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/widget_bg_medium"
+        android:contentDescription="@null" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="14dp">
+
+        <!-- top row: region + update time + refresh -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/w_dot"
+                android:layout_width="6dp"
+                android:layout_height="6dp"
+                android:layout_marginEnd="6dp"
+                android:src="@drawable/widget_dot"
+                android:contentDescription="@null" />
+
+            <TextView
+                android:id="@+id/w_region"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/w_updated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
+                android:textColor="#B3FFFFFF"
+                android:textSize="10sp"
+                android:text="" />
+
+            <ImageView
+                android:id="@+id/w_refresh"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_refresh"
+                android:contentDescription="새로고침" />
+
+            <ProgressBar
+                android:id="@+id/w_progress"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:indeterminateTint="#FFFFFF"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <!-- content: current weather + hourly -->
+        <LinearLayout
+            android:id="@+id/widget_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="10dp">
+
+            <ImageView
+                android:id="@+id/w_icon"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:src="@drawable/ic_w_sun"
+                android:contentDescription="@null" />
+
+            <TextView
+                android:id="@+id/w_temp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="8dp"
+                android:textColor="#FFFFFF"
+                android:textSize="28sp"
+                android:text="" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:weightSum="5">
+
+                <LinearLayout style="@style/WidgetHourSlotS">
+                    <TextView android:id="@+id/h0_label" style="@style/WidgetHourLabelS" />
+                    <ImageView android:id="@+id/h0_icon" style="@style/WidgetHourIconS" />
+                    <TextView android:id="@+id/h0_temp" style="@style/WidgetHourTempS" />
+                </LinearLayout>
+                <LinearLayout style="@style/WidgetHourSlotS">
+                    <TextView android:id="@+id/h1_label" style="@style/WidgetHourLabelS" />
+                    <ImageView android:id="@+id/h1_icon" style="@style/WidgetHourIconS" />
+                    <TextView android:id="@+id/h1_temp" style="@style/WidgetHourTempS" />
+                </LinearLayout>
+                <LinearLayout style="@style/WidgetHourSlotS">
+                    <TextView android:id="@+id/h2_label" style="@style/WidgetHourLabelS" />
+                    <ImageView android:id="@+id/h2_icon" style="@style/WidgetHourIconS" />
+                    <TextView android:id="@+id/h2_temp" style="@style/WidgetHourTempS" />
+                </LinearLayout>
+                <LinearLayout style="@style/WidgetHourSlotS">
+                    <TextView android:id="@+id/h3_label" style="@style/WidgetHourLabelS" />
+                    <ImageView android:id="@+id/h3_icon" style="@style/WidgetHourIconS" />
+                    <TextView android:id="@+id/h3_temp" style="@style/WidgetHourTempS" />
+                </LinearLayout>
+                <LinearLayout style="@style/WidgetHourSlotS">
+                    <TextView android:id="@+id/h4_label" style="@style/WidgetHourLabelS" />
+                    <ImageView android:id="@+id/h4_icon" style="@style/WidgetHourIconS" />
+                    <TextView android:id="@+id/h4_temp" style="@style/WidgetHourTempS" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/widget_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:gravity="center"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp"
+            android:visibility="gone"
+            android:text="" />
+    </LinearLayout>
+</FrameLayout>
