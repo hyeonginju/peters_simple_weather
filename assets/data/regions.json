@@ -369,6 +369,15 @@
     "midTaCode": "11H20201"
   },
   {
+    "id": "대구광역시/군위군",
+    "province": "대구광역시",
+    "name": "군위군",
+    "nx": 89,
+    "ny": 97,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10707"
+  },
+  {
     "id": "대구광역시/남구",
     "province": "대구광역시",
     "name": "남구",
@@ -1708,15 +1717,6 @@
     "ny": 98,
     "midLandCode": "11H10000",
     "midTaCode": "11H10602"
-  },
-  {
-    "id": "경상북도/군위군",
-    "province": "경상북도",
-    "name": "군위군",
-    "nx": 89,
-    "ny": 97,
-    "midLandCode": "11H10000",
-    "midTaCode": "11H10603"
   },
   {
     "id": "경상북도/김천시",
