@@ -13,7 +13,7 @@ class RegionHeader extends StatelessWidget {
     required this.onNext,
   });
 
-  final String provinceName;
+  final String? provinceName;
   final String regionName;
   final int pageCount;
   final int currentIndex;
@@ -33,11 +33,13 @@ class RegionHeader extends StatelessWidget {
             const SizedBox(width: 20),
             Column(
               children: [
-                Text(
-                  provinceName,
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: palette.textMuted),
-                ),
-                const SizedBox(height: 2),
+                if (provinceName != null) ...[
+                  Text(
+                    provinceName!,
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: palette.textMuted),
+                  ),
+                  const SizedBox(height: 2),
+                ],
                 Text(
                   regionName,
                   style: TextStyle(fontSize: 21, fontWeight: FontWeight.w700, color: palette.textPrimary),

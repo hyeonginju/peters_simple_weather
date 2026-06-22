@@ -91,7 +91,7 @@ class _RegionPickerScreenState extends ConsumerState<RegionPickerScreen> {
         itemCount: results.length,
         itemBuilder: (context, i) => _RegionRow(
           title: results[i].name,
-          subtitle: results[i].province,
+          subtitle: results[i].provinceLabel,
           saved: savedIds.contains(results[i].id),
           palette: palette,
           onTap: () => _add(results[i]),

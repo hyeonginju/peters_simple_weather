@@ -142,7 +142,7 @@ class _RegionPager extends StatelessWidget {
               children: [
                 const SizedBox(height: 12),
                 RegionHeader(
-                  provinceName: regions[index].province,
+                  provinceName: regions[index].provinceLabel,
                   regionName: regions[index].name,
                   pageCount: regions.length,
                   currentIndex: currentIndex,

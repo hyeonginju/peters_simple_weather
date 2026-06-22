@@ -11,7 +11,7 @@ void main() {
 
   final midTaPattern = RegExp(r'^\d{2}[A-Z]\d{5}$');
   const metroProvinces = {
-    '서울특별시', '부산광역시', '대구광역시', '인천광역시',
+    '서울특별시', '부산광역시', '인천광역시',
     '광주광역시', '대전광역시', '울산광역시', '세종특별자치시',
   };
 
@@ -33,6 +33,19 @@ void main() {
     }
   });
 
+  test('대구는 군위군(2023년 편입, 농촌 지역)만 예외로 도심과 다른 midTaCode를 쓴다', () {
+    final daegu = regions.where((r) => r['province'] == '대구광역시');
+    final byCode = <String, Set<String>>{};
+    for (final r in daegu) {
+      byCode.putIfAbsent(r['midTaCode'] as String, () => {}).add(r['name'] as String);
+    }
+    expect(byCode, hasLength(2), reason: '대구 코드 구성이 예상과 다름: $byCode');
+    final gunwiCode = byCode.entries.firstWhere((e) => e.value.contains('군위군')).key;
+    final urbanCode = byCode.entries.firstWhere((e) => !e.value.contains('군위군')).key;
+    expect(gunwiCode, isNot(urbanCode));
+    expect(byCode[urbanCode]!.length, daegu.length - 1);
+  });
+
   test('도(道)는 시군별로 midTaCode가 세분화되어 있다(도 전체 단일 코드 아님)', () {
     final byProvince = <String, Set<String>>{};
     for (final r in regions) {
@@ -42,5 +55,12 @@ void main() {
     for (final p in ['경기도', '경상남도', '경상북도', '전라남도', '충청남도']) {
       expect(byProvince[p]!.length, greaterThan(1), reason: '$p 정밀화 안 됨(단일 코드)');
     }
+  });
+
+  test('군위군은 2023년 대구 편입에 맞춰 province가 대구광역시다(경상북도 아님)', () {
+    final gunwi = regions.singleWhere((r) => r['name'] == '군위군');
+    expect(gunwi['id'], '대구광역시/군위군');
+    expect(gunwi['province'], '대구광역시');
+    expect(gunwi['midTaCode'], '11H10707');
   });
 }

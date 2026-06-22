@@ -195,8 +195,10 @@ class _RegionCard extends StatelessWidget {
                   const SizedBox(height: 4),
                 ],
                 Text(region.name, style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700, color: palette.textPrimary)),
-                const SizedBox(height: 2),
-                Text(region.province, style: TextStyle(fontSize: 12, color: palette.textMuted)),
+                if (region.provinceLabel != null) ...[
+                  const SizedBox(height: 2),
+                  Text(region.provinceLabel!, style: TextStyle(fontSize: 12, color: palette.textMuted)),
+                ],
               ],
             ),
           ),
