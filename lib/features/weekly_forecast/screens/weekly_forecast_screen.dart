@@ -52,7 +52,6 @@ class _WeeklyBody extends ConsumerWidget {
         if (daily == null || daily.isEmpty) {
           return ErrorFullScreen(onRetry: () => ref.invalidate(forecastForProvider(region)));
         }
-        final week = daily.take(7).toList();
         return SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 28),
           physics: const BouncingScrollPhysics(),
@@ -66,7 +65,7 @@ class _WeeklyBody extends ConsumerWidget {
               const SizedBox(height: 8),
               _BAnBadge(palette: palette),
               const SizedBox(height: 16),
-              _ChartCard(daily: week, palette: palette),
+              _ChartCard(daily: daily, palette: palette),
             ],
           ),
         );

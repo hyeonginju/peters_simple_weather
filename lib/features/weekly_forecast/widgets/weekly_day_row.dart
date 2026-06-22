@@ -40,7 +40,17 @@ class WeeklyDayRow extends StatelessWidget {
         children: [
           SizedBox(
             width: 40,
-            child: Text(label, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: palette.textPrimary)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: palette.textPrimary)),
+                const SizedBox(height: 1),
+                Text(
+                  '${day.date.month}/${day.date.day}',
+                  style: TextStyle(fontSize: 10.5, color: palette.textMuted),
+                ),
+              ],
+            ),
           ),
           WeatherIcon(type: weatherIconTypeFor(sky, pty), size: 24),
           SizedBox(
