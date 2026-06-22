@@ -247,6 +247,8 @@ class _WeatherContent extends StatelessWidget {
           _HourlySection(snapshot: snapshot, hourly: hourlyList, now: now),
           const SizedBox(height: 14),
           _WeeklySection(daily: dailyList, today: now),
+          const SizedBox(height: 14),
+          const _AlertEntryButton(),
         ],
       ),
     );
@@ -260,6 +262,40 @@ class _WeatherContent extends StatelessWidget {
       }
     }
     return null;
+  }
+}
+
+/// 메인 하단 — 기상특보 발효 현황 페이지로 가는 버튼.
+class _AlertEntryButton extends StatelessWidget {
+  const _AlertEntryButton();
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = context.palette;
+    return GestureDetector(
+      onTap: () => context.push('/alerts'),
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        decoration: BoxDecoration(
+          color: palette.card,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: palette.cardBorder),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.warning_amber_rounded, size: 20, color: palette.danger),
+            const SizedBox(width: 10),
+            Text(
+              '기상특보 발효 현황',
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: palette.textPrimary),
+            ),
+            const Spacer(),
+            Icon(Icons.chevron_right_rounded, size: 22, color: palette.textMuted),
+          ],
+        ),
+      ),
+    );
   }
 }
 

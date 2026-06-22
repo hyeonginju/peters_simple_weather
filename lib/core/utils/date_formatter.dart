@@ -18,3 +18,12 @@ String formatUpdatedLabel(DateTime time) {
   final m = time.minute.toString().padLeft(2, '0');
   return '$h:$m 업데이트';
 }
+
+/// 특보 발표 시각 라벨, "06.20 07:00 발표" 형식.
+String formatAnnouncedLabel(DateTime time) {
+  final mo = time.month.toString().padLeft(2, '0');
+  final d = time.day.toString().padLeft(2, '0');
+  final h = time.hour.toString().padLeft(2, '0');
+  final mi = time.minute.toString().padLeft(2, '0');
+  return '$mo.$d $h:$mi 발표';
+}
