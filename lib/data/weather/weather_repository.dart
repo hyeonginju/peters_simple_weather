@@ -24,6 +24,11 @@ class WeatherRepository {
   /// 캐시를 무시하고 강제로 새로 요청하고 싶을 때(재시도 버튼 등) 호출한다.
   void invalidate(Region region) => _cache.remove(region.id);
 
+  /// 해당 지역 데이터를 실제로 서버에서 받아온 시각. 캐시 히트로 돌려준
+  /// 경우에도 원래 fetch 시각을 가리킨다(= "마지막 업데이트" 시각). 성공/부분
+  /// 성공만 캐시되므로 실패 후에는 null.
+  DateTime? fetchedAtFor(Region region) => _cache[region.id]?.fetchedAt;
+
   Future<ForecastResult> fetch(Region region, {DateTime? now}) async {
     final currentTime = now ?? DateTime.now();
 

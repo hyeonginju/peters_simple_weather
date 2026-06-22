@@ -23,6 +23,14 @@ Future<ForecastResult> forecastFor(Ref ref, Region region) async {
   return ref.watch(weatherRepositoryProvider).fetch(region);
 }
 
+/// 해당 지역 데이터를 마지막으로 서버에서 받아온 시각. forecastFor를 watch해
+/// fetch가 끝나거나 강제 새로고침될 때마다 갱신된다(성공 전/실패 시 null).
+@riverpod
+DateTime? regionLastUpdated(Ref ref, Region region) {
+  ref.watch(forecastForProvider(region));
+  return ref.watch(weatherRepositoryProvider).fetchedAtFor(region);
+}
+
 @riverpod
 class ActiveRegionIndex extends _$ActiveRegionIndex {
   @override

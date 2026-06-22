@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_palette.dart';
+import '../../../core/utils/date_formatter.dart';
 import '../../../data/region/models/region.dart';
 import '../../../data/weather/mappers/daily_precipitation_total.dart';
 import '../../../data/weather/mappers/daytime_average.dart';
@@ -66,6 +67,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               },
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (error, _) => Center(child: Text('지역을 불러오지 못했습니다: $error')),
+            ),
+            // Last-updated time overlaid top-left (active region's fetch time).
+            const Positioned(
+              top: 14,
+              left: 20,
+              child: _UpdatedLabel(),
             ),
             // Manage button overlaid top-right so it doesn't consume a row.
             Positioned(
@@ -153,6 +160,23 @@ class _RegionPager extends StatelessWidget {
   }
 }
 
+/// 현재 활성 지역의 마지막 업데이트 시각을 좌상단에 표시한다.
+class _UpdatedLabel extends ConsumerWidget {
+  const _UpdatedLabel();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final region = ref.watch(activeRegionProvider).asData?.value;
+    if (region == null) return const SizedBox.shrink();
+    final updated = ref.watch(regionLastUpdatedProvider(region));
+    if (updated == null) return const SizedBox.shrink();
+    return Text(
+      formatUpdatedLabel(updated),
+      style: TextStyle(fontSize: 11.5, color: context.palette.textMuted),
+    );
+  }
+}
+
 class _RegionWeatherView extends ConsumerWidget {
   const _RegionWeatherView({required this.region});
 
@@ -162,21 +186,22 @@ class _RegionWeatherView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final forecastAsync = ref.watch(forecastForProvider(region));
 
-    void retry() {
+    Future<void> refresh() async {
       ref.read(weatherRepositoryProvider).invalidate(region);
       ref.invalidate(forecastForProvider(region));
+      await ref.read(forecastForProvider(region).future);
     }
 
     return forecastAsync.when(
       data: (result) => switch (result) {
-        ForecastFailure() => ErrorFullScreen(onRetry: retry),
+        ForecastFailure() => ErrorFullScreen(onRetry: refresh),
         ForecastSuccess(snapshot: final s, hourly: final h, daily: final d) =>
-          _WeatherContent(snapshot: s, hourly: h, daily: d),
+          RefreshIndicator(onRefresh: refresh, child: _WeatherContent(snapshot: s, hourly: h, daily: d)),
         ForecastPartialFailure(snapshot: final s, hourly: final h, daily: final d) =>
-          _WeatherContent(snapshot: s, hourly: h, daily: d),
+          RefreshIndicator(onRefresh: refresh, child: _WeatherContent(snapshot: s, hourly: h, daily: d)),
       },
       loading: () => const WeatherSkeleton(),
-      error: (error, _) => ErrorFullScreen(onRetry: retry),
+      error: (error, _) => ErrorFullScreen(onRetry: refresh),
     );
   }
 }
@@ -210,7 +235,7 @@ class _WeatherContent extends StatelessWidget {
 
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(20, 10, 20, 28),
-      physics: const BouncingScrollPhysics(),
+      physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
       child: Column(
         children: [
           WeatherHero(snapshot: snapshot, today: today, todayPrecipitationTotal: precipitationTotal),
