@@ -13,6 +13,7 @@ class _RoutedFakeAdapter implements HttpClientAdapter {
   _RoutedFakeAdapter({this.failingEndpoints = const {}});
 
   final Set<String> failingEndpoints;
+  int requestCount = 0;
 
   @override
   Future<ResponseBody> fetch(
@@ -20,6 +21,7 @@ class _RoutedFakeAdapter implements HttpClientAdapter {
     Stream<Uint8List>? requestStream,
     Future<void>? cancelFuture,
   ) async {
+    requestCount++;
     Map<String, dynamic> body;
 
     if (options.path.contains('getVilageFcst')) {
@@ -104,9 +106,26 @@ const _regionNoMidTerm = Region(
   ny: 126,
 );
 
+const _otherRegion = Region(
+  id: 'busan-haeundae',
+  province: '부산광역시',
+  name: '해운대구',
+  nx: 99,
+  ny: 75,
+);
+
 WeatherRepository _buildRepository(Set<String> failingEndpoints) {
-  final dio = Dio()..httpClientAdapter = _RoutedFakeAdapter(failingEndpoints: failingEndpoints);
+  final adapter = _RoutedFakeAdapter(failingEndpoints: failingEndpoints);
+  final dio = Dio()..httpClientAdapter = adapter;
   return WeatherRepository(client: KmaApiClient(dio: dio));
+}
+
+({WeatherRepository repository, _RoutedFakeAdapter adapter}) _buildRepositoryWithAdapter(
+  Set<String> failingEndpoints,
+) {
+  final adapter = _RoutedFakeAdapter(failingEndpoints: failingEndpoints);
+  final dio = Dio()..httpClientAdapter = adapter;
+  return (repository: WeatherRepository(client: KmaApiClient(dio: dio)), adapter: adapter);
 }
 
 void main() {
@@ -163,5 +182,51 @@ void main() {
     final result = await repository.fetch(_regionNoMidTerm, now: now);
 
     expect(result, isA<ForecastSuccess>().having((r) => r.daily.length, 'daily.length', 1));
+  });
+
+  test('10분 이내 재요청은 캐시된 결과를 반환하고 네트워크를 호출하지 않음', () async {
+    final built = _buildRepositoryWithAdapter({});
+
+    await built.repository.fetch(_region, now: now);
+    final requestsAfterFirstFetch = built.adapter.requestCount;
+
+    final second = await built.repository.fetch(_region, now: now.add(const Duration(minutes: 9)));
+
+    expect(built.adapter.requestCount, requestsAfterFirstFetch);
+    expect(second, isA<ForecastSuccess>());
+  });
+
+  test('10분이 지나면 캐시를 무시하고 다시 네트워크를 호출함', () async {
+    final built = _buildRepositoryWithAdapter({});
+
+    await built.repository.fetch(_region, now: now);
+    final requestsAfterFirstFetch = built.adapter.requestCount;
+
+    await built.repository.fetch(_region, now: now.add(const Duration(minutes: 10, seconds: 1)));
+
+    expect(built.adapter.requestCount, greaterThan(requestsAfterFirstFetch));
+  });
+
+  test('invalidate() 호출 후에는 캐시를 무시하고 다시 네트워크를 호출함', () async {
+    final built = _buildRepositoryWithAdapter({});
+
+    await built.repository.fetch(_region, now: now);
+    final requestsAfterFirstFetch = built.adapter.requestCount;
+
+    built.repository.invalidate(_region);
+    await built.repository.fetch(_region, now: now.add(const Duration(minutes: 1)));
+
+    expect(built.adapter.requestCount, greaterThan(requestsAfterFirstFetch));
+  });
+
+  test('다른 지역은 캐시를 공유하지 않고 각각 네트워크를 호출함', () async {
+    final built = _buildRepositoryWithAdapter({});
+
+    await built.repository.fetch(_region, now: now);
+    final requestsAfterFirstFetch = built.adapter.requestCount;
+
+    await built.repository.fetch(_otherRegion, now: now);
+
+    expect(built.adapter.requestCount, greaterThan(requestsAfterFirstFetch));
   });
 }

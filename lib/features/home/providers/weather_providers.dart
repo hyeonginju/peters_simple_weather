@@ -7,13 +7,17 @@ import '../../region_picker/providers/region_providers.dart';
 
 part 'weather_providers.g.dart';
 
-@riverpod
+/// keepAlive — WeatherRepository는 region.id별로 10분 TTL 캐시를 들고 있다.
+/// autoDispose였다면 지역 전환마다 forecastFor가 폐기되며 이 provider도
+/// 함께 재생성되어 캐시가 매번 날아간다.
+@Riverpod(keepAlive: true)
 WeatherRepository weatherRepository(Ref ref) => WeatherRepository();
 
 /// Keyed by region — only the active region's screen watches this, so
 /// Riverpod's autoDispose semantics naturally implement the spec's
 /// "진입 시점에만 API 요청" lazy-fetch requirement: switching away from a
 /// region disposes its provider instance instead of polling in the background.
+/// 실제 네트워크 요청 여부는 WeatherRepository의 10분 TTL 캐시가 결정한다.
 @riverpod
 Future<ForecastResult> forecastFor(Ref ref, Region region) async {
   return ref.watch(weatherRepositoryProvider).fetch(region);

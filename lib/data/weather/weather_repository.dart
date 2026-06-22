@@ -16,8 +16,21 @@ class WeatherRepository {
 
   final KmaApiClient _client;
 
+  /// region.id별 결과 캐시. 기상청 관측·예보는 10분 내에 거의 바뀌지 않으므로
+  /// 메인 화면 스와이프로 지역을 오갈 때마다 재요청하지 않도록 한다.
+  static const _cacheTtl = Duration(minutes: 10);
+  final Map<String, ({ForecastResult result, DateTime fetchedAt})> _cache = {};
+
+  /// 캐시를 무시하고 강제로 새로 요청하고 싶을 때(재시도 버튼 등) 호출한다.
+  void invalidate(Region region) => _cache.remove(region.id);
+
   Future<ForecastResult> fetch(Region region, {DateTime? now}) async {
     final currentTime = now ?? DateTime.now();
+
+    final cached = _cache[region.id];
+    if (cached != null && currentTime.difference(cached.fetchedAt) < _cacheTtl) {
+      return cached.result;
+    }
 
     final hourlyResult = await _fetchHourly(region, currentTime);
     if (hourlyResult == null) {
@@ -28,11 +41,12 @@ class WeatherRepository {
 
     final dailyResult = await _fetchDaily(region, currentTime, hourlyResult);
 
-    if (dailyResult == null) {
-      return ForecastResult.partialFailure(snapshot: snapshot, hourly: hourlyResult, daily: null);
-    }
+    final result = dailyResult == null
+        ? ForecastResult.partialFailure(snapshot: snapshot, hourly: hourlyResult, daily: null)
+        : ForecastResult.success(snapshot: snapshot, hourly: hourlyResult, daily: dailyResult);
 
-    return ForecastResult.success(snapshot: snapshot, hourly: hourlyResult, daily: dailyResult);
+    _cache[region.id] = (result: result, fetchedAt: currentTime);
+    return result;
   }
 
   Future<List<HourlyForecast>?> _fetchHourly(Region region, DateTime now) async {
