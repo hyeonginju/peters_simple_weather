@@ -162,16 +162,21 @@ class _RegionWeatherView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final forecastAsync = ref.watch(forecastForProvider(region));
 
+    void retry() {
+      ref.read(weatherRepositoryProvider).invalidate(region);
+      ref.invalidate(forecastForProvider(region));
+    }
+
     return forecastAsync.when(
       data: (result) => switch (result) {
-        ForecastFailure() => ErrorFullScreen(onRetry: () => ref.invalidate(forecastForProvider(region))),
+        ForecastFailure() => ErrorFullScreen(onRetry: retry),
         ForecastSuccess(snapshot: final s, hourly: final h, daily: final d) =>
           _WeatherContent(snapshot: s, hourly: h, daily: d),
         ForecastPartialFailure(snapshot: final s, hourly: final h, daily: final d) =>
           _WeatherContent(snapshot: s, hourly: h, daily: d),
       },
       loading: () => const WeatherSkeleton(),
-      error: (error, _) => ErrorFullScreen(onRetry: () => ref.invalidate(forecastForProvider(region))),
+      error: (error, _) => ErrorFullScreen(onRetry: retry),
     );
   }
 }

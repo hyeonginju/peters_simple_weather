@@ -8,9 +8,16 @@ part of 'weather_providers.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
+/// keepAlive — WeatherRepository는 region.id별로 10분 TTL 캐시를 들고 있다.
+/// autoDispose였다면 지역 전환마다 forecastFor가 폐기되며 이 provider도
+/// 함께 재생성되어 캐시가 매번 날아간다.
 
 @ProviderFor(weatherRepository)
 final weatherRepositoryProvider = WeatherRepositoryProvider._();
+
+/// keepAlive — WeatherRepository는 region.id별로 10분 TTL 캐시를 들고 있다.
+/// autoDispose였다면 지역 전환마다 forecastFor가 폐기되며 이 provider도
+/// 함께 재생성되어 캐시가 매번 날아간다.
 
 final class WeatherRepositoryProvider
     extends
@@ -20,13 +27,16 @@ final class WeatherRepositoryProvider
           WeatherRepository
         >
     with $Provider<WeatherRepository> {
+  /// keepAlive — WeatherRepository는 region.id별로 10분 TTL 캐시를 들고 있다.
+  /// autoDispose였다면 지역 전환마다 forecastFor가 폐기되며 이 provider도
+  /// 함께 재생성되어 캐시가 매번 날아간다.
   WeatherRepositoryProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'weatherRepositoryProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -54,12 +64,13 @@ final class WeatherRepositoryProvider
   }
 }
 
-String _$weatherRepositoryHash() => r'b686f98f679d53e647b07558dedc614ad83cadc3';
+String _$weatherRepositoryHash() => r'91513f9b830021e64fe6b6b34e1dfc9b70ff4952';
 
 /// Keyed by region — only the active region's screen watches this, so
 /// Riverpod's autoDispose semantics naturally implement the spec's
 /// "진입 시점에만 API 요청" lazy-fetch requirement: switching away from a
 /// region disposes its provider instance instead of polling in the background.
+/// 실제 네트워크 요청 여부는 WeatherRepository의 10분 TTL 캐시가 결정한다.
 
 @ProviderFor(forecastFor)
 final forecastForProvider = ForecastForFamily._();
@@ -68,6 +79,7 @@ final forecastForProvider = ForecastForFamily._();
 /// Riverpod's autoDispose semantics naturally implement the spec's
 /// "진입 시점에만 API 요청" lazy-fetch requirement: switching away from a
 /// region disposes its provider instance instead of polling in the background.
+/// 실제 네트워크 요청 여부는 WeatherRepository의 10분 TTL 캐시가 결정한다.
 
 final class ForecastForProvider
     extends
@@ -81,6 +93,7 @@ final class ForecastForProvider
   /// Riverpod's autoDispose semantics naturally implement the spec's
   /// "진입 시점에만 API 요청" lazy-fetch requirement: switching away from a
   /// region disposes its provider instance instead of polling in the background.
+  /// 실제 네트워크 요청 여부는 WeatherRepository의 10분 TTL 캐시가 결정한다.
   ForecastForProvider._({
     required ForecastForFamily super.from,
     required Region super.argument,
@@ -131,6 +144,7 @@ String _$forecastForHash() => r'47245f11e8d6dbb9ae9fcc77d49b62a5cec28d64';
 /// Riverpod's autoDispose semantics naturally implement the spec's
 /// "진입 시점에만 API 요청" lazy-fetch requirement: switching away from a
 /// region disposes its provider instance instead of polling in the background.
+/// 실제 네트워크 요청 여부는 WeatherRepository의 10분 TTL 캐시가 결정한다.
 
 final class ForecastForFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<ForecastResult>, Region> {
@@ -147,6 +161,7 @@ final class ForecastForFamily extends $Family
   /// Riverpod's autoDispose semantics naturally implement the spec's
   /// "진입 시점에만 API 요청" lazy-fetch requirement: switching away from a
   /// region disposes its provider instance instead of polling in the background.
+  /// 실제 네트워크 요청 여부는 WeatherRepository의 10분 TTL 캐시가 결정한다.
 
   ForecastForProvider call(Region region) =>
       ForecastForProvider._(argument: region, from: this);
