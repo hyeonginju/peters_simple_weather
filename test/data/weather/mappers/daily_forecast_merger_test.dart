@@ -17,12 +17,14 @@ HourlyForecast _hour(int day, int hour, double temp, {int pop = 0, SkyCondition 
 
 void main() {
   group('groupDailyFromHourly', () {
+    final now = DateTime(2026, 6, 19, 14, 30);
+
     test('같은 날짜의 시간별 데이터에서 최저/최고 기온과 최대 강수확률을 추출함', () {
       final result = groupDailyFromHourly([
         _hour(19, 9, 18, pop: 10),
         _hour(19, 14, 24, pop: 30),
         _hour(19, 18, 21, pop: 20),
-      ]);
+      ], now);
 
       expect(result, hasLength(1));
       expect(result.single.minTemp, 18);
@@ -34,11 +36,23 @@ void main() {
       final result = groupDailyFromHourly([
         _hour(20, 14, 25),
         _hour(19, 14, 24),
-      ]);
+      ], now);
 
       expect(result, hasLength(2));
       expect(result[0].date.day, 19);
       expect(result[1].date.day, 20);
+    });
+
+    test('오늘+3일을 넘는 날짜는 제외함(단기예보 API의 꼬리 스필오버 방어)', () {
+      final result = groupDailyFromHourly([
+        _hour(19, 14, 24),
+        _hour(20, 14, 25),
+        _hour(21, 14, 26),
+        _hour(22, 14, 27),
+        _hour(23, 0, 19),
+      ], now);
+
+      expect(result.map((d) => d.date.day), [19, 20, 21, 22]);
     });
   });
 

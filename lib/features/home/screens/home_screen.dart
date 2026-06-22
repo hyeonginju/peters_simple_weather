@@ -272,7 +272,7 @@ class _WeeklySection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dailyList = daily;
-    final preview = dailyList?.take(7).toList() ?? const <DailyForecast>[];
+    final preview = dailyList ?? const <DailyForecast>[];
     final weekMin = preview.isEmpty ? 0.0 : preview.map((d) => d.minTemp).reduce((a, b) => a < b ? a : b);
     final weekMax = preview.isEmpty ? 1.0 : preview.map((d) => d.maxTemp).reduce((a, b) => a > b ? a : b);
 

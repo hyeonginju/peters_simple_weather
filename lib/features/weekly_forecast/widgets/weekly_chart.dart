@@ -25,6 +25,11 @@ class WeeklyTrendChart extends StatelessWidget {
   static const _bottomColumnTop = 158.0;
   static const _totalHeight = 236.0;
 
+  /// 한 지점이 차지하는 최소 가로폭 — 7일 기준 화면폭에 맞춰 잡은 밀도.
+  /// 일수가 늘어나면 이 밀도를 유지한 채 가로로 스크롤되도록 한다(균등분배로
+  /// 폭을 좁히면 라벨이 겹쳐 깨짐).
+  static const _minStepWidth = 52.0;
+
   @override
   Widget build(BuildContext context) {
     final palette = context.palette;
@@ -37,7 +42,8 @@ class WeeklyTrendChart extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final width = constraints.maxWidth;
+        final minContentWidth = _leftPad + _rightPad + (daily.length - 1) * _minStepWidth;
+        final width = minContentWidth > constraints.maxWidth ? minContentWidth : constraints.maxWidth;
         final usable = width - _leftPad - _rightPad;
         final step = daily.length > 1 ? usable / (daily.length - 1) : 0.0;
 
@@ -54,23 +60,27 @@ class WeeklyTrendChart extends StatelessWidget {
             ),
         ];
 
-        return SizedBox(
-          height: _totalHeight,
-          width: width,
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                height: _lineAreaHeight,
-                child: CustomPaint(
-                  painter: _ChartPainter(points: points, palette: palette),
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          physics: width > constraints.maxWidth ? const ClampingScrollPhysics() : const NeverScrollableScrollPhysics(),
+          child: SizedBox(
+            height: _totalHeight,
+            width: width,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: _lineAreaHeight,
+                  child: CustomPaint(
+                    painter: _ChartPainter(points: points, palette: palette),
+                  ),
                 ),
-              ),
-              for (final p in points) ..._labelsFor(p, palette),
-            ],
+                for (final p in points) ..._labelsFor(p, palette),
+              ],
+            ),
           ),
         );
       },
