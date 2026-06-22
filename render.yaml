@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: peters-weather-backend
+    runtime: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: KMA_SERVICE_KEY
+        sync: false
+      - key: POLL_SECRET
+        sync: false
+      - key: FIREBASE_SERVICE_ACCOUNT
+        sync: false
