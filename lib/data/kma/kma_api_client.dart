@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 
 import '../../core/env/env.dart';
+import '../alert/dto/wthr_wrn_msg_dto.dart';
 import 'dto/mid_land_fcst_dto.dart';
 import 'dto/mid_ta_dto.dart';
 import 'dto/ultra_srt_ncst_item_dto.dart';
@@ -67,6 +68,22 @@ class KmaApiClient {
       'numOfRows': 10,
     });
     return MidTaDto.fromJson(items.first);
+  }
+
+  /// 기상특보 통보문. 해당 관서(stnId)의 [fromTmFc]~[toTmFc](yyyyMMdd) 기간 중
+  /// 가장 최근 통보문 1건. 통보문이 없으면 null.
+  Future<WthrWrnMsgDto?> getWthrWrnMsg({
+    required String stnId,
+    required String fromTmFc,
+    required String toTmFc,
+  }) async {
+    final items = await _getItems(KmaEndpoints.wthrWrnMsg, {
+      'stnId': stnId,
+      'fromTmFc': fromTmFc,
+      'toTmFc': toTmFc,
+      'numOfRows': 1,
+    });
+    return items.isEmpty ? null : WthrWrnMsgDto.fromJson(items.first);
   }
 
   Future<List<Map<String, dynamic>>> _getItems(

@@ -170,6 +170,97 @@ final class ForecastForFamily extends $Family
   String toString() => r'forecastForProvider';
 }
 
+/// 해당 지역 데이터를 마지막으로 서버에서 받아온 시각. forecastFor를 watch해
+/// fetch가 끝나거나 강제 새로고침될 때마다 갱신된다(성공 전/실패 시 null).
+
+@ProviderFor(regionLastUpdated)
+final regionLastUpdatedProvider = RegionLastUpdatedFamily._();
+
+/// 해당 지역 데이터를 마지막으로 서버에서 받아온 시각. forecastFor를 watch해
+/// fetch가 끝나거나 강제 새로고침될 때마다 갱신된다(성공 전/실패 시 null).
+
+final class RegionLastUpdatedProvider
+    extends $FunctionalProvider<DateTime?, DateTime?, DateTime?>
+    with $Provider<DateTime?> {
+  /// 해당 지역 데이터를 마지막으로 서버에서 받아온 시각. forecastFor를 watch해
+  /// fetch가 끝나거나 강제 새로고침될 때마다 갱신된다(성공 전/실패 시 null).
+  RegionLastUpdatedProvider._({
+    required RegionLastUpdatedFamily super.from,
+    required Region super.argument,
+  }) : super(
+         retry: null,
+         name: r'regionLastUpdatedProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$regionLastUpdatedHash();
+
+  @override
+  String toString() {
+    return r'regionLastUpdatedProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $ProviderElement<DateTime?> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  DateTime? create(Ref ref) {
+    final argument = this.argument as Region;
+    return regionLastUpdated(ref, argument);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(DateTime? value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<DateTime?>(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is RegionLastUpdatedProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$regionLastUpdatedHash() => r'6e2ade6892ddeca4e760f1bae752c11a4ad530ab';
+
+/// 해당 지역 데이터를 마지막으로 서버에서 받아온 시각. forecastFor를 watch해
+/// fetch가 끝나거나 강제 새로고침될 때마다 갱신된다(성공 전/실패 시 null).
+
+final class RegionLastUpdatedFamily extends $Family
+    with $FunctionalFamilyOverride<DateTime?, Region> {
+  RegionLastUpdatedFamily._()
+    : super(
+        retry: null,
+        name: r'regionLastUpdatedProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// 해당 지역 데이터를 마지막으로 서버에서 받아온 시각. forecastFor를 watch해
+  /// fetch가 끝나거나 강제 새로고침될 때마다 갱신된다(성공 전/실패 시 null).
+
+  RegionLastUpdatedProvider call(Region region) =>
+      RegionLastUpdatedProvider._(argument: region, from: this);
+
+  @override
+  String toString() => r'regionLastUpdatedProvider';
+}
+
 @ProviderFor(ActiveRegionIndex)
 final activeRegionIndexProvider = ActiveRegionIndexProvider._();
 

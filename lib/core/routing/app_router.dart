@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 
+import '../../features/alerts/screens/alerts_screen.dart';
 import '../../features/home/screens/home_screen.dart';
 import '../../features/region_picker/screens/region_manage_screen.dart';
 import '../../features/region_picker/screens/region_picker_screen.dart';
@@ -29,6 +30,10 @@ GoRouter createAppRouter() {
       GoRoute(
         path: '/weekly',
         builder: (context, state) => const WeeklyForecastScreen(),
+      ),
+      GoRoute(
+        path: '/alerts',
+        builder: (context, state) => const AlertsScreen(),
       ),
       GoRoute(
         path: '/widget-settings',
