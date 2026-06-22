@@ -17,14 +17,23 @@ PrecipitationType _mostSevere(Iterable<PrecipitationType> types) {
   );
 }
 
-/// Derives day 1-3 daily cards from the short-term hourly forecast by
+/// Derives day 0-3 daily cards from the short-term hourly forecast by
 /// grouping per calendar date: min/max of TMP, and the day's highest 강수확률
 /// as the representative risk figure.
-List<DailyForecast> groupDailyFromHourly(List<HourlyForecast> hourly) {
+///
+/// getVilageFcst's reliable window is today~+3 days, but it occasionally
+/// spills 1-2 trailing hours into day+4 (e.g. just the 00:00 row). Without a
+/// cutoff that lone hour gets treated as a whole day, producing a flat
+/// min==max card that then wins over the real (and more complete) mid-term
+/// forecast for that date in [mergeDailyForecasts]. `now` lets us drop any
+/// date past the +3-day window mid-term is responsible for.
+List<DailyForecast> groupDailyFromHourly(List<HourlyForecast> hourly, DateTime now) {
+  final today = DateTime(now.year, now.month, now.day);
   final byDate = <DateTime, List<HourlyForecast>>{};
 
   for (final hour in hourly) {
     final date = DateTime(hour.time.year, hour.time.month, hour.time.day);
+    if (date.difference(today).inDays > 3) continue;
     byDate.putIfAbsent(date, () => []).add(hour);
   }
 

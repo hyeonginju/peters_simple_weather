@@ -134,7 +134,7 @@ class WeatherRepository {
   ) async {
     final List<DailyForecast> shortTermDaily;
     try {
-      shortTermDaily = groupDailyFromHourly(hourly);
+      shortTermDaily = groupDailyFromHourly(hourly, now);
     } catch (_) {
       return null;
     }
