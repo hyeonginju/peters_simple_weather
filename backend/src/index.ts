@@ -2,6 +2,7 @@ import express from 'express';
 
 import { config } from './config';
 import { weatherRouter } from './routes/weather';
+import { internalRouter } from './routes/internal';
 
 const app = express();
 
@@ -11,6 +12,7 @@ app.get('/health', (_req, res) => {
 });
 
 app.use('/api/weather', weatherRouter);
+app.use('/internal', internalRouter);
 
 app.listen(config.port, () => {
   console.log(`peters-weather-backend listening on :${config.port}`);

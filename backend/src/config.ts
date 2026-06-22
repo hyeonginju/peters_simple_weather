@@ -7,6 +7,9 @@ loadDotEnvIfPresent();
 export const config = {
   kmaServiceKey: requireEnv('KMA_SERVICE_KEY'),
   port: Number(process.env.PORT) || 8080,
+  // 외부(GitHub Actions cron)가 /internal/poll-alerts를 두드릴 때 제시해야 하는 공유 비밀.
+  // 없으면 누구나 호출해 푸시를 마음대로 발생시킬 수 있으므로 항상 설정 필요.
+  pollSecret: requireEnv('POLL_SECRET'),
 };
 
 function requireEnv(name: string): string {
