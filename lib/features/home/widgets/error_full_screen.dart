@@ -29,10 +29,17 @@ class _ErrorFullScreenState extends State<ErrorFullScreen> {
       await widget.onRetry();
     } catch (_) {
       // 재요청이 또 실패해도 에러 화면이 그대로 유지되면 된다 — 삼켜서 스피너만 끈다.
-    } finally {
-      // 성공 시엔 이 위젯이 트리에서 사라지므로 mounted 가드가 필요하다.
-      if (mounted) setState(() => _retrying = false);
     }
+    // 재요청이 즉시 또 실패하면 스피너가 깜빡 사라져 "무반응"처럼 보인다.
+    // 최소 표시 시간을 둬서 다시 시도가 동작했음을 항상 체감하게 한다.
+    await Future<void>.delayed(const Duration(milliseconds: 500));
+    // 성공했다면 이 위젯은 이미 트리에서 사라져(mounted=false) 아래를 건너뛴다.
+    // 아직 남아있다는 건 재요청도 실패했다는 뜻 — 스낵바로 확실히 알린다.
+    if (!mounted) return;
+    setState(() => _retrying = false);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('데이터를 다시 불러오지 못했어요'), duration: Duration(seconds: 2)),
+    );
   }
 
   @override
