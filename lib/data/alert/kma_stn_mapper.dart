@@ -45,4 +45,8 @@ class KmaStnMapper {
   static String stnIdForProvince(String province) => _byProvince[province] ?? nationwide;
 
   static String labelForStnId(String stnId) => _regionLabel[stnId] ?? '전국';
+
+  /// FCM 토픽 이름. backend/src/alerts/stnMapper.ts의 topicForStnId와 동일 규칙 — 한쪽을
+  /// 고치면 반드시 다른 쪽도 맞출 것.
+  static String topicForStnId(String stnId) => 'stn_$stnId';
 }

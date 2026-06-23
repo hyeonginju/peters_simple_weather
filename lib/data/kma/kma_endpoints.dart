@@ -1,13 +1,13 @@
+/// KMA를 직접 호출하지 않고 백엔드 프록시(backend/src/routes/weather.ts)를 거친다 —
+/// serviceKey가 앱 번들에 들어가지 않도록 서버에서만 보관한다.
 class KmaEndpoints {
   KmaEndpoints._();
 
-  static const _villageFcstBase = 'https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0';
-  static const _midFcstBase = 'https://apis.data.go.kr/1360000/MidFcstInfoService';
-  static const _wthrWrnBase = 'https://apis.data.go.kr/1360000/WthrWrnInfoService';
+  static const _base = 'https://peters-weather-backend.onrender.com/api/weather';
 
-  static const vilageFcst = '$_villageFcstBase/getVilageFcst';
-  static const ultraSrtNcst = '$_villageFcstBase/getUltraSrtNcst';
-  static const midLandFcst = '$_midFcstBase/getMidLandFcst';
-  static const midTa = '$_midFcstBase/getMidTa';
-  static const wthrWrnMsg = '$_wthrWrnBase/getWthrWrnMsg';
+  static const vilageFcst = '$_base/vilage-fcst';
+  static const ultraSrtNcst = '$_base/ultra-srt-ncst';
+  static const midLandFcst = '$_base/mid-land-fcst';
+  static const midTa = '$_base/mid-ta';
+  static const wthrWrnMsg = '$_base/wthr-wrn-msg';
 }

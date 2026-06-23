@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:peters_simple_weather/data/kma/kma_api_client.dart';
 import 'package:peters_simple_weather/data/region/models/region.dart';
@@ -24,7 +23,7 @@ class _RoutedFakeAdapter implements HttpClientAdapter {
     requestCount++;
     Map<String, dynamic> body;
 
-    if (options.path.contains('getVilageFcst')) {
+    if (options.path.contains('vilage-fcst')) {
       body = _envelope(
         ok: !failingEndpoints.contains('getVilageFcst'),
         item: [
@@ -32,7 +31,7 @@ class _RoutedFakeAdapter implements HttpClientAdapter {
             ..._hourlyItems(hour),
         ],
       );
-    } else if (options.path.contains('getUltraSrtNcst')) {
+    } else if (options.path.contains('ultra-srt-ncst')) {
       body = _envelope(
         ok: !failingEndpoints.contains('getUltraSrtNcst'),
         item: [
@@ -40,14 +39,14 @@ class _RoutedFakeAdapter implements HttpClientAdapter {
           {'category': 'PTY', 'obsrValue': '0'},
         ],
       );
-    } else if (options.path.contains('getMidLandFcst')) {
+    } else if (options.path.contains('mid-land-fcst')) {
       body = _envelope(
         ok: !failingEndpoints.contains('getMidLandFcst'),
         item: [
           {'regId': 'mid-land', 'rnSt4Am': 20, 'rnSt4Pm': 30},
         ],
       );
-    } else if (options.path.contains('getMidTa')) {
+    } else if (options.path.contains('mid-ta')) {
       body = _envelope(
         ok: !failingEndpoints.contains('getMidTa'),
         item: [
@@ -129,10 +128,6 @@ WeatherRepository _buildRepository(Set<String> failingEndpoints) {
 }
 
 void main() {
-  setUpAll(() {
-    dotenv.loadFromString(envString: 'KMA_SERVICE_KEY=test-key');
-  });
-
   final now = DateTime(2026, 6, 19, 14, 30);
 
   test('모든 호출이 성공하면 ForecastResult.success를 반환함', () async {

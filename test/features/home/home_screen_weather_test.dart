@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,7 +24,7 @@ class _FakeAdapter implements HttpClientAdapter {
     Future<void>? cancelFuture,
   ) async {
     final today = _today();
-    final dynamic item = options.path.contains('getVilageFcst')
+    final dynamic item = options.path.contains('vilage-fcst')
         ? [
             for (final hour in ['0900', '1200', '1500', '1800'])
               ...[
@@ -36,12 +35,12 @@ class _FakeAdapter implements HttpClientAdapter {
                 {'category': 'PCP', 'fcstDate': today, 'fcstTime': hour, 'fcstValue': '강수없음'},
               ],
           ]
-        : options.path.contains('getUltraSrtNcst')
+        : options.path.contains('ultra-srt-ncst')
             ? [
                 {'category': 'T1H', 'obsrValue': '24'},
                 {'category': 'PTY', 'obsrValue': '0'},
               ]
-            : options.path.contains('getMidLandFcst')
+            : options.path.contains('mid-land-fcst')
                 ? [
                     {'regId': 'mid-land', 'rnSt4Am': 10, 'rnSt4Pm': 10},
                   ]
@@ -67,10 +66,6 @@ class _FakeAdapter implements HttpClientAdapter {
 }
 
 void main() {
-  setUpAll(() {
-    dotenv.loadFromString(envString: 'KMA_SERVICE_KEY=test-key');
-  });
-
   testWidgets('지역 데이터가 있으면 현재 날씨·옷차림·예보 섹션이 표시됨', (tester) async {
     SharedPreferences.setMockInitialValues({
       'saved_region_ids': ['서울특별시/영등포구'],

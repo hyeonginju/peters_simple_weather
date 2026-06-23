@@ -2,7 +2,6 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,10 +27,6 @@ class _AlwaysFailingAdapter implements HttpClientAdapter {
 }
 
 void main() {
-  setUpAll(() {
-    dotenv.loadFromString(envString: 'KMA_SERVICE_KEY=test-key');
-  });
-
   testWidgets('기상청 API가 모두 실패하면 전체 장애 에러 UI가 표시됨 (다크모드 포함)', (tester) async {
     SharedPreferences.setMockInitialValues({
       'saved_region_ids': ['서울특별시/영등포구'],

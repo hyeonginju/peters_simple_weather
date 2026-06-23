@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:peters_simple_weather/data/kma/kma_api_client.dart';
 import 'package:peters_simple_weather/data/kma/kma_api_exception.dart';
@@ -41,10 +40,6 @@ Map<String, dynamic> _envelope({required String resultCode, dynamic item}) {
 }
 
 void main() {
-  setUpAll(() {
-    dotenv.loadFromString(envString: 'KMA_SERVICE_KEY=test-key');
-  });
-
   test('getVilageFcst가 정상 응답을 DTO 리스트로 파싱함', () async {
     final dio = Dio()
       ..httpClientAdapter = _FakeAdapter(_envelope(
