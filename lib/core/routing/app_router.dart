@@ -4,6 +4,7 @@ import '../../features/alerts/screens/alerts_screen.dart';
 import '../../features/home/screens/home_screen.dart';
 import '../../features/region_picker/screens/region_manage_screen.dart';
 import '../../features/region_picker/screens/region_picker_screen.dart';
+import '../../features/settings/screens/theme_settings_screen.dart';
 import '../../features/weekly_forecast/screens/weekly_forecast_screen.dart';
 import '../../features/widget/screens/widget_settings_screen.dart';
 
@@ -38,6 +39,10 @@ GoRouter createAppRouter() {
       GoRoute(
         path: '/widget-settings',
         builder: (context, state) => const WidgetSettingsScreen(),
+      ),
+      GoRoute(
+        path: '/theme-settings',
+        builder: (context, state) => const ThemeSettingsScreen(),
       ),
     ],
   );

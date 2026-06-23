@@ -9,6 +9,8 @@ import 'models/forecast_result.dart';
 import 'models/hourly_forecast.dart';
 import 'models/kma_forecast_item.dart';
 import 'models/weather_snapshot.dart';
+import '../kma/dto/mid_land_fcst_dto.dart';
+import '../kma/dto/mid_ta_dto.dart';
 import '../kma/kma_api_client.dart';
 
 class WeatherRepository {
@@ -152,8 +154,12 @@ class WeatherRepository {
 
     try {
       final tmFc = KmaTimeScheduler.resolveMidTermTmFc(now);
-      final land = await _client.getMidLandFcst(regId: midLandCode, tmFc: tmFc);
-      final ta = await _client.getMidTa(regId: midTaCode, tmFc: tmFc);
+      final results = await Future.wait([
+        _client.getMidLandFcst(regId: midLandCode, tmFc: tmFc),
+        _client.getMidTa(regId: midTaCode, tmFc: tmFc),
+      ]);
+      final land = results[0] as MidLandFcstDto;
+      final ta = results[1] as MidTaDto;
 
       final announcementDate = DateTime(
         int.parse(tmFc.substring(0, 4)),
