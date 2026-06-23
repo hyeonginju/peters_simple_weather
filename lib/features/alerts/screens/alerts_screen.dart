@@ -60,7 +60,10 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
             child: statusAsync.when(
               data: (status) => _AlertBody(status: status),
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (_, _) => ErrorFullScreen(onRetry: () => ref.invalidate(alertStatusProvider(stnId))),
+              error: (_, _) => ErrorFullScreen(onRetry: () async {
+                ref.invalidate(alertStatusProvider(stnId));
+                await ref.read(alertStatusProvider(stnId).future);
+              }),
             ),
           ),
         ],

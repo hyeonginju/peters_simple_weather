@@ -42,6 +42,12 @@ class _WeeklyBody extends ConsumerWidget {
     final palette = context.palette;
     final forecastAsync = ref.watch(forecastForProvider(region));
 
+    Future<void> retry() async {
+      ref.read(weatherRepositoryProvider).invalidate(region);
+      ref.invalidate(forecastForProvider(region));
+      await ref.read(forecastForProvider(region).future);
+    }
+
     return forecastAsync.when(
       data: (result) {
         final daily = switch (result) {
@@ -50,7 +56,7 @@ class _WeeklyBody extends ConsumerWidget {
           ForecastFailure() => null,
         };
         if (daily == null || daily.isEmpty) {
-          return ErrorFullScreen(onRetry: () => ref.invalidate(forecastForProvider(region)));
+          return ErrorFullScreen(onRetry: retry);
         }
         return SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 28),
@@ -71,7 +77,7 @@ class _WeeklyBody extends ConsumerWidget {
         );
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, _) => ErrorFullScreen(onRetry: () => ref.invalidate(forecastForProvider(region))),
+      error: (error, _) => ErrorFullScreen(onRetry: retry),
     );
   }
 }
