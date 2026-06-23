@@ -3,7 +3,6 @@ import 'package:home_widget/home_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 
-import '../../core/env/env.dart';
 import '../../core/utils/weather_icon_mapper.dart';
 import '../../data/region/models/region.dart';
 import '../../data/region/region_repository.dart';
@@ -39,11 +38,6 @@ class WidgetService {
   /// button passes [force] true.
   static Future<void> refreshPrimaryRegion({WeatherRepository? repository, bool force = true}) async {
     WidgetsFlutterBinding.ensureInitialized();
-    try {
-      await Env.load();
-    } catch (_) {
-      // already loaded
-    }
 
     // Keep background-style settings mirrored into widget storage.
     await _saveSettingsKeys(await WidgetSettings.load());

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -7,6 +9,8 @@ import '../../../data/alert/kma_stn_mapper.dart';
 import '../../../data/alert/models/weather_alert.dart';
 import '../../home/providers/weather_providers.dart';
 import '../../home/widgets/error_full_screen.dart';
+import '../../push/push_service.dart';
+import '../../region_picker/providers/region_providers.dart';
 import '../providers/alert_providers.dart';
 
 /// 기상특보 발효 현황. 기본은 현재 지역의 시/도 권역, 토글로 전국 전환.
@@ -19,6 +23,19 @@ class AlertsScreen extends ConsumerStatefulWidget {
 
 class _AlertsScreenState extends ConsumerState<AlertsScreen> {
   bool _nationwide = false;
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(_maybeRequestPushPermission());
+  }
+
+  /// 특보 화면 첫 진입 시 1회만 알림 권한을 요청하고 대표 지역 토픽을 구독한다.
+  Future<void> _maybeRequestPushPermission() async {
+    if (await PushService.hasRequestedPermission()) return;
+    final regions = await ref.read(savedRegionsProvider.future);
+    await PushService.requestPermissionAndSubscribe(regions.isEmpty ? null : regions.first);
+  }
 
   @override
   Widget build(BuildContext context) {
