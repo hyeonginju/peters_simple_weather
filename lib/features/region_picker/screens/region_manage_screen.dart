@@ -85,6 +85,8 @@ class _RegionList extends ConsumerWidget {
           ],
           const SizedBox(height: 14),
           _WidgetSettingsButton(palette: palette, onTap: () => context.push('/widget-settings')),
+          const SizedBox(height: 10),
+          _ThemeSettingsButton(palette: palette, onTap: () => context.push('/theme-settings')),
         ],
       ),
       onReorderItem: (oldIndex, newIndex) => ref.read(savedRegionsProvider.notifier).reorder(oldIndex, newIndex),
@@ -130,6 +132,37 @@ class _WidgetSettingsButton extends StatelessWidget {
             Icon(Icons.wallpaper_rounded, size: 18, color: palette.textSecondary),
             const SizedBox(width: 8),
             Text('위젯 설정', style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w700, color: palette.textSecondary)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ThemeSettingsButton extends StatelessWidget {
+  const _ThemeSettingsButton({required this.palette, required this.onTap});
+
+  final AppPalette palette;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        decoration: BoxDecoration(
+          color: palette.card,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: palette.cardBorder),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.dark_mode_rounded, size: 18, color: palette.textSecondary),
+            const SizedBox(width: 8),
+            Text('화면 모드', style: TextStyle(fontSize: 14.5, fontWeight: FontWeight.w700, color: palette.textSecondary)),
           ],
         ),
       ),

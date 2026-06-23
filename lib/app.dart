@@ -8,6 +8,7 @@ import 'core/routing/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'features/push/push_service.dart';
 import 'features/region_picker/providers/region_providers.dart';
+import 'features/settings/providers/theme_mode_provider.dart';
 import 'features/widget/widget_service.dart';
 
 class CleanWeatherApp extends ConsumerStatefulWidget {
@@ -60,12 +61,14 @@ class _CleanWeatherAppState extends ConsumerState<CleanWeatherApp> with WidgetsB
       }
     });
 
+    final themeMode = ref.watch(appThemeModeProvider).value ?? ThemeMode.system;
+
     return MaterialApp.router(
       title: 'CleanWeather',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
-      themeMode: ThemeMode.system,
+      themeMode: themeMode,
       routerConfig: widget.router,
     );
   }
