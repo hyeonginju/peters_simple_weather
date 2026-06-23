@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,19 +25,19 @@ class _FakeAdapter implements HttpClientAdapter {
     Future<void>? cancelFuture,
   ) async {
     final today = _today();
-    final dynamic item = options.path.contains('vilage-fcst')
+    final dynamic item = options.path.contains('getVilageFcst')
         ? [
             {'category': 'TMP', 'fcstDate': today, 'fcstTime': '1400', 'fcstValue': '24'},
             {'category': 'SKY', 'fcstDate': today, 'fcstTime': '1400', 'fcstValue': '1'},
             {'category': 'PTY', 'fcstDate': today, 'fcstTime': '1400', 'fcstValue': '0'},
             {'category': 'POP', 'fcstDate': today, 'fcstTime': '1400', 'fcstValue': '10'},
           ]
-        : options.path.contains('ultra-srt-ncst')
+        : options.path.contains('getUltraSrtNcst')
             ? [
                 {'category': 'T1H', 'obsrValue': '24'},
                 {'category': 'PTY', 'obsrValue': '0'},
               ]
-            : options.path.contains('mid-land-fcst')
+            : options.path.contains('getMidLandFcst')
                 ? [
                     {'regId': 'mid-land', 'rnSt4Am': 70, 'rnSt4Pm': 50, 'wf4Am': '비'},
                   ]
@@ -62,6 +63,10 @@ class _FakeAdapter implements HttpClientAdapter {
 }
 
 void main() {
+  setUpAll(() {
+    dotenv.loadFromString(envString: 'KMA_SERVICE_KEY=test-key');
+  });
+
   testWidgets('"주간 예보" 섹션 제목을 탭하면 B안 차트 상세로 이동함', (tester) async {
     SharedPreferences.setMockInitialValues({
       'saved_region_ids': ['서울특별시/영등포구'],

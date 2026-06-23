@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 
+import '../../core/env/env.dart';
 import '../alert/dto/wthr_wrn_msg_dto.dart';
 import 'dto/mid_land_fcst_dto.dart';
 import 'dto/mid_ta_dto.dart';
@@ -24,6 +25,7 @@ class KmaApiClient {
       'ny': ny,
       'base_date': baseDate,
       'base_time': baseTime,
+      'numOfRows': 1000,
     });
     return items.map(VilageFcstItemDto.fromJson).toList();
   }
@@ -39,6 +41,7 @@ class KmaApiClient {
       'ny': ny,
       'base_date': baseDate,
       'base_time': baseTime,
+      'numOfRows': 100,
     });
     return items.map(UltraSrtNcstItemDto.fromJson).toList();
   }
@@ -47,7 +50,11 @@ class KmaApiClient {
     required String regId,
     required String tmFc,
   }) async {
-    final items = await _getItems(KmaEndpoints.midLandFcst, {'regId': regId, 'tmFc': tmFc});
+    final items = await _getItems(KmaEndpoints.midLandFcst, {
+      'regId': regId,
+      'tmFc': tmFc,
+      'numOfRows': 10,
+    });
     return MidLandFcstDto.fromJson(items.first);
   }
 
@@ -55,7 +62,11 @@ class KmaApiClient {
     required String regId,
     required String tmFc,
   }) async {
-    final items = await _getItems(KmaEndpoints.midTa, {'regId': regId, 'tmFc': tmFc});
+    final items = await _getItems(KmaEndpoints.midTa, {
+      'regId': regId,
+      'tmFc': tmFc,
+      'numOfRows': 10,
+    });
     return MidTaDto.fromJson(items.first);
   }
 
@@ -70,6 +81,7 @@ class KmaApiClient {
       'stnId': stnId,
       'fromTmFc': fromTmFc,
       'toTmFc': toTmFc,
+      'numOfRows': 1,
     });
     return items.isEmpty ? null : WthrWrnMsgDto.fromJson(items.first);
   }
@@ -78,7 +90,15 @@ class KmaApiClient {
     String url,
     Map<String, dynamic> queryParameters,
   ) async {
-    final response = await _dio.get<Map<String, dynamic>>(url, queryParameters: queryParameters);
+    final response = await _dio.get<Map<String, dynamic>>(
+      url,
+      queryParameters: {
+        'serviceKey': Env.kmaServiceKey,
+        'dataType': 'JSON',
+        'pageNo': 1,
+        ...queryParameters,
+      },
+    );
 
     final body = response.data!['response'] as Map<String, dynamic>;
     final header = body['header'] as Map<String, dynamic>;

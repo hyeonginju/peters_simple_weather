@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:peters_simple_weather/data/alert/alert_repository.dart';
 import 'package:peters_simple_weather/data/kma/kma_api_client.dart';
@@ -39,6 +40,10 @@ AlertRepository _repo(Map<String, dynamic>? item) {
 }
 
 void main() {
+  setUpAll(() {
+    dotenv.loadFromString(envString: 'KMA_SERVICE_KEY=test-key');
+  });
+
   final now = DateTime(2026, 6, 22, 15, 0);
 
   test('발효 중인 특보가 있으면 hasActiveAlert=true와 본문을 채운다', () async {

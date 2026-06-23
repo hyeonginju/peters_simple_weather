@@ -6,10 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:home_widget/home_widget.dart';
 
 import 'app.dart';
+import 'core/env/env.dart';
 import 'features/widget/widget_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Env.load();
   await Firebase.initializeApp();
 
   // Widget: handle ↻ taps in a background isolate, sync on launch (throttled),

@@ -1,7 +1,6 @@
 import express from 'express';
 
 import { config } from './config';
-import { weatherRouter } from './routes/weather';
 import { internalRouter } from './routes/internal';
 
 const app = express();
@@ -11,7 +10,6 @@ app.get('/health', (_req, res) => {
   res.json({ ok: true });
 });
 
-app.use('/api/weather', weatherRouter);
 app.use('/internal', internalRouter);
 
 app.listen(config.port, () => {

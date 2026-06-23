@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,19 +22,19 @@ class _FakeSuccessAdapter implements HttpClientAdapter {
     Stream<Uint8List>? requestStream,
     Future<void>? cancelFuture,
   ) async {
-    final dynamic item = options.path.contains('vilage-fcst')
+    final dynamic item = options.path.contains('getVilageFcst')
         ? [
             {'category': 'TMP', 'fcstDate': '20260619', 'fcstTime': '1400', 'fcstValue': '24'},
             {'category': 'SKY', 'fcstDate': '20260619', 'fcstTime': '1400', 'fcstValue': '1'},
             {'category': 'PTY', 'fcstDate': '20260619', 'fcstTime': '1400', 'fcstValue': '0'},
             {'category': 'POP', 'fcstDate': '20260619', 'fcstTime': '1400', 'fcstValue': '10'},
           ]
-        : options.path.contains('ultra-srt-ncst')
+        : options.path.contains('getUltraSrtNcst')
             ? [
                 {'category': 'T1H', 'obsrValue': '24'},
                 {'category': 'PTY', 'obsrValue': '0'},
               ]
-            : options.path.contains('mid-land-fcst')
+            : options.path.contains('getMidLandFcst')
                 ? [
                     {'regId': 'mid-land', 'rnSt4Am': 10, 'rnSt4Pm': 10},
                   ]
@@ -60,6 +61,10 @@ class _FakeSuccessAdapter implements HttpClientAdapter {
 }
 
 void main() {
+  setUpAll(() {
+    dotenv.loadFromString(envString: 'KMA_SERVICE_KEY=test-key');
+  });
+
   testWidgets('지역은 최대 10개까지만 추가할 수 있다', (tester) async {
     SharedPreferences.setMockInitialValues({
       'saved_region_ids': [

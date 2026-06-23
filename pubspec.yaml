@@ -45,6 +45,7 @@ dependencies:
   workmanager: ^0.9.0+3
   firebase_core: ^4.11.0
   firebase_messaging: ^16.4.1
+  flutter_dotenv: ^6.0.1
 
 dev_dependencies:
   flutter_test:
@@ -89,6 +90,7 @@ flutter:
   assets:
     - assets/data/
     - assets/images/characters/
+    - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
