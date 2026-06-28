@@ -29,6 +29,35 @@ class _FakeAdapter implements HttpClientAdapter {
   void close({bool force = false}) {}
 }
 
+/// 첫 호출은 DioException(connectionError)을 던지고, 두 번째 호출부터는
+/// 정상 응답을 돌려준다 — 단발성 네트워크 오류 재시도 동작을 검증하기 위함.
+class _FlakyAdapter implements HttpClientAdapter {
+  _FlakyAdapter(this.jsonBody);
+
+  final Map<String, dynamic> jsonBody;
+  int callCount = 0;
+
+  @override
+  Future<ResponseBody> fetch(
+    RequestOptions options,
+    Stream<Uint8List>? requestStream,
+    Future<void>? cancelFuture,
+  ) async {
+    callCount++;
+    if (callCount == 1) {
+      throw DioException.connectionError(requestOptions: options, reason: 'timeout');
+    }
+    return ResponseBody.fromString(
+      jsonEncode(jsonBody),
+      200,
+      headers: {Headers.contentTypeHeader: [Headers.jsonContentType]},
+    );
+  }
+
+  @override
+  void close({bool force = false}) {}
+}
+
 Map<String, dynamic> _envelope({required String resultCode, dynamic item}) {
   return {
     'response': {
@@ -84,6 +113,21 @@ void main() {
     final items = await client.getVilageFcst(nx: 58, ny: 126, baseDate: '20260619', baseTime: '1100');
 
     expect(items, hasLength(1));
+  });
+
+  test('첫 요청이 DioException(타임아웃 등)이면 한 번 재시도해서 성공함', () async {
+    final adapter = _FlakyAdapter(
+      _envelope(resultCode: '00', item: [
+        {'category': 'TMP', 'fcstDate': '20260619', 'fcstTime': '1400', 'fcstValue': '24'},
+      ]),
+    );
+    final dio = Dio()..httpClientAdapter = adapter;
+    final client = KmaApiClient(dio: dio);
+
+    final items = await client.getVilageFcst(nx: 58, ny: 126, baseDate: '20260619', baseTime: '1100');
+
+    expect(items, hasLength(1));
+    expect(adapter.callCount, 2);
   });
 
   test('getMidLandFcst가 day별 필드를 가진 단일 객체로 파싱함', () async {

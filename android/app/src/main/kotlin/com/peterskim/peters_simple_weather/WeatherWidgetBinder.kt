@@ -60,9 +60,10 @@ object WeatherWidgetBinder {
             R.id.widget_root,
             HomeWidgetLaunchIntent.getActivity(context, MainActivity::class.java),
         )
-        // Tap refresh -> background Dart callback (no app launch)
+        // Tap refresh (enlarged touch target around the icon) -> background
+        // Dart callback (no app launch)
         views.setOnClickPendingIntent(
-            R.id.w_refresh,
+            R.id.w_refresh_touch,
             HomeWidgetBackgroundIntent.getBroadcast(context, Uri.parse("clean-weather://refresh")),
         )
 

@@ -52,20 +52,31 @@
                 android:textSize="10sp"
                 android:text="" />
 
-            <ImageView
-                android:id="@+id/w_refresh"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:src="@drawable/ic_refresh"
-                android:contentDescription="새로고침" />
+            <!-- Enlarged tap target around the refresh icon (icon itself stays
+                 18dp) so the whole frame intercepts touches before they fall
+                 through to widget_root's open-app intent. -->
+            <FrameLayout
+                android:id="@+id/w_refresh_touch"
+                android:layout_width="36dp"
+                android:layout_height="36dp">
 
-            <ProgressBar
-                android:id="@+id/w_progress"
-                style="?android:attr/progressBarStyleSmall"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:indeterminateTint="#FFFFFF"
-                android:visibility="gone" />
+                <ImageView
+                    android:id="@+id/w_refresh"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_refresh"
+                    android:contentDescription="새로고침" />
+
+                <ProgressBar
+                    android:id="@+id/w_progress"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_gravity="center"
+                    android:indeterminateTint="#FFFFFF"
+                    android:visibility="gone" />
+            </FrameLayout>
         </LinearLayout>
 
         <!-- content: current weather + hourly -->

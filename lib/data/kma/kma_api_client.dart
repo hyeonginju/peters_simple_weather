@@ -10,7 +10,12 @@ import 'kma_api_exception.dart';
 import 'kma_endpoints.dart';
 
 class KmaApiClient {
-  KmaApiClient({Dio? dio}) : _dio = dio ?? Dio();
+  KmaApiClient({Dio? dio})
+      : _dio = dio ??
+            Dio(BaseOptions(
+              connectTimeout: const Duration(seconds: 8),
+              receiveTimeout: const Duration(seconds: 8),
+            ));
 
   final Dio _dio;
 
@@ -90,15 +95,7 @@ class KmaApiClient {
     String url,
     Map<String, dynamic> queryParameters,
   ) async {
-    final response = await _dio.get<Map<String, dynamic>>(
-      url,
-      queryParameters: {
-        'serviceKey': Env.kmaServiceKey,
-        'dataType': 'JSON',
-        'pageNo': 1,
-        ...queryParameters,
-      },
-    );
+    final response = await _requestWithRetry(url, queryParameters);
 
     final body = response.data!['response'] as Map<String, dynamic>;
     final header = body['header'] as Map<String, dynamic>;
@@ -119,5 +116,26 @@ class KmaApiClient {
       return [item];
     }
     return [];
+  }
+
+  /// 기상청 공개 API는 간헐적으로 타임아웃/연결 오류가 나는 일이 잦아, 단발성
+  /// 네트워크 오류(DioException) 한 번은 재시도해서 흡수한다. resultCode 기반
+  /// 응답 오류(KmaApiException)는 정상 응답이므로 재시도하지 않는다.
+  Future<Response<Map<String, dynamic>>> _requestWithRetry(
+    String url,
+    Map<String, dynamic> queryParameters,
+  ) async {
+    final params = {
+      'serviceKey': Env.kmaServiceKey,
+      'dataType': 'JSON',
+      'pageNo': 1,
+      ...queryParameters,
+    };
+    try {
+      return await _dio.get<Map<String, dynamic>>(url, queryParameters: params);
+    } on DioException {
+      await Future.delayed(const Duration(milliseconds: 800));
+      return await _dio.get<Map<String, dynamic>>(url, queryParameters: params);
+    }
   }
 }
