@@ -53,31 +53,20 @@
                 android:textSize="11sp"
                 android:text="" />
 
-            <!-- Enlarged tap target around the refresh icon (icon itself stays
-                 22dp) so the whole frame intercepts touches before they fall
-                 through to widget_root's open-app intent. -->
-            <FrameLayout
-                android:id="@+id/w_refresh_touch"
-                android:layout_width="40dp"
-                android:layout_height="40dp">
+            <ImageView
+                android:id="@+id/w_refresh"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_refresh"
+                android:contentDescription="새로고침" />
 
-                <ImageView
-                    android:id="@+id/w_refresh"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_refresh"
-                    android:contentDescription="새로고침" />
-
-                <ProgressBar
-                    android:id="@+id/w_progress"
-                    style="?android:attr/progressBarStyleSmall"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:layout_gravity="center"
-                    android:indeterminateTint="#FFFFFF"
-                    android:visibility="gone" />
-            </FrameLayout>
+            <ProgressBar
+                android:id="@+id/w_progress"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:indeterminateTint="#FFFFFF"
+                android:visibility="gone" />
         </LinearLayout>
 
         <!-- normal content -->
@@ -193,4 +182,17 @@
             android:visibility="gone"
             android:text="" />
     </LinearLayout>
+
+    <!-- Enlarged tap target for the refresh icon (icon itself stays 22dp).
+         Lives outside the row's LinearLayout flow so it can't affect row
+         height/text width; positioned via gravity+margin to sit centered
+         over the icon instead. Drawn last so it intercepts touches in its
+         bounds before they reach widget_root's open-app click below it. -->
+    <FrameLayout
+        android:id="@+id/w_refresh_touch"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="9dp"
+        android:layout_marginEnd="9dp" />
 </FrameLayout>

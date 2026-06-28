@@ -18,6 +18,13 @@ class KmaApiClient {
 
   final Dio _dio;
 
+  static const _maxAttempts = 3;
+  static const _retryDelays = [Duration(milliseconds: 800), Duration(milliseconds: 1500)];
+
+  /// 인증/파라미터 오류 등은 재시도해도 의미가 없으므로 제외하고, 서버측
+  /// 일시 오류로 보이는 resultCode만 재시도 대상으로 본다.
+  static const _retryableResultCodes = {'01', '02', '04', '05', '22', '99'};
+
   Future<List<VilageFcstItemDto>> getVilageFcst({
     required int nx,
     required int ny,
@@ -106,18 +113,31 @@ class KmaApiClient {
     return [];
   }
 
-  /// 백엔드 프록시도 간헐적 타임아웃/연결 오류가 날 수 있어, 단발성 네트워크
-  /// 오류(DioException) 한 번은 재시도해서 흡수한다. resultCode 기반 응답
-  /// 오류(KmaApiException)는 정상 응답이므로 재시도하지 않는다.
+  /// 백엔드 프록시도 간헐적 타임아웃/연결 오류나 서버측 일시 오류
+  /// (resultCode가 [_retryableResultCodes]에 속하는 경우)가 날 수 있어, 최대
+  /// [_maxAttempts]번까지 흡수한다. 인증/파라미터 오류 등 재시도해도 의미
+  /// 없는 resultCode는 그대로 반환해 [_getItems]에서 예외로 던지게 한다.
   Future<Response<Map<String, dynamic>>> _requestWithRetry(
     String url,
     Map<String, dynamic> queryParameters,
   ) async {
-    try {
-      return await _dio.get<Map<String, dynamic>>(url, queryParameters: queryParameters);
-    } on DioException {
-      await Future.delayed(const Duration(milliseconds: 800));
-      return await _dio.get<Map<String, dynamic>>(url, queryParameters: queryParameters);
+    for (var attempt = 1;; attempt++) {
+      try {
+        final response = await _dio.get<Map<String, dynamic>>(url, queryParameters: queryParameters);
+        if (attempt >= _maxAttempts || !_isRetryableResultCode(response)) {
+          return response;
+        }
+        await Future.delayed(_retryDelays[attempt - 1]);
+      } on DioException {
+        if (attempt >= _maxAttempts) rethrow;
+        await Future.delayed(_retryDelays[attempt - 1]);
+      }
     }
+  }
+
+  bool _isRetryableResultCode(Response<Map<String, dynamic>> response) {
+    final resultCode =
+        (response.data?['response'] as Map<String, dynamic>?)?['header']?['resultCode'] as String?;
+    return resultCode != null && _retryableResultCodes.contains(resultCode);
   }
 }
