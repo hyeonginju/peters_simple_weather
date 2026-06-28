@@ -1,15 +1,54 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="48dp" android:height="48dp"
     android:viewportWidth="48" android:viewportHeight="48">
-    <group android:name="rays">
-        <path android:fillColor="#F2A93C" android:pathData="M22,3h4v9h-4z"/>
-        <path android:fillColor="#F2A93C" android:pathData="M22,36h4v9h-4z"/>
-        <path android:fillColor="#F2A93C" android:pathData="M3,22h9v4h-9z"/>
-        <path android:fillColor="#F2A93C" android:pathData="M36,22h9v4h-9z"/>
-        <path android:fillColor="#F2A93C" android:pathData="M9,11l3,-3l6,6l-3,3z"/>
-        <path android:fillColor="#F2A93C" android:pathData="M30,32l3,-3l6,6l-3,3z"/>
-        <path android:fillColor="#F2A93C" android:pathData="M33,11l-3,-3l-6,6l3,3z"/>
-        <path android:fillColor="#F2A93C" android:pathData="M12,32l-3,-3l-6,6l3,3z"/>
+
+    <!-- 8 identical rounded-capsule rays, one per 45°, matching the Flutter
+         _drawSun painter (lib/core/widgets/weather_icon.dart): rayW=8%, rayH=22%,
+         distance=165% of rayH from center. Drawn before the core so their inner
+         ends tuck under it. -->
+    <group android:pivotX="24" android:pivotY="24" android:rotation="0">
+        <path android:fillColor="#F2A93C"
+            android:pathData="M25.92,3.22 L25.92,9.94 A1.92,1.92 0 0 1 22.08,9.94 L22.08,3.22 A1.92,1.92 0 0 1 25.92,3.22 Z"/>
     </group>
-    <path android:fillColor="#FFC74D" android:pathData="M24,11 a13,13 0 1,0 0,26 a13,13 0 1,0 0,-26 z"/>
+    <group android:pivotX="24" android:pivotY="24" android:rotation="45">
+        <path android:fillColor="#F2A93C"
+            android:pathData="M25.92,3.22 L25.92,9.94 A1.92,1.92 0 0 1 22.08,9.94 L22.08,3.22 A1.92,1.92 0 0 1 25.92,3.22 Z"/>
+    </group>
+    <group android:pivotX="24" android:pivotY="24" android:rotation="90">
+        <path android:fillColor="#F2A93C"
+            android:pathData="M25.92,3.22 L25.92,9.94 A1.92,1.92 0 0 1 22.08,9.94 L22.08,3.22 A1.92,1.92 0 0 1 25.92,3.22 Z"/>
+    </group>
+    <group android:pivotX="24" android:pivotY="24" android:rotation="135">
+        <path android:fillColor="#F2A93C"
+            android:pathData="M25.92,3.22 L25.92,9.94 A1.92,1.92 0 0 1 22.08,9.94 L22.08,3.22 A1.92,1.92 0 0 1 25.92,3.22 Z"/>
+    </group>
+    <group android:pivotX="24" android:pivotY="24" android:rotation="180">
+        <path android:fillColor="#F2A93C"
+            android:pathData="M25.92,3.22 L25.92,9.94 A1.92,1.92 0 0 1 22.08,9.94 L22.08,3.22 A1.92,1.92 0 0 1 25.92,3.22 Z"/>
+    </group>
+    <group android:pivotX="24" android:pivotY="24" android:rotation="225">
+        <path android:fillColor="#F2A93C"
+            android:pathData="M25.92,3.22 L25.92,9.94 A1.92,1.92 0 0 1 22.08,9.94 L22.08,3.22 A1.92,1.92 0 0 1 25.92,3.22 Z"/>
+    </group>
+    <group android:pivotX="24" android:pivotY="24" android:rotation="270">
+        <path android:fillColor="#F2A93C"
+            android:pathData="M25.92,3.22 L25.92,9.94 A1.92,1.92 0 0 1 22.08,9.94 L22.08,3.22 A1.92,1.92 0 0 1 25.92,3.22 Z"/>
+    </group>
+    <group android:pivotX="24" android:pivotY="24" android:rotation="315">
+        <path android:fillColor="#F2A93C"
+            android:pathData="M25.92,3.22 L25.92,9.94 A1.92,1.92 0 0 1 22.08,9.94 L22.08,3.22 A1.92,1.92 0 0 1 25.92,3.22 Z"/>
+    </group>
+
+    <!-- core circle (r=28% of viewport) with the same top→bottom gradient as
+         the app's sunCoreTop→sunCoreBottom. -->
+    <path android:pathData="M24,10.56 a13.44,13.44 0 1,0 0,26.88 a13.44,13.44 0 1,0 0,-26.88 z">
+        <aapt:attr name="android:fillColor">
+            <gradient android:type="linear"
+                android:startX="17.28" android:startY="10.56"
+                android:endX="32.06" android:endY="37.44"
+                android:startColor="#FFD37C"
+                android:endColor="#F2A235"/>
+        </aapt:attr>
+    </path>
 </vector>
