@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_palette.dart';
-import '../../clothing/character_art.dart';
 import '../../clothing/models/clothing_band.dart';
 
 class ClothingCard extends StatelessWidget {
@@ -25,8 +24,6 @@ class ClothingCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          CharacterArt(band: band, width: 128, height: 124),
-          const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
