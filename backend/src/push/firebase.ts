@@ -29,7 +29,7 @@ function loadServiceAccount(): Record<string, unknown> {
   );
 }
 
-function getApp(): App {
+export function getFirebaseApp(): App {
   if (!app) {
     app = initializeApp({ credential: cert(loadServiceAccount() as never) });
   }
@@ -38,7 +38,7 @@ function getApp(): App {
 
 /** 특정 관서 토픽 구독자 전체에게 특보 푸시를 보낸다. */
 export async function sendAlertPush(topic: string, title: string, body: string): Promise<string> {
-  const messaging = getMessaging(getApp());
+  const messaging = getMessaging(getFirebaseApp());
   return messaging.send({
     topic,
     notification: { title, body },
