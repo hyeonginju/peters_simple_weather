@@ -3,14 +3,18 @@ import { extractItems, fetchKmaJson, KmaError } from '../kma/client';
 import { cleanAlertText, nowKst, parseTmFc, ymd } from './parse';
 import { labelForStnId, PUSH_STN_IDS, topicForStnId } from './stnMapper';
 import { sendAlertPush } from '../push/firebase';
+import { getLastPushedTmFc, setLastPushedTmFc } from './stateStore';
 
 /**
- * 폴링 주기(GitHub Actions cron, 10분)보다 넉넉한 여유를 둔 "최근 발표" 판정 기준.
- * tmFc(발표시각)는 특보가 활성인 동안 바뀌지 않으므로, 매 폴링마다 같은 tmFc를
- * 다시 보게 된다 — 이 윈도우를 벗어나면 "이미 지난 주기에 푸시했다"고 보고 건너뛴다.
- * 즉 상태 저장 없이 자연스러운 중복 발송 방지가 된다.
+ * 중복 발송 방지는 "마지막으로 푸시한 tmFc"를 Firestore에 저장해 처리한다(stateStore).
+ * tmFc(발표시각)는 특보가 활성인 동안 고정이므로, 같은 값이면 폴링이 몇 번을 더 보든
+ * 건너뛴다 — 폴링이 지연·누락돼도 누락 없이 정확히 한 번만 발송된다.
+ *
+ * 아래 백스톱은 콜드 스타트(상태 유실)나 장시간 장애 뒤 한참 지난 발표까지 거슬러
+ * 올라가 푸시하는 것만 막는다. 중복은 상태가 막아주므로 윈도우는 cron 지연을 넉넉히
+ * 흡수하도록 크게 잡는다.
  */
-const ALERT_FRESHNESS_MINUTES = 15;
+const MAX_ALERT_AGE_MINUTES = 180;
 
 export type PollResult = {
   stnId: string;
@@ -62,17 +66,27 @@ async function checkOne(stnId: string): Promise<PollResult> {
     return { stnId, pushed: false, reason: '발효 중인 특보 없음' };
   }
 
-  const announcedAt = parseTmFc(item.tmFc as number | undefined);
-  if (!announcedAt) {
+  const tmFc = item.tmFc as number | undefined;
+  const announcedAt = parseTmFc(tmFc);
+  if (tmFc == null || !announcedAt) {
     return { stnId, pushed: false, reason: 'tmFc 파싱 실패' };
   }
 
+  // 같은 발표(tmFc)는 한 번만 푸시 — 이미 보낸 발표면 폴링이 다시 봐도 건너뛴다.
+  const lastPushed = await getLastPushedTmFc(stnId);
+  if (lastPushed === tmFc) {
+    return { stnId, pushed: false, reason: '이미 푸시한 발표(동일 tmFc)' };
+  }
+
+  // 한참 지난 발표는 푸시하지 않되, 다음 폴링이 또 후보로 보지 않게 기록만 해둔다.
   const ageMinutes = (Date.now() - announcedAt.getTime()) / 60_000;
-  if (ageMinutes > ALERT_FRESHNESS_MINUTES) {
-    return { stnId, pushed: false, reason: `오래된 발표(${Math.round(ageMinutes)}분 전) — 이미 푸시했을 것으로 간주` };
+  if (ageMinutes > MAX_ALERT_AGE_MINUTES) {
+    await setLastPushedTmFc(stnId, tmFc);
+    return { stnId, pushed: false, reason: `오래된 발표(${Math.round(ageMinutes)}분 전) — 백스톱 초과, 기록만` };
   }
 
   const label = labelForStnId(stnId);
   await sendAlertPush(topicForStnId(stnId), `[${label}] 기상특보 발효`, currentAlerts);
+  await setLastPushedTmFc(stnId, tmFc);
   return { stnId, pushed: true, reason: `발표 ${Math.round(ageMinutes)}분 전 — 푸시 발송` };
 }
