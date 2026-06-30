@@ -22,6 +22,10 @@ class KmaApiClient {
   static const _maxAttempts = 3;
   static const _retryDelays = [Duration(milliseconds: 800), Duration(milliseconds: 1500)];
 
+  /// HTTP 429(Too Many Requests)는 게이트웨이의 단기 rate limit이라 일반
+  /// 일시 오류보다 길게 쉬었다 재시도해야 풀린다.
+  static const _rateLimitDelays = [Duration(seconds: 2), Duration(seconds: 4)];
+
   /// 인증/파라미터 오류 등은 재시도해도 의미가 없으므로 제외하고, 서버측
   /// 일시 오류로 보이는 resultCode만 재시도 대상으로 본다.
   static const _retryableResultCodes = {'01', '02', '04', '05', '22', '99'};
@@ -146,9 +150,12 @@ class KmaApiClient {
           return response;
         }
         await Future.delayed(_retryDelays[attempt - 1]);
-      } on DioException {
+      } on DioException catch (e) {
         if (attempt >= _maxAttempts) rethrow;
-        await Future.delayed(_retryDelays[attempt - 1]);
+        final isRateLimited = e.response?.statusCode == 429;
+        await Future.delayed(
+          (isRateLimited ? _rateLimitDelays : _retryDelays)[attempt - 1],
+        );
       }
     }
   }
