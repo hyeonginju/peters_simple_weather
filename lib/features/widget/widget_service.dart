@@ -136,6 +136,17 @@ class WidgetService {
   }
 
   static Future<void> _writeError(Region region) async {
+    // KMA 게이트웨이의 일시적 429(rate limit) 등으로 한 번 실패했다고 마지막
+    // 정상 데이터를 에러 화면으로 덮어쓰지 않는다. 이미 보여줄 데이터가 있으면
+    // 그대로 두고 로딩 스피너만 내린다(stale-while-error). 받아둔 데이터가
+    // 아예 없을 때만 에러 화면을 띄운다.
+    final hasData = await HomeWidget.getWidgetData<String>('w_has_data');
+    final inError = await HomeWidget.getWidgetData<String>('w_error');
+    if (hasData == 'true' && inError != 'true') {
+      await _save({'w_loading': 'false'});
+      await _update();
+      return;
+    }
     await _save({
       'w_has_data': 'true',
       'w_error': 'true',

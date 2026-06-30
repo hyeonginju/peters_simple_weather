@@ -9,8 +9,6 @@ import 'models/forecast_result.dart';
 import 'models/hourly_forecast.dart';
 import 'models/kma_forecast_item.dart';
 import 'models/weather_snapshot.dart';
-import '../kma/dto/mid_land_fcst_dto.dart';
-import '../kma/dto/mid_ta_dto.dart';
 import '../kma/kma_api_client.dart';
 
 class WeatherRepository {
@@ -154,12 +152,10 @@ class WeatherRepository {
 
     try {
       final tmFc = KmaTimeScheduler.resolveMidTermTmFc(now);
-      final results = await Future.wait([
-        _client.getMidLandFcst(regId: midLandCode, tmFc: tmFc),
-        _client.getMidTa(regId: midTaCode, tmFc: tmFc),
-      ]);
-      final land = results[0] as MidLandFcstDto;
-      final ta = results[1] as MidTaDto;
+      // 동시 호출(Future.wait)은 KMA 게이트웨이의 동시/초당 요청 한도를 넘겨
+      // 429를 유발하기 쉬워, 위젯 새로고침의 호출 버스트를 줄이도록 순차 호출한다.
+      final land = await _client.getMidLandFcst(regId: midLandCode, tmFc: tmFc);
+      final ta = await _client.getMidTa(regId: midTaCode, tmFc: tmFc);
 
       final announcementDate = DateTime(
         int.parse(tmFc.substring(0, 4)),
