@@ -10,4 +10,5 @@ class KmaEndpoints {
   static const midLandFcst = '$_base/mid-land-fcst';
   static const midTa = '$_base/mid-ta';
   static const wthrWrnMsg = '$_base/wthr-wrn-msg';
+  static const precipToday = '$_base/precip-today';
 }

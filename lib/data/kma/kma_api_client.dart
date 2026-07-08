@@ -90,6 +90,19 @@ class KmaApiClient {
     return items.isEmpty ? null : WthrWrnMsgDto.fromJson(items.first);
   }
 
+  /// 서버가 초단기실황 RN1로 누적해둔 "오늘 00시~마지막 관측 시간대까지"
+  /// 실측 강수량(mm). KMA 응답 포맷({response: {header, body}})이 아니라
+  /// 백엔드가 Firestore에서 읽어 그대로 내려주는 평범한 JSON이라 [_getItems]를
+  /// 쓰지 않는다.
+  Future<double> getPrecipToday({required int nx, required int ny}) async {
+    final response = await _dio.get<Map<String, dynamic>>(
+      KmaEndpoints.precipToday,
+      queryParameters: {'nx': nx, 'ny': ny},
+    );
+    final value = response.data?['accumulatedRn'];
+    return value is num ? value.toDouble() : 0.0;
+  }
+
   Future<List<Map<String, dynamic>>> _getItems(
     String url,
     Map<String, dynamic> queryParameters,

@@ -9,11 +9,16 @@ class WeatherSnapshot {
   final double precipitationAmount;
   final int precipitationProbability;
 
+  /// 오늘 하루 총 강수량(mm) = 서버가 실측 누적한 값 + 아직 지나지 않은 시간대의
+  /// 예보값. mergeTodayPrecipitationTotal 참고.
+  final double todayPrecipitationTotal;
+
   const WeatherSnapshot({
     required this.temperature,
     required this.sky,
     required this.precipitationType,
     required this.precipitationAmount,
     required this.precipitationProbability,
+    required this.todayPrecipitationTotal,
   });
 }

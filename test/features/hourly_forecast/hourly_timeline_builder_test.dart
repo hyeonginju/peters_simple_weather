@@ -23,6 +23,7 @@ void main() {
       precipitationType: PrecipitationType.none,
       precipitationAmount: 0,
       precipitationProbability: 10,
+      todayPrecipitationTotal: 0,
     );
 
     final timeline = buildHourlyTimeline(
@@ -42,6 +43,7 @@ void main() {
       precipitationType: PrecipitationType.none,
       precipitationAmount: 0,
       precipitationProbability: 10,
+      todayPrecipitationTotal: 0,
     );
 
     final timeline = buildHourlyTimeline(
@@ -60,6 +62,7 @@ void main() {
       precipitationType: PrecipitationType.none,
       precipitationAmount: 0,
       precipitationProbability: 10,
+      todayPrecipitationTotal: 0,
     );
 
     final timeline = buildHourlyTimeline(

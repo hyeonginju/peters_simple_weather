@@ -4,7 +4,6 @@ import '../../../core/theme/app_palette.dart';
 import '../../../core/utils/weather_icon_mapper.dart';
 import '../../../core/widgets/weather_icon.dart';
 import '../../../data/weather/models/daily_forecast.dart';
-import '../../../data/weather/models/kma_forecast_item.dart';
 import '../../../data/weather/models/weather_snapshot.dart';
 
 class WeatherHero extends StatelessWidget {
@@ -27,7 +26,10 @@ class WeatherHero extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = context.palette;
-    final isPrecipitating = snapshot.precipitationType != PrecipitationType.none;
+    // 오늘 1mm 이상 내렸다면(과거 실측 + 남은 시간 예보 합산 기준) 지금 비가
+    // 그쳐 있어도 계속 "오늘 총 강수량"을 보여준다 — 현재 강수 여부만 보면
+    // 하루 총량이라는 문구와 맞지 않는 순간이 생기기 때문.
+    final hasPrecipitatedToday = snapshot.todayPrecipitationTotal >= 1.0;
 
     return Column(
       children: [
@@ -78,7 +80,7 @@ class WeatherHero extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7),
           decoration: BoxDecoration(color: palette.pointBg, borderRadius: BorderRadius.circular(99)),
           child: Text(
-            isPrecipitating
+            hasPrecipitatedToday
                 ? '오늘 총 강수량 ${todayPrecipitationTotal.toStringAsFixed(1)}mm'
                 : '오늘 강수확률 ${today?.popPercent ?? snapshot.precipitationProbability}%',
             style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: palette.pointText),
