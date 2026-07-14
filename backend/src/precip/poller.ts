@@ -5,9 +5,7 @@ import { PRECIP_GRID_CELLS } from './regionGrid';
 import { addObservedRn } from './precipStore';
 
 /**
- * 셀 사이 호출 간격. KMA 게이트웨이의 429는 하루 한도가 아니라 짧은 시간에 요청이
- * 몰릴 때 나는 단기 rate limit이므로([[widget-429-rate-limit]] 참고), 211개 셀을
- * 한꺼번에 쏘지 않고 이 간격만큼 띄워서 호출한다.
+ * 셀 사이 호출 간격. 211개 셀을 한꺼번에 쏘지 않고 이 간격만큼 띄워서 호출한다.
  */
 const POLL_DELAY_MS = 400;
 
@@ -49,14 +47,26 @@ function sleep(ms: number): Promise<void> {
 export type PrecipPollResult = { polled: number; failed: number };
 
 /**
+ * 마지막으로 전 셀을 다 돈 slot. RN1은 매시 정각에 한 번만 갱신되는데 트리거는
+ * 10분마다 오므로(같은 slot에 시간당 최대 6번 트리거됨), 이미 이 slot을 돌았다면
+ * KMA를 호출조차 하지 않고 건너뛴다 — addObservedRn의 slot 중복 가드는 Firestore
+ * 반영 단계에서만 걸러줄 뿐 KMA 호출 자체(하루 유일 쿼터)는 막아주지 않는다.
+ */
+let lastPolledSlot: string | null = null;
+
+/**
  * 격자 셀 전부를 순회하며 이번 시간대(slot)의 RN1(직전 1시간 실측 강수량)을 조회해
- * Firestore에 누적한다. addObservedRn이 slot 중복을 막아주므로, 이 함수가 하루 안에
- * 여러 번(5분 간격 cron) 불려도 같은 시간대는 한 번만 반영된다.
+ * Firestore에 누적한다.
  */
 export async function pollAndAccumulatePrecip(): Promise<PrecipPollResult> {
   const kst = nowKst();
   const dateKey = ymd(kst);
   const { baseDate, baseTime, slot } = resolveUltraSrtNcstSlot(kst);
+
+  if (slot === lastPolledSlot) {
+    return { polled: 0, failed: 0 };
+  }
+  lastPolledSlot = slot;
 
   let polled = 0;
   let failed = 0;
@@ -88,11 +98,11 @@ export async function pollAndAccumulatePrecip(): Promise<PrecipPollResult> {
 let inFlight = false;
 
 /**
- * 211개 셀을 도는 데 ~1분 이상 걸려 cron-job.org의 60초 타임아웃 안에 못 끝난다.
- * 그래서 이 함수는 결과를 기다리지 않고 백그라운드로 던지기만 한다 — 호출부(HTTP
- * 핸들러)는 즉시 응답할 수 있고, 폴링은 같은 Node 프로세스에서 계속 실행된다.
- * 이전 실행이 아직 안 끝났으면(5분 트리거가 겹칠 만큼 느려진 경우) 새로 시작하지
- * 않고 건너뛴다 — 어차피 addObservedRn이 같은 slot 중복 반영은 막아준다.
+ * 211개 셀을 도는 데 ~1분 이상 걸려 GitHub Actions 트리거(.github/workflows/poll-alerts.yml,
+ * 10분 간격)의 60초 curl 타임아웃 안에 못 끝난다. 그래서 이 함수는 결과를 기다리지
+ * 않고 백그라운드로 던지기만 한다 — 호출부(HTTP 핸들러)는 즉시 응답할 수 있고,
+ * 폴링은 같은 Node 프로세스에서 계속 실행된다. 이전 실행이 아직 안 끝났으면(10분
+ * 트리거가 겹칠 만큼 느려진 경우) 새로 시작하지 않고 건너뛴다.
  */
 export function schedulePrecipPoll(): void {
   if (inFlight) return;

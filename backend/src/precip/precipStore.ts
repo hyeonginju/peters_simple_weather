@@ -25,8 +25,8 @@ export async function getPrecipState(nx: number, ny: number, dateKey: string): P
 }
 
 /**
- * slot(예: "202607091400")이 마지막 반영分과 같으면 건너뛴다 — 5분마다 도는 폴링이
- * 같은 시간대를 여러 번 봐도 중복 합산되지 않게 막는 가드.
+ * slot(예: "202607091400")이 마지막 반영分과 같으면 건너뛴다 — poller.ts의
+ * lastPolledSlot 가드를 통과한 뒤에도 남는 이중 안전장치.
  */
 export async function addObservedRn(
   nx: number,
