@@ -2,7 +2,7 @@ import { Router, type Request, type Response } from 'express';
 
 import { KMA_ENDPOINTS } from '../kma/endpoints';
 import { fetchKmaJson } from '../kma/client';
-import { getPrecipState } from '../precip/precipStore';
+import { getPrecipState, touchActiveCell } from '../precip/precipStore';
 import { nowKst, ymd } from '../alerts/parse';
 
 /**
@@ -54,6 +54,11 @@ for (const [name, def] of Object.entries(PROXIES)) {
 /**
  * 백그라운드 RN1 폴러(precip/poller.ts)가 Firestore에 쌓아둔 "오늘 00시~마지막
  * 관측 시간대까지 누적 강수량"을 읽어서 돌려준다. KMA를 직접 호출하지 않는다.
+ *
+ * 호출과 동시에 이 셀을 활성으로 등록한다(touchActiveCell) — 폴러가 전국 셀이
+ * 아니라 실제로 조회되는 셀만 돌게 하기 위함. firstActiveDate가 오늘이면(=이
+ * 셀이 처음 쓰이기 시작한 날) isFirstDay=true를 내려줘서, 앱이 아직 실측 데이터가
+ * 없는 첫날은 예보값만 보여주도록 한다.
  */
 weatherRouter.get('/precip-today', async (req, res) => {
   const nx = Number(req.query.nx);
@@ -65,8 +70,15 @@ weatherRouter.get('/precip-today', async (req, res) => {
 
   try {
     const dateKey = ymd(nowKst());
-    const state = await getPrecipState(nx, ny, dateKey);
-    res.json({ accumulatedRn: state.accumulatedRn, lastSlot: state.lastSlot });
+    const [state, firstActiveDate] = await Promise.all([
+      getPrecipState(nx, ny, dateKey),
+      touchActiveCell(nx, ny, dateKey),
+    ]);
+    res.json({
+      accumulatedRn: state.accumulatedRn,
+      lastSlot: state.lastSlot,
+      isFirstDay: firstActiveDate === dateKey,
+    });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     console.error(`[precip-today] 조회 실패: ${message}`);

@@ -48,3 +48,43 @@ export async function addObservedRn(
     tx.set(ref, { accumulatedRn: prevSum + rn, lastSlot: slot, updatedAt: Date.now() });
   });
 }
+
+/**
+ * 격자 셀 단위로 "실제로 조회되고 있는지"를 추적한다. 강수 폴러(poller.ts)가 전국
+ * 셀을 무조건 도는 대신 이 컬렉션에 최근 등록된 셀만 도는 데 쓰인다.
+ * firstActiveDate는 최초 조회일 이후 불변 — "이 셀이 처음 쓰이기 시작한 날"을
+ * 나타내며, 그날은 아직 실측 데이터가 없으므로 예보값만 보여주는 기준이 된다.
+ */
+const ACTIVE_CELLS_COLLECTION = 'activeCells';
+
+function activeCellDocId(nx: number, ny: number): string {
+  return `${nx}_${ny}`;
+}
+
+/** 셀을 활성으로 표시(없으면 생성, 있으면 lastRequestedAt만 갱신)하고 firstActiveDate를 반환한다. */
+export async function touchActiveCell(nx: number, ny: number, todayDateKey: string): Promise<string> {
+  const db = getFirestore(getFirebaseApp());
+  const ref = db.collection(ACTIVE_CELLS_COLLECTION).doc(activeCellDocId(nx, ny));
+
+  return db.runTransaction(async (tx) => {
+    const snap = await tx.get(ref);
+    const data = snap.data();
+    const firstActiveDate = typeof data?.firstActiveDate === 'string' ? data.firstActiveDate : todayDateKey;
+    tx.set(ref, { firstActiveDate, lastRequestedAt: Date.now() });
+    return firstActiveDate;
+  });
+}
+
+export type ActiveCell = { nx: number; ny: number };
+
+/** maxAgeMs 이내에 조회된 적 있는 셀만 반환한다 — 강수 폴러가 이 목록만 순회한다. */
+export async function getActiveCells(maxAgeMs: number): Promise<ActiveCell[]> {
+  const db = getFirestore(getFirebaseApp());
+  const cutoff = Date.now() - maxAgeMs;
+  const snap = await db.collection(ACTIVE_CELLS_COLLECTION).where('lastRequestedAt', '>=', cutoff).get();
+
+  return snap.docs.map((doc) => {
+    const [nx, ny] = doc.id.split('_').map(Number);
+    return { nx, ny };
+  });
+}

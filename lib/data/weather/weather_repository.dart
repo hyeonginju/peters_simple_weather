@@ -86,8 +86,10 @@ class WeatherRepository {
     List<HourlyForecast> hourly,
   ) async {
     final fallback = _closestHourTo(hourly, now);
-    final observedPrecipitation = await _fetchObservedPrecipitationToday(region);
-    final precipitationTotal = mergeTodayPrecipitationTotal(observedPrecipitation, hourly, now);
+    final observed = await _fetchObservedPrecipitationToday(region);
+    final precipitationTotal = observed.isFirstDay
+        ? sumPrecipitationToday(hourly, now)
+        : mergeTodayPrecipitationTotal(observed.accumulatedRn, hourly, now);
 
     try {
       final base = KmaTimeScheduler.resolveUltraSrtNcstBaseTime(now);
@@ -137,13 +139,14 @@ class WeatherRepository {
   }
 
   /// 서버가 초단기실황 RN1로 누적해둔 "오늘 00시~마지막 관측 시간대까지" 실측
-  /// 강수량. 조회 실패 시 0으로 폴백 — 예보 기반 남은 시간대 합산만으로도 UI는
-  /// 정상 동작한다(과거 시간대만 누락될 뿐).
-  Future<double> _fetchObservedPrecipitationToday(Region region) async {
+  /// 강수량. 조회 실패 시 isFirstDay(순수 예보 합산)로 폴백 — accumulatedRn=0으로
+  /// 하이브리드 합산을 타면 지난 시간대가 통째로 빠져 과소 계산되므로, 실측을
+  /// 아예 못 믿는 상황에서는 하루 전체를 예보값으로 채우는 쪽이 더 안전하다.
+  Future<({double accumulatedRn, bool isFirstDay})> _fetchObservedPrecipitationToday(Region region) async {
     try {
       return await _client.getPrecipToday(nx: region.nx, ny: region.ny);
     } catch (_) {
-      return 0.0;
+      return (accumulatedRn: 0.0, isFirstDay: true);
     }
   }
 

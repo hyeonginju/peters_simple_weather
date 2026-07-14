@@ -18,3 +18,11 @@ double mergeTodayPrecipitationTotal(double observedRn, List<HourlyForecast> hour
       .fold(0.0, (sum, h) => sum + h.precipitationAmount);
   return observedRn + remainingForecast;
 }
+
+/// 이 지역이 오늘 처음 조회되기 시작해 아직 실측 데이터가 없을 때(isFirstDay)
+/// 쓰는 순수 예보 기반 합산 — 지난 시간대도 실측 대신 예보값을 그대로 쓴다.
+double sumPrecipitationToday(List<HourlyForecast> hourly, DateTime date) {
+  return hourly
+      .where((h) => h.time.year == date.year && h.time.month == date.month && h.time.day == date.day)
+      .fold(0.0, (sum, h) => sum + h.precipitationAmount);
+}

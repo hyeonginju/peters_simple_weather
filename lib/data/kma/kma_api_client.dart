@@ -94,13 +94,20 @@ class KmaApiClient {
   /// 실측 강수량(mm). KMA 응답 포맷({response: {header, body}})이 아니라
   /// 백엔드가 Firestore에서 읽어 그대로 내려주는 평범한 JSON이라 [_getItems]를
   /// 쓰지 않는다.
-  Future<double> getPrecipToday({required int nx, required int ny}) async {
+  ///
+  /// isFirstDay: 이 지역이 오늘 처음 조회되기 시작해 아직 실측 데이터가 없으면
+  /// true — 구버전 백엔드처럼 필드가 없으면 false로 안전하게 폴백한다.
+  Future<({double accumulatedRn, bool isFirstDay})> getPrecipToday({required int nx, required int ny}) async {
     final response = await _dio.get<Map<String, dynamic>>(
       KmaEndpoints.precipToday,
       queryParameters: {'nx': nx, 'ny': ny},
     );
     final value = response.data?['accumulatedRn'];
-    return value is num ? value.toDouble() : 0.0;
+    final isFirstDay = response.data?['isFirstDay'];
+    return (
+      accumulatedRn: value is num ? value.toDouble() : 0.0,
+      isFirstDay: isFirstDay is bool ? isFirstDay : false,
+    );
   }
 
   Future<List<Map<String, dynamic>>> _getItems(

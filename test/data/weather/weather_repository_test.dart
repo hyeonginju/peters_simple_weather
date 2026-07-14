@@ -9,9 +9,15 @@ import 'package:peters_simple_weather/data/weather/models/forecast_result.dart';
 import 'package:peters_simple_weather/data/weather/weather_repository.dart';
 
 class _RoutedFakeAdapter implements HttpClientAdapter {
-  _RoutedFakeAdapter({this.failingEndpoints = const {}});
+  _RoutedFakeAdapter({
+    this.failingEndpoints = const {},
+    this.precipAccumulatedRn = 0.0,
+    this.precipIsFirstDay = false,
+  });
 
   final Set<String> failingEndpoints;
+  final double precipAccumulatedRn;
+  final bool precipIsFirstDay;
   int requestCount = 0;
 
   @override
@@ -21,6 +27,15 @@ class _RoutedFakeAdapter implements HttpClientAdapter {
     Future<void>? cancelFuture,
   ) async {
     requestCount++;
+
+    if (options.path.contains('precip-today')) {
+      return ResponseBody.fromString(
+        jsonEncode({'accumulatedRn': precipAccumulatedRn, 'lastSlot': null, 'isFirstDay': precipIsFirstDay}),
+        200,
+        headers: {Headers.contentTypeHeader: [Headers.jsonContentType]},
+      );
+    }
+
     Map<String, dynamic> body;
 
     if (options.path.contains('vilage-fcst')) {
@@ -114,8 +129,16 @@ const _otherRegion = Region(
   ny: 75,
 );
 
-WeatherRepository _buildRepository(Set<String> failingEndpoints) {
-  final adapter = _RoutedFakeAdapter(failingEndpoints: failingEndpoints);
+WeatherRepository _buildRepository(
+  Set<String> failingEndpoints, {
+  double precipAccumulatedRn = 0.0,
+  bool precipIsFirstDay = false,
+}) {
+  final adapter = _RoutedFakeAdapter(
+    failingEndpoints: failingEndpoints,
+    precipAccumulatedRn: precipAccumulatedRn,
+    precipIsFirstDay: precipIsFirstDay,
+  );
   final dio = Dio()..httpClientAdapter = adapter;
   return WeatherRepository(client: KmaApiClient(dio: dio));
 }
@@ -173,6 +196,28 @@ void main() {
       isA<ForecastSuccess>()
           .having((r) => r.snapshot.temperature, 'snapshot.temperature', 24.0)
           .having((r) => r.snapshot.humidity, 'snapshot.humidity', isNull),
+    );
+  });
+
+  test('처음 조회되는 지역(isFirstDay)은 실측 대신 하루 전체 예보값을 합산함', () async {
+    final repository = _buildRepository({}, precipAccumulatedRn: 3.0, precipIsFirstDay: true);
+    final result = await repository.fetch(_region, now: now);
+
+    // 9시(1.0mm, 이미 지난 시간대)까지 포함해 강수 예보 없는 나머지 시간대는 0 —
+    // 실측(3.0mm)은 무시되고 순수 예보 합산만 쓰임.
+    expect(
+      result,
+      isA<ForecastSuccess>().having((r) => r.snapshot.todayPrecipitationTotal, 'todayPrecipitationTotal', 0.0),
+    );
+  });
+
+  test('이미 조회 이력이 있는 지역은 실측+남은 예보를 하이브리드로 합산함', () async {
+    final repository = _buildRepository({}, precipAccumulatedRn: 3.0, precipIsFirstDay: false);
+    final result = await repository.fetch(_region, now: now);
+
+    expect(
+      result,
+      isA<ForecastSuccess>().having((r) => r.snapshot.todayPrecipitationTotal, 'todayPrecipitationTotal', 3.0),
     );
   });
 

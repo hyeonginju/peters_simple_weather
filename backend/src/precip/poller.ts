@@ -1,13 +1,19 @@
 import { KMA_ENDPOINTS } from '../kma/endpoints';
 import { extractItems, fetchKmaJson, KmaError } from '../kma/client';
 import { nowKst, ymd } from '../alerts/parse';
-import { PRECIP_GRID_CELLS } from './regionGrid';
-import { addObservedRn } from './precipStore';
+import { addObservedRn, getActiveCells } from './precipStore';
 
 /**
- * 셀 사이 호출 간격. 211개 셀을 한꺼번에 쏘지 않고 이 간격만큼 띄워서 호출한다.
+ * 셀 사이 호출 간격. 셀을 한꺼번에 쏘지 않고 이 간격만큼 띄워서 호출한다.
  */
 const POLL_DELAY_MS = 400;
+
+/**
+ * 이 시간 내에 /precip-today로 조회된 적 있는 셀만 폴링 대상으로 삼는다 — 위젯
+ * 30분 자동 새로고침이나 하루 걸러 앱을 여는 사용 패턴에도 계속 활성 유지되고,
+ * 실제로 안 쓰는 지역은 이 시간이 지나면 자연히 폴링에서 빠진다(별도 삭제 로직 불필요).
+ */
+const ACTIVE_CELL_MAX_AGE_MS = 48 * 60 * 60 * 1000;
 
 /**
  * 초단기실황(getUltraSrtNcst)은 매시 정각 발표, 관측 후 약 10분 뒤부터 조회 가능.
@@ -55,8 +61,11 @@ export type PrecipPollResult = { polled: number; failed: number };
 let lastPolledSlot: string | null = null;
 
 /**
- * 격자 셀 전부를 순회하며 이번 시간대(slot)의 RN1(직전 1시간 실측 강수량)을 조회해
- * Firestore에 누적한다.
+ * 최근에 실제로 조회된 셀만 순회하며 이번 시간대(slot)의 RN1(직전 1시간 실측
+ * 강수량)을 조회해 Firestore에 누적한다. 전국 셀을 도는 게 아니라 활성 셀만
+ * 도므로([[kma-429-precip-poller]] 참고), 아직 한 번도 조회된 적 없는 셀은
+ * 애초에 이 목록에 없다 — 그런 지역은 accumulatedRn=0으로 남아 앱이 예보값만
+ * 보여준다(isFirstDay).
  */
 export async function pollAndAccumulatePrecip(): Promise<PrecipPollResult> {
   const kst = nowKst();
@@ -68,10 +77,12 @@ export async function pollAndAccumulatePrecip(): Promise<PrecipPollResult> {
   }
   lastPolledSlot = slot;
 
+  const activeCells = await getActiveCells(ACTIVE_CELL_MAX_AGE_MS);
+
   let polled = 0;
   let failed = 0;
 
-  for (const cell of PRECIP_GRID_CELLS) {
+  for (const cell of activeCells) {
     try {
       const json = await fetchKmaJson(KMA_ENDPOINTS.ultraSrtNcst, {
         nx: cell.nx,
@@ -98,8 +109,8 @@ export async function pollAndAccumulatePrecip(): Promise<PrecipPollResult> {
 let inFlight = false;
 
 /**
- * 211개 셀을 도는 데 ~1분 이상 걸려 GitHub Actions 트리거(.github/workflows/poll-alerts.yml,
- * 10분 간격)의 60초 curl 타임아웃 안에 못 끝난다. 그래서 이 함수는 결과를 기다리지
+ * 활성 셀 수가 많으면 GitHub Actions 트리거(.github/workflows/poll-alerts.yml, 10분
+ * 간격)의 60초 curl 타임아웃 안에 못 끝날 수 있다. 그래서 이 함수는 결과를 기다리지
  * 않고 백그라운드로 던지기만 한다 — 호출부(HTTP 핸들러)는 즉시 응답할 수 있고,
  * 폴링은 같은 Node 프로세스에서 계속 실행된다. 이전 실행이 아직 안 끝났으면(10분
  * 트리거가 겹칠 만큼 느려진 경우) 새로 시작하지 않고 건너뛴다.
