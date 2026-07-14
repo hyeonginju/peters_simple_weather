@@ -97,6 +97,7 @@ class WeatherRepository {
 
       double? temperature;
       PrecipitationType? precipitationType;
+      int? humidity;
 
       // getUltraSrtNcst has no SKY (cloud-cover) field — only an observed
       // PTY. Sky condition keeps coming from the short-term forecast hour.
@@ -106,6 +107,8 @@ class WeatherRepository {
             temperature = double.tryParse(item.obsrValue);
           case 'PTY':
             precipitationType = precipitationTypeFromCode(item.obsrValue);
+          case 'REH':
+            humidity = int.tryParse(item.obsrValue);
         }
       }
 
@@ -115,6 +118,7 @@ class WeatherRepository {
         precipitationType: precipitationType ?? fallback.precipitationType,
         precipitationAmount: fallback.precipitationAmount,
         precipitationProbability: fallback.precipitationProbability,
+        humidity: humidity,
       );
     } catch (_) {
       return WeatherSnapshot(

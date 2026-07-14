@@ -48,7 +48,7 @@ object WeatherWidgetBinder {
                 R.id.h0_temp, R.id.h1_temp, R.id.h2_temp, R.id.h3_temp, R.id.h4_temp)) {
             views.setTextColor(id, theme.primary)
         }
-        for (id in listOf(R.id.w_updated,
+        for (id in listOf(R.id.w_updated, R.id.w_humidity,
                 R.id.h0_label, R.id.h1_label, R.id.h2_label, R.id.h3_label, R.id.h4_label)) {
             views.setTextColor(id, theme.secondary)
         }
@@ -99,6 +99,7 @@ object WeatherWidgetBinder {
 
         views.setTextViewText(R.id.w_updated, data.getString("w_updated", "") ?: "")
         views.setTextViewText(R.id.w_temp, data.getString("w_temp", "") ?: "")
+        views.setTextViewText(R.id.w_humidity, data.getString("w_humidity", "") ?: "")
         views.setImageViewResource(R.id.w_icon, iconRes(data.getString("w_icon", "sun")))
 
         bindHour(views, data, 0, R.id.h0_label, R.id.h0_icon, R.id.h0_temp)
