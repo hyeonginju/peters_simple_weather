@@ -1,6 +1,8 @@
 import '../../core/utils/kma_time_scheduler.dart';
 import '../region/models/region.dart';
+import 'local_precip_store.dart';
 import 'mappers/daily_forecast_merger.dart';
+import 'mappers/daily_precipitation_total.dart';
 import 'mappers/mid_term_converter.dart';
 import 'mappers/vilage_fcst_grouper.dart';
 import 'mappers/weather_interpolator.dart';
@@ -85,6 +87,10 @@ class WeatherRepository {
     List<HourlyForecast> hourly,
   ) async {
     final fallback = _closestHourTo(hourly, now);
+    final local = await LocalPrecipStore.ensureActiveAndGetState(region.id, now);
+    final precipitationTotal = local.isFirstDay
+        ? sumPrecipitationToday(hourly, now)
+        : mergeTodayPrecipitationTotal(local.accumulatedRn, hourly, now);
 
     try {
       final base = KmaTimeScheduler.resolveUltraSrtNcstBaseTime(now);
@@ -98,6 +104,7 @@ class WeatherRepository {
       double? temperature;
       PrecipitationType? precipitationType;
       int? humidity;
+      double? rn1;
 
       // getUltraSrtNcst has no SKY (cloud-cover) field — only an observed
       // PTY. Sky condition keeps coming from the short-term forecast hour.
@@ -109,7 +116,13 @@ class WeatherRepository {
             precipitationType = precipitationTypeFromCode(item.obsrValue);
           case 'REH':
             humidity = int.tryParse(item.obsrValue);
+          case 'RN1':
+            rn1 = double.tryParse(item.obsrValue);
         }
+      }
+
+      if (rn1 != null) {
+        await LocalPrecipStore.recordRn1(region.id, now, rn1);
       }
 
       return WeatherSnapshot(
@@ -118,6 +131,7 @@ class WeatherRepository {
         precipitationType: precipitationType ?? fallback.precipitationType,
         precipitationAmount: fallback.precipitationAmount,
         precipitationProbability: fallback.precipitationProbability,
+        todayPrecipitationTotal: precipitationTotal,
         humidity: humidity,
       );
     } catch (_) {
@@ -127,6 +141,7 @@ class WeatherRepository {
         precipitationType: fallback.precipitationType,
         precipitationAmount: fallback.precipitationAmount,
         precipitationProbability: fallback.precipitationProbability,
+        todayPrecipitationTotal: precipitationTotal,
       );
     }
   }

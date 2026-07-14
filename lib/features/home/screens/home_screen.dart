@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_palette.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../../data/region/models/region.dart';
-import '../../../data/weather/mappers/daily_precipitation_total.dart';
 import '../../../data/weather/mappers/daytime_average.dart';
 import '../../../data/weather/models/daily_forecast.dart';
 import '../../../data/weather/models/forecast_result.dart';
@@ -231,14 +230,12 @@ class _WeatherContent extends StatelessWidget {
               month: now.month,
             ),
           );
-    final precipitationTotal = hourlyList != null ? sumPrecipitationToday(hourlyList, now) : 0.0;
-
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(20, 10, 20, 28),
       physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
       child: Column(
         children: [
-          WeatherHero(snapshot: snapshot, today: today, todayPrecipitationTotal: precipitationTotal),
+          WeatherHero(snapshot: snapshot, today: today, todayPrecipitationTotal: snapshot.todayPrecipitationTotal),
           const SizedBox(height: 22),
           if (clothingBand != null) ...[
             ClothingCard(band: clothingBand),
