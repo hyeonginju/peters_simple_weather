@@ -123,6 +123,7 @@ class WidgetService {
       'w_icon': weatherIconTypeFor(snapshot.sky, snapshot.precipitationType).name,
       'w_minmax': today != null ? '${today.minTemp.round()}° / ${today.maxTemp.round()}°' : '',
       'w_pop': '강수 ${today?.popPercent ?? snapshot.precipitationProbability}%',
+      'w_humidity': snapshot.humidity != null ? '습도 ${snapshot.humidity}%' : '',
       'w_updated': '${_two(now.hour)}:${_two(now.minute)} 업데이트',
       for (var i = 0; i < 5; i++) ...{
         'w_h${i}_label': i < slots.length ? formatHourLabel(slots[i].time) : '',

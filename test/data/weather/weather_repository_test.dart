@@ -37,6 +37,7 @@ class _RoutedFakeAdapter implements HttpClientAdapter {
         item: [
           {'category': 'T1H', 'obsrValue': '23.5'},
           {'category': 'PTY', 'obsrValue': '0'},
+          {'category': 'REH', 'obsrValue': '62'},
         ],
       );
     } else if (options.path.contains('mid-land-fcst')) {
@@ -139,7 +140,8 @@ void main() {
       isA<ForecastSuccess>()
           .having((r) => r.hourly.length, 'hourly.length', 3)
           .having((r) => r.daily, 'daily', isNotEmpty)
-          .having((r) => r.snapshot.temperature, 'snapshot.temperature', 23.5),
+          .having((r) => r.snapshot.temperature, 'snapshot.temperature', 23.5)
+          .having((r) => r.snapshot.humidity, 'snapshot.humidity', 62),
     );
   });
 
@@ -168,7 +170,9 @@ void main() {
 
     expect(
       result,
-      isA<ForecastSuccess>().having((r) => r.snapshot.temperature, 'snapshot.temperature', 24.0),
+      isA<ForecastSuccess>()
+          .having((r) => r.snapshot.temperature, 'snapshot.temperature', 24.0)
+          .having((r) => r.snapshot.humidity, 'snapshot.humidity', isNull),
     );
   });
 

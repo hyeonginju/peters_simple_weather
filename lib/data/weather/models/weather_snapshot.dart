@@ -13,6 +13,9 @@ class WeatherSnapshot {
   /// 예보값. mergeTodayPrecipitationTotal 참고.
   final double todayPrecipitationTotal;
 
+  /// 초단기실황(REH) 상대습도(%). 해당 관측치가 없으면 null.
+  final int? humidity;
+
   const WeatherSnapshot({
     required this.temperature,
     required this.sky,
@@ -20,5 +23,6 @@ class WeatherSnapshot {
     required this.precipitationAmount,
     required this.precipitationProbability,
     required this.todayPrecipitationTotal,
+    this.humidity,
   });
 }

@@ -64,14 +64,20 @@ class WeatherHero extends StatelessWidget {
             ],
           ],
         ),
-        if (today != null) ...[
+        if (today != null || snapshot.humidity != null) ...[
           const SizedBox(height: 7),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _MinMax(label: '최저', value: '${today!.minTemp.round()}°', palette: palette),
-              const SizedBox(width: 14),
-              _MinMax(label: '최고', value: '${today!.maxTemp.round()}°', palette: palette),
+              if (today != null) ...[
+                _MinMax(label: '최저', value: '${today!.minTemp.round()}°', palette: palette),
+                const SizedBox(width: 14),
+                _MinMax(label: '최고', value: '${today!.maxTemp.round()}°', palette: palette),
+              ],
+              if (snapshot.humidity != null) ...[
+                if (today != null) const SizedBox(width: 14),
+                _MinMax(label: '습도', value: '${snapshot.humidity}%', palette: palette),
+              ],
             ],
           ),
         ],
