@@ -74,14 +74,16 @@
             android:id="@+id/widget_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:clipChildren="false">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="10dp"
+                android:clipChildren="false">
 
                 <ImageView
                     android:id="@+id/w_icon"
@@ -94,11 +96,16 @@
                      the temp's top font padding (gravity=top) instead of stacking
                      above it, so it adds zero height — stacking it in flow grew
                      the row and pushed the hourly strip past the widget's fixed
-                     launcher-cell height. -->
+                     launcher-cell height. w_humidity is pulled up further with a
+                     negative marginTop into the row's own marginTop gap above, so
+                     it clears the temp glyphs instead of overlapping them —
+                     clipChildren=false on this frame and the row keeps that from
+                     being clipped. -->
                 <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp">
+                    android:layout_marginStart="10dp"
+                    android:clipChildren="false">
 
                     <TextView
                         android:id="@+id/w_temp"
@@ -113,6 +120,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="top"
+                        android:layout_marginTop="-14dp"
                         android:textColor="#BFFFFFFF"
                         android:textSize="12sp"
                         android:text="" />

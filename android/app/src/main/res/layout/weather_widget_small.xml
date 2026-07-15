@@ -75,7 +75,8 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            android:clipChildren="false">
 
             <ImageView
                 android:id="@+id/w_icon"
@@ -87,12 +88,17 @@
             <!-- w_temp alone defines this frame's size; w_humidity overlays the
                  temp's top font padding (gravity=top) instead of stacking above
                  it, so it adds zero height and the temp keeps its original
-                 vertical position (same fix as the medium widget). -->
+                 vertical position (same fix as the medium widget). w_humidity is
+                 pulled up further with a negative marginTop into the row's own
+                 marginTop gap above, so it clears the temp glyphs instead of
+                 overlapping — clipChildren=false on this frame and the row keeps
+                 that from being clipped. -->
             <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
-                android:layout_marginEnd="8dp">
+                android:layout_marginEnd="8dp"
+                android:clipChildren="false">
 
                 <TextView
                     android:id="@+id/w_temp"
@@ -107,6 +113,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="top"
+                    android:layout_marginTop="-9dp"
                     android:textColor="#BFFFFFFF"
                     android:textSize="10sp"
                     android:text="" />
