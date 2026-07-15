@@ -90,19 +90,15 @@
                     android:src="@drawable/ic_w_sun"
                     android:contentDescription="@null" />
 
-                <LinearLayout
+                <!-- w_temp alone defines this frame's size; w_humidity overlays
+                     the temp's top font padding (gravity=top) instead of stacking
+                     above it, so it adds zero height — stacking it in flow grew
+                     the row and pushed the hourly strip past the widget's fixed
+                     launcher-cell height. -->
+                <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/w_humidity"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="#BFFFFFFF"
-                        android:textSize="12sp"
-                        android:text="" />
+                    android:layout_marginStart="10dp">
 
                     <TextView
                         android:id="@+id/w_temp"
@@ -111,7 +107,16 @@
                         android:textColor="#FFFFFF"
                         android:textSize="44sp"
                         android:text="" />
-                </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/w_humidity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top"
+                        android:textColor="#BFFFFFFF"
+                        android:textSize="12sp"
+                        android:text="" />
+                </FrameLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"
