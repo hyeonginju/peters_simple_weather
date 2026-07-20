@@ -41,12 +41,40 @@ class KmaStnMapper {
     '184': '제주도',
   };
 
+  /// 시/도 → FCM 토픽용 ASCII 코드. FCM 토픽명은 한글을 못 써서 코드로 매핑한다.
+  /// backend/src/alerts/stnMapper.ts의 PROVINCE_CODES와 반드시 동일하게 유지.
+  static const _provinceCode = <String, String>{
+    '서울특별시': 'seoul',
+    '인천광역시': 'incheon',
+    '경기도': 'gyeonggi',
+    '강원특별자치도': 'gangwon',
+    '충청북도': 'chungbuk',
+    '대전광역시': 'daejeon',
+    '세종특별자치시': 'sejong',
+    '충청남도': 'chungnam',
+    '전북특별자치도': 'jeonbuk',
+    '광주광역시': 'gwangju',
+    '전라남도': 'jeonnam',
+    '대구광역시': 'daegu',
+    '경상북도': 'gyeongbuk',
+    '부산광역시': 'busan',
+    '울산광역시': 'ulsan',
+    '경상남도': 'gyeongnam',
+    '제주특별자치도': 'jeju',
+  };
+
   /// province(시/도)에 해당하는 stnId. 미등록이면 전국(108)으로 폴백.
   static String stnIdForProvince(String province) => _byProvince[province] ?? nationwide;
 
   static String labelForStnId(String stnId) => _regionLabel[stnId] ?? '전국';
 
-  /// FCM 토픽 이름. backend/src/alerts/stnMapper.ts의 topicForStnId와 동일 규칙 — 한쪽을
+  /// 대표 지역 시/도의 특보 FCM 토픽. 미등록 시/도면 null(구독 안 함).
+  /// 백엔드가 본문에 이 시/도가 언급된 특보만 이 토픽으로 보내므로, 같은 관서라도
+  /// 내 시/도가 아닌 특보(예: 세종 폭염)는 오지 않는다.
+  /// backend/src/alerts/stnMapper.ts의 topicForProvinceCode와 동일 규칙 — 한쪽을
   /// 고치면 반드시 다른 쪽도 맞출 것.
-  static String topicForStnId(String stnId) => 'stn_$stnId';
+  static String? topicForProvince(String province) {
+    final code = _provinceCode[province];
+    return code == null ? null : 'prov_$code';
+  }
 }
