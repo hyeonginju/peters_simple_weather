@@ -28,13 +28,14 @@ export type PollResult = {
   reason: string;
 };
 
-/** 9개 관서를 모두 확인하고, 최근 발표된 발효 특보가 있는 관서에만 토픽 푸시를 보낸다. */
+/**
+ * 9개 관서를 모두 확인하고, 최근 발표된 발효 특보가 있는 관서에만 토픽 푸시를 보낸다.
+ * 관서를 병렬로 확인한다 — 순차로 돌리면 관서별 재시도(최대 ~46초)가 누적돼 트리거
+ * curl의 --max-time 60초를 넘길 수 있다. 병렬이면 총 시간이 가장 느린 한 관서의
+ * 체인으로 묶여 예산 안에 들어온다. 관서별 상태(stateStore)는 서로 독립이라 안전하다.
+ */
 export async function pollAndPushAlerts(): Promise<PollResult[]> {
-  const results: PollResult[] = [];
-  for (const stnId of PUSH_STN_IDS) {
-    results.push(await checkOne(stnId));
-  }
-  return results;
+  return Promise.all(PUSH_STN_IDS.map((stnId) => checkOne(stnId)));
 }
 
 async function checkOne(stnId: string): Promise<PollResult> {
