@@ -1,7 +1,13 @@
 import { KMA_ENDPOINTS } from '../kma/endpoints';
 import { extractItems, fetchKmaJson, KmaError } from '../kma/client';
 import { cleanAlertText, nowKst, parseTmFc, ymd } from './parse';
-import { labelForStnId, PUSH_STN_IDS, topicForStnId } from './stnMapper';
+import {
+  PUSH_STN_IDS,
+  provinceCode,
+  provincesForStn,
+  provincesInAlertBody,
+  topicForProvinceCode,
+} from './stnMapper';
 import { sendAlertPush } from '../push/firebase';
 import { getLastPushedTmFc, setLastPushedTmFc } from './stateStore';
 
@@ -85,8 +91,30 @@ async function checkOne(stnId: string): Promise<PollResult> {
     return { stnId, pushed: false, reason: `오래된 발표(${Math.round(ageMinutes)}분 전) — 백스톱 초과, 기록만` };
   }
 
-  const label = labelForStnId(stnId);
-  await sendAlertPush(topicForStnId(stnId), `[${label}] 기상특보 발효`, currentAlerts);
+  // 관서(133=대전·세종·충남)는 여러 시/도를 묶어 다루므로, 본문에 실제로 이름이
+  // 있는 시/도의 토픽에만 보낸다 — 세종 폭염이 대전 사용자에게 가지 않도록.
+  let provinces = provincesInAlertBody(currentAlerts, provincesForStn(stnId));
+  let matched = true;
+  if (provinces.length === 0) {
+    // 본문에서 담당 시/도를 하나도 못 잡았다(예상 못 한 포맷 등). 실특보 누락이 최악이라
+    // 예전처럼 담당 전 시/도에 보낸다(fail-open). Render 로그로 파싱 공백을 관찰한다.
+    provinces = provincesForStn(stnId);
+    matched = false;
+    console.warn(
+      `[poller] ${stnId} 본문에서 시/도 미검출 — 담당 전역 발송(fail-open). 본문=${currentAlerts.slice(0, 80)}`,
+    );
+  }
+
+  for (const province of provinces) {
+    const code = provinceCode(province);
+    if (!code) continue;
+    await sendAlertPush(topicForProvinceCode(code), `[${province}] 기상특보 발효`, currentAlerts);
+  }
   await setLastPushedTmFc(stnId, tmFc);
-  return { stnId, pushed: true, reason: `발표 ${Math.round(ageMinutes)}분 전 — 푸시 발송` };
+  const how = matched ? '본문매칭' : 'fail-open';
+  return {
+    stnId,
+    pushed: true,
+    reason: `발표 ${Math.round(ageMinutes)}분 전 — ${provinces.length}개 시/도 발송(${how}): ${provinces.join(',')}`,
+  };
 }
