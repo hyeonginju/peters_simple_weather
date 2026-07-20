@@ -36,7 +36,7 @@ class PushService {
     final previousTopic = prefs.getString(_subscribedTopicKey);
     final nextTopic = primaryRegion == null
         ? null
-        : KmaStnMapper.topicForStnId(KmaStnMapper.stnIdForProvince(primaryRegion.province));
+        : KmaStnMapper.topicForProvince(primaryRegion.province);
 
     if (previousTopic == nextTopic) return;
 
