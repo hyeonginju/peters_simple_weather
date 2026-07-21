@@ -69,8 +69,6 @@ class _WeeklyBody extends ConsumerWidget {
                 '주간 예보',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800, letterSpacing: -0.5, color: palette.textPrimary),
               ),
-              const SizedBox(height: 8),
-              _BAnBadge(palette: palette),
               const SizedBox(height: 16),
               _ChartCard(daily: daily, palette: palette),
               const SizedBox(height: 16),
@@ -81,28 +79,6 @@ class _WeeklyBody extends ConsumerWidget {
       },
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, _) => ErrorFullScreen(onRetry: retry),
-    );
-  }
-}
-
-class _BAnBadge extends StatelessWidget {
-  const _BAnBadge({required this.palette});
-
-  final AppPalette palette;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(color: palette.pointBg, borderRadius: BorderRadius.circular(8)),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text('B안', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: palette.pointText)),
-          const SizedBox(width: 6),
-          Text('기온 추세 선그래프', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600, color: palette.pointText)),
-        ],
-      ),
     );
   }
 }
