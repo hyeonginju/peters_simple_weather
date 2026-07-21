@@ -4,7 +4,6 @@ import '../../../core/theme/app_palette.dart';
 import '../../../core/utils/weather_icon_mapper.dart';
 import '../../../core/widgets/weather_icon.dart';
 import '../../../data/weather/models/daily_forecast.dart';
-import '../../../data/weather/models/kma_forecast_item.dart';
 import '../../../data/weather/models/weather_snapshot.dart';
 
 class WeatherHero extends StatelessWidget {
@@ -27,7 +26,6 @@ class WeatherHero extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = context.palette;
-    final isPrecipitating = snapshot.precipitationType != PrecipitationType.none;
 
     return Column(
       children: [
@@ -84,9 +82,8 @@ class WeatherHero extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7),
           decoration: BoxDecoration(color: palette.pointBg, borderRadius: BorderRadius.circular(99)),
           child: Text(
-            isPrecipitating
-                ? '오늘 총 강수량 ${todayPrecipitationTotal.toStringAsFixed(1)}mm'
-                : '오늘 강수확률 ${today?.popPercent ?? snapshot.precipitationProbability}%',
+            '강수확률 ${today?.popPercent ?? snapshot.precipitationProbability}%'
+                ' · 예상 강수량 ${todayPrecipitationTotal.toStringAsFixed(1)}mm',
             style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: palette.pointText),
           ),
         ),

@@ -6,10 +6,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:peters_simple_weather/data/kma/kma_api_client.dart';
 import 'package:peters_simple_weather/data/region/models/region.dart';
-import 'package:peters_simple_weather/data/weather/local_precip_store.dart';
 import 'package:peters_simple_weather/data/weather/models/forecast_result.dart';
 import 'package:peters_simple_weather/data/weather/weather_repository.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class _RoutedFakeAdapter implements HttpClientAdapter {
   _RoutedFakeAdapter({this.failingEndpoints = const {}});
@@ -137,12 +135,6 @@ void main() {
     dotenv.loadFromString(envString: 'KMA_SERVICE_KEY=test-key');
   });
 
-  setUp(() {
-    // LocalPrecipStore가 shared_preferences를 쓰므로 테스트 간 지역별 강수
-    // 누적 상태가 새지 않도록 매번 초기화한다.
-    SharedPreferences.setMockInitialValues({});
-  });
-
   final now = DateTime(2026, 6, 19, 14, 30);
 
   test('모든 호출이 성공하면 ForecastResult.success를 반환함', () async {
@@ -159,31 +151,15 @@ void main() {
     );
   });
 
-  test('오늘 처음 조회된 지역은 응답에 RN1이 있어도 무시하고 순수 예보 합산을 씀', () async {
+  test('todayPrecipitationTotal은 RN1 실측을 무시하고 오늘 예보값만 합산함', () async {
     final repository = _buildRepository({});
     final result = await repository.fetch(_region, now: now);
 
-    // 모든 시간대 PCP가 '강수없음'(0mm)이라 예보 합산은 0 — RN1(1.5mm)이
-    // 반영됐다면 0이 아니었을 것.
+    // 모든 시간대 PCP가 '강수없음'(0mm)이라 예보 합산은 0 — 초단기실황 RN1(1.5mm)이
+    // 반영됐다면 0이 아니었을 것(예보 기준이므로 실측은 쓰지 않음).
     expect(
       result,
       isA<ForecastSuccess>().having((r) => r.snapshot.todayPrecipitationTotal, 'todayPrecipitationTotal', 0.0),
-    );
-  });
-
-  test('이전부터 조회돼온 지역은 로컬에 쌓인 오늘자 실측치를 하이브리드로 합산함', () async {
-    // firstActiveDate를 어제로 만들어 오늘은 isFirstDay=false가 되게 하고,
-    // 오늘 이른 시간대에 5.0mm가 이미 관측된 것으로 시드한다.
-    await LocalPrecipStore.ensureActiveAndGetState(_region.id, now.subtract(const Duration(days: 1)));
-    await LocalPrecipStore.recordRn1(_region.id, now.subtract(const Duration(hours: 2)), 5.0);
-
-    final repository = _buildRepository({});
-    final result = await repository.fetch(_region, now: now);
-
-    // 5.0(실측) + 남은 예보(전부 0mm) = 5.0
-    expect(
-      result,
-      isA<ForecastSuccess>().having((r) => r.snapshot.todayPrecipitationTotal, 'todayPrecipitationTotal', 5.0),
     );
   });
 
