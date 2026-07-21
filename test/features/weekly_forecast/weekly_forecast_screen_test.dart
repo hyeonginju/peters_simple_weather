@@ -62,7 +62,7 @@ class _FakeAdapter implements HttpClientAdapter {
 }
 
 void main() {
-  testWidgets('"주간 예보" 섹션 제목을 탭하면 B안 차트 상세로 이동함', (tester) async {
+  testWidgets('"주간 예보" 섹션 제목을 탭하면 기온 추세 차트 상세로 이동함', (tester) async {
     SharedPreferences.setMockInitialValues({
       'saved_region_ids': ['서울특별시/영등포구'],
     });
@@ -85,7 +85,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('기온 추세'), findsOneWidget);
-    expect(find.text('B안'), findsOneWidget);
     expect(find.text('최고'), findsOneWidget);
     expect(find.text('최저'), findsOneWidget);
   });
