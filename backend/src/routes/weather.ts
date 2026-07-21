@@ -3,6 +3,7 @@ import { Router, type Request, type Response } from 'express';
 import { KMA_ENDPOINTS } from '../kma/endpoints';
 import { fetchKmaJson } from '../kma/client';
 import { getPrecipState, touchActiveCell } from '../precip/precipStore';
+import { fetchAirQuality } from '../air/airQuality';
 import { nowKst, ymd } from '../alerts/parse';
 
 /**
@@ -83,6 +84,28 @@ weatherRouter.get('/precip-today', async (req, res) => {
     const message = err instanceof Error ? err.message : String(err);
     console.error(`[precip-today] 조회 실패: ${message}`);
     res.status(502).json({ error: '강수량 누적치 조회에 실패했습니다.', detail: message });
+  }
+});
+
+/**
+ * 지역(province/name)의 현재 미세먼지/초미세먼지 수준을 에어코리아에서 조회해
+ * 앱 친화적 평면 JSON으로 돌려준다. KMA와 동일한 serviceKey를 서버에서 주입하므로
+ * 앱 번들엔 키가 없다. 대기질은 부가 정보라 실패해도 앱은 배지만 숨기면 된다.
+ */
+weatherRouter.get('/air-quality', async (req, res) => {
+  const province = typeof req.query.province === 'string' ? req.query.province : '';
+  const name = typeof req.query.name === 'string' ? req.query.name : '';
+  if (!province || !name) {
+    res.status(400).json({ error: '필수 파라미터 누락: province, name' });
+    return;
+  }
+
+  try {
+    res.json(await fetchAirQuality(province, name));
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error(`[air-quality] ${province} ${name} 실패: ${message}`);
+    res.status(502).json({ error: '대기질 정보 조회에 실패했습니다.', detail: message });
   }
 });
 

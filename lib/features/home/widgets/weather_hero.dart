@@ -5,6 +5,7 @@ import '../../../core/utils/weather_icon_mapper.dart';
 import '../../../core/widgets/weather_icon.dart';
 import '../../../data/weather/models/daily_forecast.dart';
 import '../../../data/weather/models/weather_snapshot.dart';
+import 'air_quality_badge.dart';
 
 class WeatherHero extends StatelessWidget {
   const WeatherHero({
@@ -87,6 +88,10 @@ class WeatherHero extends StatelessWidget {
             style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: palette.pointText),
           ),
         ),
+        if (snapshot.airQuality?.hasAny ?? false) ...[
+          const SizedBox(height: 9),
+          AirQualityBadge(air: snapshot.airQuality!),
+        ],
       ],
     );
   }

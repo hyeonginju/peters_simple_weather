@@ -11,4 +11,5 @@ class KmaEndpoints {
   static const midTa = '$_base/mid-ta';
   static const wthrWrnMsg = '$_base/wthr-wrn-msg';
   static const precipToday = '$_base/precip-today';
+  static const airQuality = '$_base/air-quality';
 }

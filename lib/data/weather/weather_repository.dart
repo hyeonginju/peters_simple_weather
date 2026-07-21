@@ -86,10 +86,13 @@ class WeatherRepository {
     List<HourlyForecast> hourly,
   ) async {
     final fallback = _closestHourTo(hourly, now);
+    // 대기질은 초단기실황과 독립적이라 먼저 걸어두고 마지막에 기다린다(비치명적).
+    final airQualityFuture = _client.getAirQuality(province: region.province, name: region.name);
     final observed = await _fetchObservedPrecipitationToday(region);
     final precipitationTotal = observed.isFirstDay
         ? sumPrecipitationToday(hourly, now)
         : mergeTodayPrecipitationTotal(observed.accumulatedRn, hourly, now);
+    final airQuality = await airQualityFuture;
 
     try {
       final base = KmaTimeScheduler.resolveUltraSrtNcstBaseTime(now);
@@ -125,6 +128,7 @@ class WeatherRepository {
         precipitationProbability: fallback.precipitationProbability,
         todayPrecipitationTotal: precipitationTotal,
         humidity: humidity,
+        airQuality: airQuality,
       );
     } catch (_) {
       return WeatherSnapshot(
@@ -134,6 +138,7 @@ class WeatherRepository {
         precipitationAmount: fallback.precipitationAmount,
         precipitationProbability: fallback.precipitationProbability,
         todayPrecipitationTotal: precipitationTotal,
+        airQuality: airQuality,
       );
     }
   }

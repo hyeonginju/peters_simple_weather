@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 
 import '../alert/dto/wthr_wrn_msg_dto.dart';
+import '../weather/models/air_quality.dart';
 import 'dto/mid_land_fcst_dto.dart';
 import 'dto/mid_ta_dto.dart';
 import 'dto/ultra_srt_ncst_item_dto.dart';
@@ -108,6 +109,23 @@ class KmaApiClient {
       accumulatedRn: value is num ? value.toDouble() : 0.0,
       isFirstDay: isFirstDay is bool ? isFirstDay : false,
     );
+  }
+
+  /// 지역(province/name)의 현재 미세먼지 수준. 백엔드가 에어코리아를 조회해
+  /// 평면 JSON으로 내려주므로 [_getItems]를 쓰지 않는다. 대기질은 부가 정보라
+  /// 어떤 오류에도 예외를 던지지 않고 null을 반환한다 — 호출부(스냅샷 빌드)가
+  /// 배지만 숨기면 되도록.
+  Future<AirQuality?> getAirQuality({required String province, required String name}) async {
+    try {
+      final response = await _dio.get<Map<String, dynamic>>(
+        KmaEndpoints.airQuality,
+        queryParameters: {'province': province, 'name': name},
+      );
+      final data = response.data;
+      return data == null ? null : AirQuality.fromJson(data);
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<List<Map<String, dynamic>>> _getItems(

@@ -1,3 +1,4 @@
+import 'air_quality.dart';
 import 'kma_forecast_item.dart';
 
 /// "지금" 카드용 현재 날씨 데이터. 단기예보의 현재 시간 슬롯을 기반으로 하되,
@@ -16,6 +17,9 @@ class WeatherSnapshot {
   /// 초단기실황(REH) 상대습도(%). 해당 관측치가 없으면 null.
   final int? humidity;
 
+  /// 현재 미세먼지/초미세먼지 수준(에어코리아). 조회 실패 시 null.
+  final AirQuality? airQuality;
+
   const WeatherSnapshot({
     required this.temperature,
     required this.sky,
@@ -24,5 +28,6 @@ class WeatherSnapshot {
     required this.precipitationProbability,
     required this.todayPrecipitationTotal,
     this.humidity,
+    this.airQuality,
   });
 }
