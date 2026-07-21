@@ -1,0 +1,23 @@
+{
+  "name": "peters-weather-functions",
+  "description": "특보·강수 폴링을 5분마다 실행하는 Firebase Scheduled Function (기존 backend/src 폴러 재사용)",
+  "private": true,
+  "main": "lib/index.js",
+  "engines": {
+    "node": "20"
+  },
+  "scripts": {
+    "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --format=cjs --outfile=lib/index.js --external:firebase-admin --external:firebase-functions",
+    "typecheck": "tsc --noEmit",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log --only pollWeather"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.10.0",
+    "firebase-functions": "^6.1.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.1",
+    "typescript": "^5.7.2"
+  }
+}

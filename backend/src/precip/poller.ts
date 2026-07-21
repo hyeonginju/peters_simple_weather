@@ -105,24 +105,3 @@ export async function pollAndAccumulatePrecip(): Promise<PrecipPollResult> {
 
   return { polled, failed };
 }
-
-let inFlight = false;
-
-/**
- * 활성 셀 수가 많으면 GitHub Actions 트리거(.github/workflows/poll-alerts.yml, 10분
- * 간격)의 60초 curl 타임아웃 안에 못 끝날 수 있다. 그래서 이 함수는 결과를 기다리지
- * 않고 백그라운드로 던지기만 한다 — 호출부(HTTP 핸들러)는 즉시 응답할 수 있고,
- * 폴링은 같은 Node 프로세스에서 계속 실행된다. 이전 실행이 아직 안 끝났으면(10분
- * 트리거가 겹칠 만큼 느려진 경우) 새로 시작하지 않고 건너뛴다.
- */
-export function schedulePrecipPoll(): void {
-  if (inFlight) return;
-  inFlight = true;
-  pollAndAccumulatePrecip()
-    .catch((err) => {
-      console.error(`[precip-poller] 전체 실패: ${err instanceof Error ? err.message : String(err)}`);
-    })
-    .finally(() => {
-      inFlight = false;
-    });
-}

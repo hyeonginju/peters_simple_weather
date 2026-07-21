@@ -4,12 +4,15 @@ import path from 'node:path';
 // 로컬 개발용 .env 로드(있을 때만). 배포 환경에선 플랫폼이 환경변수를 주입한다.
 loadDotEnvIfPresent();
 
+// KMA 키는 lazy getter로 노출한다. 이 config 모듈은 KMA 클라이언트를 통해 폴러
+// 코드에도 함께 번들되는데(Firebase Functions), 그쪽은 KMA 키가 런타임 시크릿으로
+// 주입된다. 로드 시점에 강제하면 함수가 뜨질 못하므로, 실제로 값을 읽는 시점
+// (요청/폴 처리 중)에만 검사한다.
 export const config = {
-  kmaServiceKey: requireEnv('KMA_SERVICE_KEY'),
+  get kmaServiceKey(): string {
+    return requireEnv('KMA_SERVICE_KEY');
+  },
   port: Number(process.env.PORT) || 8080,
-  // 외부(GitHub Actions cron)가 /internal/poll-alerts를 두드릴 때 제시해야 하는 공유 비밀.
-  // 없으면 누구나 호출해 푸시를 마음대로 발생시킬 수 있으므로 항상 설정 필요.
-  pollSecret: requireEnv('POLL_SECRET'),
 };
 
 function requireEnv(name: string): string {
