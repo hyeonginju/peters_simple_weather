@@ -38,13 +38,20 @@ void main() {
   });
 
   group('resolveUltraSrtNcstBaseTime', () {
-    test('분 < 10 → 이전 시간 슬롯 사용', () {
+    test('분 < 45 → 이전 시간 슬롯 사용 (아직 정각 실황 미발표)', () {
       final result = KmaTimeScheduler.resolveUltraSrtNcstBaseTime(DateTime(2026, 6, 19, 14, 5));
       expect(result.baseTime, '1300');
     });
 
-    test('분 >= 10 → 현재 시간 슬롯 사용', () {
+    test('분 30(10~44 구간) → 여전히 이전 시간 슬롯 — NO_DATA 회귀 방지', () {
+      // 정각 실황은 매시 40분경에야 조회 가능하므로, 이 구간에 현재 시각을
+      // 요청하면 resultCode 03(NO_DATA)로 습도(REH)가 통째로 누락된다.
       final result = KmaTimeScheduler.resolveUltraSrtNcstBaseTime(DateTime(2026, 6, 19, 14, 30));
+      expect(result.baseTime, '1300');
+    });
+
+    test('분 >= 45 → 현재 시간 슬롯 사용', () {
+      final result = KmaTimeScheduler.resolveUltraSrtNcstBaseTime(DateTime(2026, 6, 19, 14, 50));
       expect(result.baseTime, '1400');
     });
 

@@ -13,10 +13,12 @@ class KmaTimeScheduler {
     return _resolveFromHours(now, effectiveHour, vilageFcstBaseHours);
   }
 
-  /// 초단기실황(getUltraSrtNcst): published every hour on the hour, queryable
-  /// from ~10min past the hour. (Assumption pending KMA doc confirmation.)
+  /// 초단기실황(getUltraSrtNcst): base_time은 매시 정각(HH00)이고, 그 시각
+  /// 실황은 약 40분 뒤부터 조회 가능하다(KMA 제공시각 기준). 발표 전 정각을
+  /// 요청하면 resultCode 03(NO_DATA)로 던져져 습도(REH)가 통째로 누락되므로,
+  /// 안전마진을 둬 45분 전까지는 직전 정각을 사용한다(단기예보 리졸버와 동일 컨벤션).
   static ({String baseDate, String baseTime}) resolveUltraSrtNcstBaseTime(DateTime now) {
-    final effectiveHour = now.minute < 10 ? now.hour - 1 : now.hour;
+    final effectiveHour = now.minute < 45 ? now.hour - 1 : now.hour;
     return _resolveFromHours(now, effectiveHour, const [
       0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
     ]);
