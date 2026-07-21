@@ -12,17 +12,29 @@ class WeatherHero extends StatelessWidget {
     super.key,
     required this.snapshot,
     required this.today,
+    required this.now,
     required this.todayPrecipitationTotal,
     this.comparison,
   });
 
   final WeatherSnapshot snapshot;
   final DailyForecast? today;
+  final DateTime now;
   final double todayPrecipitationTotal;
 
   /// Optional "어제보다 1° 높아요" line. Omitted when no comparison data
   /// is available (we don't yet fetch yesterday's reading).
   final String? comparison;
+
+  /// 지금이 오전(0~11시)이면 오늘 오전 강수확률, 오후(12~23시)면 오후 강수확률을
+  /// 쓴다("가장 가까운 시각" 값 대신 현재 시간대 대표값). 단기예보는 지난 시간대를
+  /// 돌려주지 않아 해당 반나절 값이 없을 수 있는데, 그때는 오늘 대표값(최댓값)으로
+  /// 폴백하고, 오늘 일자 데이터 자체가 없으면 현재 시각 슬롯 값으로 폴백한다.
+  int _currentHalfPop() {
+    if (today == null) return snapshot.precipitationProbability;
+    final half = now.hour < 12 ? today!.amPop : today!.pmPop;
+    return half ?? today!.popPercent;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +95,7 @@ class WeatherHero extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7),
           decoration: BoxDecoration(color: palette.pointBg, borderRadius: BorderRadius.circular(99)),
           child: Text(
-            '강수확률 ${today?.popPercent ?? snapshot.precipitationProbability}%'
+            '강수확률 ${_currentHalfPop()}%'
                 ' · 총 강수량 ${todayPrecipitationTotal.toStringAsFixed(1)}mm',
             style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: palette.pointText),
           ),

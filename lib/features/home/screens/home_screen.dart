@@ -237,7 +237,7 @@ class _WeatherContent extends StatelessWidget {
       physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
       child: Column(
         children: [
-          WeatherHero(snapshot: snapshot, today: today, todayPrecipitationTotal: precipitationTotal),
+          WeatherHero(snapshot: snapshot, today: today, now: now, todayPrecipitationTotal: precipitationTotal),
           const SizedBox(height: 22),
           if (clothingBand != null) ...[
             ClothingCard(band: clothingBand),
