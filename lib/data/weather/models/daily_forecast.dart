@@ -7,6 +7,16 @@ class DailyForecast {
   final double minTemp;
   final double maxTemp;
   final int popPercent;
+
+  /// 오전(00~11시)·오후(12~23시) 강수확률. 단기예보 유래일은 시간별에서 시간대별
+  /// 최댓값으로, 중기예보 유래일은 rnStAm/Pm에서 온다. 해당 시간대 데이터가 없으면 null.
+  final int? amPop;
+  final int? pmPop;
+
+  /// 하루 총 강수량(mm). 단기예보가 커버하는 날(D+1~3)만 시간별 예보 합산으로
+  /// 채우고, 중기예보(D+4~)는 강수량 수치를 제공하지 않아 null(화면에서 '–').
+  final double? precipTotalMm;
+
   final SkyCondition? sky;
   final PrecipitationType? precipitationType;
 
@@ -15,6 +25,9 @@ class DailyForecast {
     required this.minTemp,
     required this.maxTemp,
     required this.popPercent,
+    this.amPop,
+    this.pmPop,
+    this.precipTotalMm,
     this.sky,
     this.precipitationType,
   });

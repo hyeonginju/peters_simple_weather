@@ -45,10 +45,19 @@ List<DailyForecast> groupDailyFromHourly(List<HourlyForecast> hourly, DateTime n
         minTemp: byDate[date]!.map((h) => h.temperature).reduce((a, b) => a < b ? a : b),
         maxTemp: byDate[date]!.map((h) => h.temperature).reduce((a, b) => a > b ? a : b),
         popPercent: byDate[date]!.map((h) => h.precipitationProbability).reduce((a, b) => a > b ? a : b),
+        amPop: _maxPop(byDate[date]!.where((h) => h.time.hour < 12)),
+        pmPop: _maxPop(byDate[date]!.where((h) => h.time.hour >= 12)),
+        precipTotalMm: byDate[date]!.fold<double>(0.0, (sum, h) => sum + h.precipitationAmount),
         sky: byDate[date]!.first.sky,
         precipitationType: _mostSevere(byDate[date]!.map((h) => h.precipitationType)),
       ),
   ];
+}
+
+/// 시간대 강수확률의 최댓값. 해당 시간대(오전/오후) 시간이 하나도 없으면 null.
+int? _maxPop(Iterable<HourlyForecast> hours) {
+  final pops = hours.map((h) => h.precipitationProbability);
+  return pops.isEmpty ? null : pops.reduce((a, b) => a > b ? a : b);
 }
 
 /// Concatenates day 1-3 (단기예보 derived) with day 4-10 (중기예보 derived)
@@ -71,6 +80,10 @@ List<DailyForecast> mergeDailyForecasts(
         minTemp: day.minTemp,
         maxTemp: day.maxTemp,
         popPercent: day.amPopPercent > day.pmPopPercent ? day.amPopPercent : day.pmPopPercent,
+        amPop: day.amPopPercent,
+        pmPop: day.pmPopPercent,
+        // 중기예보는 강수량(mm)을 제공하지 않는다 — 화면에서 '–'로 비운다.
+        precipTotalMm: null,
         sky: day.sky,
         precipitationType: day.precipitationType,
       ),

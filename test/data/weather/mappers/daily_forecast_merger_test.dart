@@ -4,13 +4,20 @@ import 'package:peters_simple_weather/data/weather/models/daily_forecast.dart';
 import 'package:peters_simple_weather/data/weather/models/hourly_forecast.dart';
 import 'package:peters_simple_weather/data/weather/models/kma_forecast_item.dart';
 
-HourlyForecast _hour(int day, int hour, double temp, {int pop = 0, SkyCondition sky = SkyCondition.clear}) {
+HourlyForecast _hour(
+  int day,
+  int hour,
+  double temp, {
+  int pop = 0,
+  double rain = 0,
+  SkyCondition sky = SkyCondition.clear,
+}) {
   return HourlyForecast(
     time: DateTime(2026, 6, day, hour),
     temperature: temp,
     sky: sky,
     precipitationType: PrecipitationType.none,
-    precipitationAmount: 0,
+    precipitationAmount: rain,
     precipitationProbability: pop,
   );
 }
@@ -30,6 +37,28 @@ void main() {
       expect(result.single.minTemp, 18);
       expect(result.single.maxTemp, 24);
       expect(result.single.popPercent, 30);
+    });
+
+    test('오전(0~11)·오후(12~23) 강수확률 최댓값과 하루 총 강수량을 채움', () {
+      final result = groupDailyFromHourly([
+        _hour(19, 9, 18, pop: 40, rain: 1.5),
+        _hour(19, 10, 19, pop: 20, rain: 0.5),
+        _hour(19, 14, 24, pop: 60, rain: 2.0),
+        _hour(19, 18, 21, pop: 30, rain: 0),
+      ], now);
+
+      expect(result.single.amPop, 40); // 오전 최댓값
+      expect(result.single.pmPop, 60); // 오후 최댓값
+      expect(result.single.precipTotalMm, closeTo(4.0, 1e-9));
+    });
+
+    test('오전 시간대가 없으면 amPop은 null', () {
+      final result = groupDailyFromHourly([
+        _hour(19, 15, 24, pop: 50),
+      ], now);
+
+      expect(result.single.amPop, isNull);
+      expect(result.single.pmPop, 50);
     });
 
     test('날짜가 다르면 별도 일자로 분리되고 날짜순 정렬됨', () {
@@ -73,6 +102,10 @@ void main() {
       expect(result.last.popPercent, 70);
       expect(result.last.minTemp, 20);
       expect(result.last.maxTemp, 26);
+      // 중기예보 유래일은 오전/오후 강수확률을 그대로 담고, 강수량은 데이터가 없어 null.
+      expect(result.last.amPop, 70);
+      expect(result.last.pmPop, 50);
+      expect(result.last.precipTotalMm, isNull);
     });
 
     test('날짜가 겹치면 단기예보 데이터가 우선함', () {

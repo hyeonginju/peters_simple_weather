@@ -8,6 +8,7 @@ import '../../../data/weather/models/forecast_result.dart';
 import '../../home/providers/weather_providers.dart';
 import '../../home/widgets/error_full_screen.dart';
 import '../widgets/weekly_chart.dart';
+import '../widgets/weekly_precip_section.dart';
 
 class WeeklyForecastScreen extends ConsumerWidget {
   const WeeklyForecastScreen({super.key});
@@ -72,6 +73,8 @@ class _WeeklyBody extends ConsumerWidget {
               _BAnBadge(palette: palette),
               const SizedBox(height: 16),
               _ChartCard(daily: daily, palette: palette),
+              const SizedBox(height: 16),
+              WeeklyPrecipSection(daily: daily, today: DateTime.now()),
             ],
           ),
         );
