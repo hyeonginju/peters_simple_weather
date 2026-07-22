@@ -43,11 +43,7 @@ class _WeeklyBody extends ConsumerWidget {
     final palette = context.palette;
     final forecastAsync = ref.watch(forecastForProvider(region));
 
-    Future<void> retry() async {
-      ref.read(weatherRepositoryProvider).invalidate(region);
-      ref.invalidate(forecastForProvider(region));
-      await ref.read(forecastForProvider(region).future);
-    }
+    Future<void> retry() => ref.read(forecastForProvider(region).notifier).forceRefresh();
 
     return forecastAsync.when(
       data: (result) {

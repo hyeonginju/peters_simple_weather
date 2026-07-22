@@ -7,6 +7,7 @@ import 'package:peters_simple_weather/data/kma/kma_api_client.dart';
 import 'package:peters_simple_weather/data/region/models/region.dart';
 import 'package:peters_simple_weather/data/weather/models/forecast_result.dart';
 import 'package:peters_simple_weather/data/weather/weather_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class _RoutedFakeAdapter implements HttpClientAdapter {
   _RoutedFakeAdapter({
@@ -272,5 +273,53 @@ void main() {
     await built.repository.fetch(_otherRegion, now: now);
 
     expect(built.adapter.requestCount, greaterThan(requestsAfterFirstFetch));
+  });
+
+  group('디스크 캐시(SWR)', () {
+    setUp(() {
+      TestWidgetsFlutterBinding.ensureInitialized();
+      SharedPreferences.setMockInitialValues({});
+    });
+
+    test('fetch 성공 결과가 디스크에 남아 새 프로세스(새 리포지토리)에서 staleResult로 복원됨', () async {
+      await _buildRepository({}).fetch(_region, now: now);
+
+      // 새 리포지토리 = 앱 프로세스 재시작(메모리 캐시 없음) 시뮬레이션.
+      final restarted = _buildRepositoryWithAdapter({});
+      final stale = await restarted.repository.staleResult(_region, now: now.add(const Duration(hours: 2)));
+
+      expect(stale, isA<ForecastSuccess>().having((r) => r.snapshot.temperature, 'temperature', 23.5));
+      // 복원은 디스크에서만 — 네트워크 호출 없음.
+      expect(restarted.adapter.requestCount, 0);
+      // "마지막 업데이트" 라벨용 fetch 시각도 원래 시각으로 복원됨.
+      expect(restarted.repository.fetchedAtFor(_region), now);
+    });
+
+    test('복원된 캐시는 TTL이 지난 상태라 isFresh가 false — 백그라운드 갱신 대상', () async {
+      await _buildRepository({}).fetch(_region, now: now);
+
+      final restarted = _buildRepository({});
+      final later = now.add(const Duration(hours: 2));
+      await restarted.staleResult(_region, now: later);
+
+      expect(restarted.isFresh(_region, now: later), isFalse);
+    });
+
+    test('fetch 직후에는 isFresh가 true', () async {
+      final repository = _buildRepository({});
+      await repository.fetch(_region, now: now);
+
+      expect(repository.isFresh(_region, now: now.add(const Duration(minutes: 5))), isTrue);
+    });
+
+    test('디스크에 아무것도 없으면 staleResult는 null', () async {
+      expect(await _buildRepository({}).staleResult(_region, now: now), isNull);
+    });
+
+    test('실패 결과는 디스크에 저장되지 않음', () async {
+      await _buildRepository({'getVilageFcst'}).fetch(_region, now: now);
+
+      expect(await _buildRepository({}).staleResult(_region, now: now), isNull);
+    });
   });
 }

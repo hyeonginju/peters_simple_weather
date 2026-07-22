@@ -159,7 +159,8 @@ class _RegionPager extends StatelessWidget {
   }
 }
 
-/// 현재 활성 지역의 마지막 업데이트 시각을 좌상단에 표시한다.
+/// 현재 활성 지역의 마지막 업데이트 시각을 좌상단에 표시한다. 캐시를 먼저
+/// 보여주고 뒤에서 갱신 중(SWR revalidate)일 때는 옆에 '업데이트 중'을 띄운다.
 class _UpdatedLabel extends ConsumerWidget {
   const _UpdatedLabel();
 
@@ -169,9 +170,22 @@ class _UpdatedLabel extends ConsumerWidget {
     if (region == null) return const SizedBox.shrink();
     final updated = ref.watch(regionLastUpdatedProvider(region));
     if (updated == null) return const SizedBox.shrink();
-    return Text(
-      formatUpdatedLabel(updated),
-      style: TextStyle(fontSize: 11.5, color: context.palette.textMuted),
+    final refreshing = ref.watch(regionRefreshingProvider(region));
+    final muted = TextStyle(fontSize: 11.5, color: context.palette.textMuted);
+    return Row(
+      children: [
+        Text(formatUpdatedLabel(updated), style: muted),
+        if (refreshing) ...[
+          const SizedBox(width: 8),
+          SizedBox(
+            width: 10,
+            height: 10,
+            child: CircularProgressIndicator(strokeWidth: 1.6, color: context.palette.textMuted),
+          ),
+          const SizedBox(width: 5),
+          Text('업데이트 중', style: muted),
+        ],
+      ],
     );
   }
 }
@@ -185,11 +199,7 @@ class _RegionWeatherView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final forecastAsync = ref.watch(forecastForProvider(region));
 
-    Future<void> refresh() async {
-      ref.read(weatherRepositoryProvider).invalidate(region);
-      ref.invalidate(forecastForProvider(region));
-      await ref.read(forecastForProvider(region).future);
-    }
+    Future<void> refresh() => ref.read(forecastForProvider(region).notifier).forceRefresh();
 
     return forecastAsync.when(
       data: (result) => switch (result) {

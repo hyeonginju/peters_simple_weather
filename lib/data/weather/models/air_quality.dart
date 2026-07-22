@@ -40,4 +40,13 @@ class AirQuality {
       pm25Grade: AirGrade.fromCode((json['pm25Grade'] as num?)?.toInt()),
     );
   }
+
+  /// 디스크 캐시(SWR)용. 등급은 [AirGrade.fromCode]와 같은 1~4 코드로 되돌려
+  /// [fromJson]과 라운드트립이 성립한다(enum 선언 순서 = 코드 순서).
+  Map<String, dynamic> toJson() => {
+        'pm10': pm10,
+        'pm10Grade': pm10Grade == null ? null : pm10Grade!.index + 1,
+        'pm25': pm25,
+        'pm25Grade': pm25Grade == null ? null : pm25Grade!.index + 1,
+      };
 }

@@ -10,11 +10,15 @@ import 'kma_api_exception.dart';
 import 'kma_endpoints.dart';
 
 class KmaApiClient {
+  /// receiveTimeout 30초: 백엔드(Render 무료 플랜)가 유휴 후 잠들면 첫 응답까지
+  /// 실측 24초가 걸린다. 8초면 콜드스타트 중 재시도 3회가 전부 타임아웃으로
+  /// 전멸하지만, 30초면 첫 시도 안에서 서버 기상을 흡수한다. 화면은 SWR 캐시가
+  /// 먼저 그려지므로 길게 기다려도 사용자를 막지 않는다.
   KmaApiClient({Dio? dio})
       : _dio = dio ??
             Dio(BaseOptions(
               connectTimeout: const Duration(seconds: 8),
-              receiveTimeout: const Duration(seconds: 8),
+              receiveTimeout: const Duration(seconds: 30),
             ));
 
   final Dio _dio;

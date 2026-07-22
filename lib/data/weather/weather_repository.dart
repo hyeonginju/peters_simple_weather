@@ -1,5 +1,6 @@
 import '../../core/utils/kma_time_scheduler.dart';
 import '../region/models/region.dart';
+import 'forecast_disk_cache.dart';
 import 'mappers/daily_forecast_merger.dart';
 import 'mappers/daily_precipitation_total.dart';
 import 'mappers/mid_term_converter.dart';
@@ -13,9 +14,12 @@ import 'models/weather_snapshot.dart';
 import '../kma/kma_api_client.dart';
 
 class WeatherRepository {
-  WeatherRepository({KmaApiClient? client}) : _client = client ?? KmaApiClient();
+  WeatherRepository({KmaApiClient? client, ForecastDiskCache? diskCache})
+      : _client = client ?? KmaApiClient(),
+        _diskCache = diskCache ?? ForecastDiskCache();
 
   final KmaApiClient _client;
+  final ForecastDiskCache _diskCache;
 
   /// region.id별 결과 캐시. 기상청 관측·예보는 10분 내에 거의 바뀌지 않으므로
   /// 메인 화면 스와이프로 지역을 오갈 때마다 재요청하지 않도록 한다.
@@ -29,6 +33,27 @@ class WeatherRepository {
   /// 경우에도 원래 fetch 시각을 가리킨다(= "마지막 업데이트" 시각). 성공/부분
   /// 성공만 캐시되므로 실패 후에는 null.
   DateTime? fetchedAtFor(Region region) => _cache[region.id]?.fetchedAt;
+
+  /// 메모리 캐시가 TTL 안에 있어 [fetch]가 네트워크 없이 즉시 돌아오는 상태인지.
+  bool isFresh(Region region, {DateTime? now}) {
+    final cached = _cache[region.id];
+    if (cached == null) return false;
+    return (now ?? DateTime.now()).difference(cached.fetchedAt) < _cacheTtl;
+  }
+
+  /// 신선도와 무관하게 당장 그릴 수 있는 마지막 성공 결과(SWR의 stale 단계).
+  /// 메모리 캐시가 비어 있으면(앱 프로세스 새로 시작) 디스크에서 복원해
+  /// 메모리 캐시에 올린다 — fetchedAt도 원래 시각으로 복원되므로 TTL 판정과
+  /// "마지막 업데이트" 라벨이 그대로 이어진다. 아무것도 없으면 null.
+  Future<ForecastResult?> staleResult(Region region, {DateTime? now}) async {
+    final cached = _cache[region.id];
+    if (cached != null) return cached.result;
+
+    final restored = await _diskCache.load(region.id, now ?? DateTime.now());
+    if (restored == null) return null;
+    _cache[region.id] = (result: restored.result, fetchedAt: restored.fetchedAt);
+    return restored.result;
+  }
 
   Future<ForecastResult> fetch(Region region, {DateTime? now}) async {
     final currentTime = now ?? DateTime.now();
@@ -52,6 +77,10 @@ class WeatherRepository {
         : ForecastResult.success(snapshot: snapshot, hourly: hourlyResult, daily: dailyResult);
 
     _cache[region.id] = (result: result, fetchedAt: currentTime);
+    if (result is ForecastSuccess) {
+      // 다음 앱 시작의 첫 화면용(SWR). 저장 실패는 save가 알아서 무시한다.
+      await _diskCache.save(region.id, result, currentTime);
+    }
     return result;
   }
 

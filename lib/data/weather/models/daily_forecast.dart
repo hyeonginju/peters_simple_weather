@@ -31,6 +31,33 @@ class DailyForecast {
     this.sky,
     this.precipitationType,
   });
+
+  /// 디스크 캐시(SWR)용 직렬화. enum 직렬화 규칙은 [HourlyForecast.fromJson] 참고.
+  factory DailyForecast.fromJson(Map<String, dynamic> json) => DailyForecast(
+        date: DateTime.parse(json['date'] as String),
+        minTemp: (json['minTemp'] as num).toDouble(),
+        maxTemp: (json['maxTemp'] as num).toDouble(),
+        popPercent: (json['popPercent'] as num).toInt(),
+        amPop: (json['amPop'] as num?)?.toInt(),
+        pmPop: (json['pmPop'] as num?)?.toInt(),
+        precipTotalMm: (json['precipTotalMm'] as num?)?.toDouble(),
+        sky: json['sky'] == null ? null : SkyCondition.values.byName(json['sky'] as String),
+        precipitationType: json['precipitationType'] == null
+            ? null
+            : PrecipitationType.values.byName(json['precipitationType'] as String),
+      );
+
+  Map<String, dynamic> toJson() => {
+        'date': date.toIso8601String(),
+        'minTemp': minTemp,
+        'maxTemp': maxTemp,
+        'popPercent': popPercent,
+        'amPop': amPop,
+        'pmPop': pmPop,
+        'precipTotalMm': precipTotalMm,
+        'sky': sky?.name,
+        'precipitationType': precipitationType?.name,
+      };
 }
 
 /// One day's row already extracted from getMidLandFcst (AM/PM 강수확률,

@@ -30,4 +30,29 @@ class WeatherSnapshot {
     this.humidity,
     this.airQuality,
   });
+
+  /// 디스크 캐시(SWR)용 직렬화. enum 직렬화 규칙은 HourlyForecast.fromJson 참고.
+  factory WeatherSnapshot.fromJson(Map<String, dynamic> json) => WeatherSnapshot(
+        temperature: (json['temperature'] as num).toDouble(),
+        sky: SkyCondition.values.byName(json['sky'] as String),
+        precipitationType: PrecipitationType.values.byName(json['precipitationType'] as String),
+        precipitationAmount: (json['precipitationAmount'] as num).toDouble(),
+        precipitationProbability: (json['precipitationProbability'] as num).toInt(),
+        todayPrecipitationTotal: (json['todayPrecipitationTotal'] as num).toDouble(),
+        humidity: (json['humidity'] as num?)?.toInt(),
+        airQuality: json['airQuality'] == null
+            ? null
+            : AirQuality.fromJson(json['airQuality'] as Map<String, dynamic>),
+      );
+
+  Map<String, dynamic> toJson() => {
+        'temperature': temperature,
+        'sky': sky.name,
+        'precipitationType': precipitationType.name,
+        'precipitationAmount': precipitationAmount,
+        'precipitationProbability': precipitationProbability,
+        'todayPrecipitationTotal': todayPrecipitationTotal,
+        'humidity': humidity,
+        'airQuality': airQuality?.toJson(),
+      };
 }

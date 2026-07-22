@@ -71,8 +71,13 @@ String _$weatherRepositoryHash() => r'91513f9b830021e64fe6b6b34e1dfc9b70ff4952';
 /// "진입 시점에만 API 요청" lazy-fetch requirement: switching away from a
 /// region disposes its provider instance instead of polling in the background.
 /// 실제 네트워크 요청 여부는 WeatherRepository의 10분 TTL 캐시가 결정한다.
+///
+/// stale-while-revalidate: 앱 프로세스가 새로 시작돼 메모리 캐시가 비어 있으면
+/// 디스크에 남은 직전 성공 결과를 즉시 보여주고, 뒤에서 네트워크 갱신이 끝나면
+/// 상태를 교체한다. 백엔드(Render 무료 플랜)가 유휴 후 잠들어 첫 요청에 20초+
+/// 걸리는 콜드스타트를 사용자가 빈 화면으로 기다리지 않게 하기 위한 구조다.
 
-@ProviderFor(forecastFor)
+@ProviderFor(ForecastFor)
 final forecastForProvider = ForecastForFamily._();
 
 /// Keyed by region — only the active region's screen watches this, so
@@ -80,20 +85,23 @@ final forecastForProvider = ForecastForFamily._();
 /// "진입 시점에만 API 요청" lazy-fetch requirement: switching away from a
 /// region disposes its provider instance instead of polling in the background.
 /// 실제 네트워크 요청 여부는 WeatherRepository의 10분 TTL 캐시가 결정한다.
-
+///
+/// stale-while-revalidate: 앱 프로세스가 새로 시작돼 메모리 캐시가 비어 있으면
+/// 디스크에 남은 직전 성공 결과를 즉시 보여주고, 뒤에서 네트워크 갱신이 끝나면
+/// 상태를 교체한다. 백엔드(Render 무료 플랜)가 유휴 후 잠들어 첫 요청에 20초+
+/// 걸리는 콜드스타트를 사용자가 빈 화면으로 기다리지 않게 하기 위한 구조다.
 final class ForecastForProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<ForecastResult>,
-          ForecastResult,
-          FutureOr<ForecastResult>
-        >
-    with $FutureModifier<ForecastResult>, $FutureProvider<ForecastResult> {
+    extends $AsyncNotifierProvider<ForecastFor, ForecastResult> {
   /// Keyed by region — only the active region's screen watches this, so
   /// Riverpod's autoDispose semantics naturally implement the spec's
   /// "진입 시점에만 API 요청" lazy-fetch requirement: switching away from a
   /// region disposes its provider instance instead of polling in the background.
   /// 실제 네트워크 요청 여부는 WeatherRepository의 10분 TTL 캐시가 결정한다.
+  ///
+  /// stale-while-revalidate: 앱 프로세스가 새로 시작돼 메모리 캐시가 비어 있으면
+  /// 디스크에 남은 직전 성공 결과를 즉시 보여주고, 뒤에서 네트워크 갱신이 끝나면
+  /// 상태를 교체한다. 백엔드(Render 무료 플랜)가 유휴 후 잠들어 첫 요청에 20초+
+  /// 걸리는 콜드스타트를 사용자가 빈 화면으로 기다리지 않게 하기 위한 구조다.
   ForecastForProvider._({
     required ForecastForFamily super.from,
     required Region super.argument,
@@ -117,15 +125,7 @@ final class ForecastForProvider
 
   @$internal
   @override
-  $FutureProviderElement<ForecastResult> $createElement(
-    $ProviderPointer pointer,
-  ) => $FutureProviderElement(pointer);
-
-  @override
-  FutureOr<ForecastResult> create(Ref ref) {
-    final argument = this.argument as Region;
-    return forecastFor(ref, argument);
-  }
+  ForecastFor create() => ForecastFor();
 
   @override
   bool operator ==(Object other) {
@@ -138,16 +138,28 @@ final class ForecastForProvider
   }
 }
 
-String _$forecastForHash() => r'47245f11e8d6dbb9ae9fcc77d49b62a5cec28d64';
+String _$forecastForHash() => r'5cc8adf3aa03ed6a8a5e40ea267f3124404a8b50';
 
 /// Keyed by region — only the active region's screen watches this, so
 /// Riverpod's autoDispose semantics naturally implement the spec's
 /// "진입 시점에만 API 요청" lazy-fetch requirement: switching away from a
 /// region disposes its provider instance instead of polling in the background.
 /// 실제 네트워크 요청 여부는 WeatherRepository의 10분 TTL 캐시가 결정한다.
+///
+/// stale-while-revalidate: 앱 프로세스가 새로 시작돼 메모리 캐시가 비어 있으면
+/// 디스크에 남은 직전 성공 결과를 즉시 보여주고, 뒤에서 네트워크 갱신이 끝나면
+/// 상태를 교체한다. 백엔드(Render 무료 플랜)가 유휴 후 잠들어 첫 요청에 20초+
+/// 걸리는 콜드스타트를 사용자가 빈 화면으로 기다리지 않게 하기 위한 구조다.
 
 final class ForecastForFamily extends $Family
-    with $FunctionalFamilyOverride<FutureOr<ForecastResult>, Region> {
+    with
+        $ClassFamilyOverride<
+          ForecastFor,
+          AsyncValue<ForecastResult>,
+          ForecastResult,
+          FutureOr<ForecastResult>,
+          Region
+        > {
   ForecastForFamily._()
     : super(
         retry: null,
@@ -162,12 +174,149 @@ final class ForecastForFamily extends $Family
   /// "진입 시점에만 API 요청" lazy-fetch requirement: switching away from a
   /// region disposes its provider instance instead of polling in the background.
   /// 실제 네트워크 요청 여부는 WeatherRepository의 10분 TTL 캐시가 결정한다.
+  ///
+  /// stale-while-revalidate: 앱 프로세스가 새로 시작돼 메모리 캐시가 비어 있으면
+  /// 디스크에 남은 직전 성공 결과를 즉시 보여주고, 뒤에서 네트워크 갱신이 끝나면
+  /// 상태를 교체한다. 백엔드(Render 무료 플랜)가 유휴 후 잠들어 첫 요청에 20초+
+  /// 걸리는 콜드스타트를 사용자가 빈 화면으로 기다리지 않게 하기 위한 구조다.
 
   ForecastForProvider call(Region region) =>
       ForecastForProvider._(argument: region, from: this);
 
   @override
   String toString() => r'forecastForProvider';
+}
+
+/// Keyed by region — only the active region's screen watches this, so
+/// Riverpod's autoDispose semantics naturally implement the spec's
+/// "진입 시점에만 API 요청" lazy-fetch requirement: switching away from a
+/// region disposes its provider instance instead of polling in the background.
+/// 실제 네트워크 요청 여부는 WeatherRepository의 10분 TTL 캐시가 결정한다.
+///
+/// stale-while-revalidate: 앱 프로세스가 새로 시작돼 메모리 캐시가 비어 있으면
+/// 디스크에 남은 직전 성공 결과를 즉시 보여주고, 뒤에서 네트워크 갱신이 끝나면
+/// 상태를 교체한다. 백엔드(Render 무료 플랜)가 유휴 후 잠들어 첫 요청에 20초+
+/// 걸리는 콜드스타트를 사용자가 빈 화면으로 기다리지 않게 하기 위한 구조다.
+
+abstract class _$ForecastFor extends $AsyncNotifier<ForecastResult> {
+  late final _$args = ref.$arg as Region;
+  Region get region => _$args;
+
+  FutureOr<ForecastResult> build(Region region);
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<ForecastResult>, ForecastResult>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<ForecastResult>, ForecastResult>,
+              AsyncValue<ForecastResult>,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, () => build(_$args));
+  }
+}
+
+/// 백그라운드 갱신(SWR revalidate) 진행 여부 — 홈 좌상단 '업데이트 중' 표시용.
+
+@ProviderFor(RegionRefreshing)
+final regionRefreshingProvider = RegionRefreshingFamily._();
+
+/// 백그라운드 갱신(SWR revalidate) 진행 여부 — 홈 좌상단 '업데이트 중' 표시용.
+final class RegionRefreshingProvider
+    extends $NotifierProvider<RegionRefreshing, bool> {
+  /// 백그라운드 갱신(SWR revalidate) 진행 여부 — 홈 좌상단 '업데이트 중' 표시용.
+  RegionRefreshingProvider._({
+    required RegionRefreshingFamily super.from,
+    required Region super.argument,
+  }) : super(
+         retry: null,
+         name: r'regionRefreshingProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$regionRefreshingHash();
+
+  @override
+  String toString() {
+    return r'regionRefreshingProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  RegionRefreshing create() => RegionRefreshing();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is RegionRefreshingProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$regionRefreshingHash() => r'49faed87faca0a4dba113a9b7df970048ba9d169';
+
+/// 백그라운드 갱신(SWR revalidate) 진행 여부 — 홈 좌상단 '업데이트 중' 표시용.
+
+final class RegionRefreshingFamily extends $Family
+    with $ClassFamilyOverride<RegionRefreshing, bool, bool, bool, Region> {
+  RegionRefreshingFamily._()
+    : super(
+        retry: null,
+        name: r'regionRefreshingProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// 백그라운드 갱신(SWR revalidate) 진행 여부 — 홈 좌상단 '업데이트 중' 표시용.
+
+  RegionRefreshingProvider call(Region region) =>
+      RegionRefreshingProvider._(argument: region, from: this);
+
+  @override
+  String toString() => r'regionRefreshingProvider';
+}
+
+/// 백그라운드 갱신(SWR revalidate) 진행 여부 — 홈 좌상단 '업데이트 중' 표시용.
+
+abstract class _$RegionRefreshing extends $Notifier<bool> {
+  late final _$args = ref.$arg as Region;
+  Region get region => _$args;
+
+  bool build(Region region);
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<bool, bool>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<bool, bool>,
+              bool,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, () => build(_$args));
+  }
 }
 
 /// 해당 지역 데이터를 마지막으로 서버에서 받아온 시각. forecastFor를 watch해
