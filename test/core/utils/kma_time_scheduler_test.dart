@@ -75,11 +75,17 @@ void main() {
       expect(KmaTimeScheduler.resolveMidTermTmFc(DateTime(2026, 6, 19, 17, 59)), '202606190600');
     });
 
-    test('18시 30분 → 당일 18시 발표', () {
-      expect(KmaTimeScheduler.resolveMidTermTmFc(DateTime(2026, 6, 19, 18, 30)), '202606191800');
+    test('18시 30분 → 당일 18시 발표가 아니라 당일 06시 발표 유지', () {
+      // 18시 발표는 4일 후(day4) 필드를 제공하지 않아, 당일 저녁에 쓰면
+      // 단기예보(D+0~3)와 중기예보(D+5~) 사이 D+4 하루가 주간 예보에서 빈다.
+      expect(KmaTimeScheduler.resolveMidTermTmFc(DateTime(2026, 6, 19, 18, 30)), '202606190600');
     });
 
-    test('00시 5분 → 전날 18시 발표로 롤오버', () {
+    test('23시 50분 → 여전히 당일 06시 발표 유지', () {
+      expect(KmaTimeScheduler.resolveMidTermTmFc(DateTime(2026, 6, 19, 23, 50)), '202606190600');
+    });
+
+    test('00시 5분 → 전날 18시 발표로 롤오버 (day5가 곧 D+4라 구멍 없음)', () {
       expect(KmaTimeScheduler.resolveMidTermTmFc(DateTime(2026, 6, 19, 0, 5)), '202606181800');
     });
   });

@@ -27,9 +27,19 @@ class KmaTimeScheduler {
   /// 중기예보(getMidLandFcst/getMidTa): published twice daily at 06:00/18:00,
   /// queryable from ~10min after. (Assumption pending KMA doc confirmation.)
   /// Returns `tmFc` in KMA's `yyyyMMddHHmm` format.
+  ///
+  /// 단, 18시 발표는 '4일 후'(rnSt4·taMin4 등) 필드를 아예 제공하지 않는다
+  /// (실제 API 응답·날씨누리 공식 표 모두 D+5부터 시작함을 확인). 당일 저녁에
+  /// 18시 발표를 쓰면 단기예보(D+0~3)와 중기예보(D+5~) 사이 D+4 하루가 비어
+  /// 주간 예보에 날짜 구멍이 생기므로, 당일 06시 발표를 자정까지 유지한다.
+  /// 자정~06:10 구간의 전날 18시 발표는 day5가 곧 D+4라 그대로 이어진다.
   static String resolveMidTermTmFc(DateTime now) {
     final effectiveHour = now.minute < 10 ? now.hour - 1 : now.hour;
     final result = _resolveFromHours(now, effectiveHour, const [6, 18]);
+    final today = _formatDate(DateTime(now.year, now.month, now.day));
+    if (result.baseTime == '1800' && result.baseDate == today) {
+      return '${result.baseDate}0600';
+    }
     return '${result.baseDate}${result.baseTime}';
   }
 
