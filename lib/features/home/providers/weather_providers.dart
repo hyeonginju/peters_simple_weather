@@ -64,7 +64,11 @@ class ForecastFor extends _$ForecastFor {
 }
 
 /// 백그라운드 갱신(SWR revalidate) 진행 여부 — 홈 좌상단 '업데이트 중' 표시용.
-@riverpod
+///
+/// keepAlive — 갱신이 시작되는 시점은 화면(리스너)이 아직 붙기 전이다.
+/// autoDispose면 리스너 없는 set(true)가 인스턴스째 버려져, 그 뒤에 구독을
+/// 시작한 라벨은 새 인스턴스의 false만 보게 돼 인디케이터가 아예 안 뜬다.
+@Riverpod(keepAlive: true)
 class RegionRefreshing extends _$RegionRefreshing {
   @override
   bool build(Region region) => false;

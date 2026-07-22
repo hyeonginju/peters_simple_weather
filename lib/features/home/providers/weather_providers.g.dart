@@ -220,21 +220,33 @@ abstract class _$ForecastFor extends $AsyncNotifier<ForecastResult> {
 }
 
 /// 백그라운드 갱신(SWR revalidate) 진행 여부 — 홈 좌상단 '업데이트 중' 표시용.
+///
+/// keepAlive — 갱신이 시작되는 시점은 화면(리스너)이 아직 붙기 전이다.
+/// autoDispose면 리스너 없는 set(true)가 인스턴스째 버려져, 그 뒤에 구독을
+/// 시작한 라벨은 새 인스턴스의 false만 보게 돼 인디케이터가 아예 안 뜬다.
 
 @ProviderFor(RegionRefreshing)
 final regionRefreshingProvider = RegionRefreshingFamily._();
 
 /// 백그라운드 갱신(SWR revalidate) 진행 여부 — 홈 좌상단 '업데이트 중' 표시용.
+///
+/// keepAlive — 갱신이 시작되는 시점은 화면(리스너)이 아직 붙기 전이다.
+/// autoDispose면 리스너 없는 set(true)가 인스턴스째 버려져, 그 뒤에 구독을
+/// 시작한 라벨은 새 인스턴스의 false만 보게 돼 인디케이터가 아예 안 뜬다.
 final class RegionRefreshingProvider
     extends $NotifierProvider<RegionRefreshing, bool> {
   /// 백그라운드 갱신(SWR revalidate) 진행 여부 — 홈 좌상단 '업데이트 중' 표시용.
+  ///
+  /// keepAlive — 갱신이 시작되는 시점은 화면(리스너)이 아직 붙기 전이다.
+  /// autoDispose면 리스너 없는 set(true)가 인스턴스째 버려져, 그 뒤에 구독을
+  /// 시작한 라벨은 새 인스턴스의 false만 보게 돼 인디케이터가 아예 안 뜬다.
   RegionRefreshingProvider._({
     required RegionRefreshingFamily super.from,
     required Region super.argument,
   }) : super(
          retry: null,
          name: r'regionRefreshingProvider',
-         isAutoDispose: true,
+         isAutoDispose: false,
          dependencies: null,
          $allTransitiveDependencies: null,
        );
@@ -272,9 +284,13 @@ final class RegionRefreshingProvider
   }
 }
 
-String _$regionRefreshingHash() => r'49faed87faca0a4dba113a9b7df970048ba9d169';
+String _$regionRefreshingHash() => r'55865c03c850d7ac55265f6b39fa6b1be9912d05';
 
 /// 백그라운드 갱신(SWR revalidate) 진행 여부 — 홈 좌상단 '업데이트 중' 표시용.
+///
+/// keepAlive — 갱신이 시작되는 시점은 화면(리스너)이 아직 붙기 전이다.
+/// autoDispose면 리스너 없는 set(true)가 인스턴스째 버려져, 그 뒤에 구독을
+/// 시작한 라벨은 새 인스턴스의 false만 보게 돼 인디케이터가 아예 안 뜬다.
 
 final class RegionRefreshingFamily extends $Family
     with $ClassFamilyOverride<RegionRefreshing, bool, bool, bool, Region> {
@@ -284,10 +300,14 @@ final class RegionRefreshingFamily extends $Family
         name: r'regionRefreshingProvider',
         dependencies: null,
         $allTransitiveDependencies: null,
-        isAutoDispose: true,
+        isAutoDispose: false,
       );
 
   /// 백그라운드 갱신(SWR revalidate) 진행 여부 — 홈 좌상단 '업데이트 중' 표시용.
+  ///
+  /// keepAlive — 갱신이 시작되는 시점은 화면(리스너)이 아직 붙기 전이다.
+  /// autoDispose면 리스너 없는 set(true)가 인스턴스째 버려져, 그 뒤에 구독을
+  /// 시작한 라벨은 새 인스턴스의 false만 보게 돼 인디케이터가 아예 안 뜬다.
 
   RegionRefreshingProvider call(Region region) =>
       RegionRefreshingProvider._(argument: region, from: this);
@@ -297,6 +317,10 @@ final class RegionRefreshingFamily extends $Family
 }
 
 /// 백그라운드 갱신(SWR revalidate) 진행 여부 — 홈 좌상단 '업데이트 중' 표시용.
+///
+/// keepAlive — 갱신이 시작되는 시점은 화면(리스너)이 아직 붙기 전이다.
+/// autoDispose면 리스너 없는 set(true)가 인스턴스째 버려져, 그 뒤에 구독을
+/// 시작한 라벨은 새 인스턴스의 false만 보게 돼 인디케이터가 아예 안 뜬다.
 
 abstract class _$RegionRefreshing extends $Notifier<bool> {
   late final _$args = ref.$arg as Region;

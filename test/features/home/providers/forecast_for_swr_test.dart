@@ -17,8 +17,12 @@ import 'package:peters_simple_weather/features/home/providers/weather_providers.
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// 네트워크에서 온 "새" 데이터임을 구분할 수 있게 기온을 23.5로 응답한다
-/// (디스크 캐시의 stale 데이터는 99.0).
+/// (디스크 캐시의 stale 데이터는 99.0). [delay]로 응답을 늦춰 "갱신 진행 중"
+/// 상태가 열려 있는 시간을 만들 수 있다(콜드스타트 시뮬레이션).
 class _FakeAdapter implements HttpClientAdapter {
+  _FakeAdapter({this.delay = Duration.zero});
+
+  final Duration delay;
   int requestCount = 0;
 
   @override
@@ -28,6 +32,7 @@ class _FakeAdapter implements HttpClientAdapter {
     Future<void>? cancelFuture,
   ) async {
     requestCount++;
+    if (delay > Duration.zero) await Future<void>.delayed(delay);
 
     if (options.path.contains('precip-today')) {
       return _json({'accumulatedRn': 0.0, 'lastSlot': null, 'isFirstDay': true});
@@ -112,7 +117,7 @@ void main() {
     final adapter = _FakeAdapter();
     final container = buildContainer(adapter);
     addTearDown(container.dispose);
-    final sub = container.listen(forecastForProvider(_region), (_, __) {});
+    final sub = container.listen(forecastForProvider(_region), (_, _) {});
     addTearDown(sub.close);
 
     // 첫 값 = 디스크의 stale 데이터가 즉시 온다(네트워크 대기 없음).
@@ -133,7 +138,7 @@ void main() {
 
     final container = buildContainer(_FakeAdapter());
     addTearDown(container.dispose);
-    final sub = container.listen(forecastForProvider(_region), (_, __) {});
+    final sub = container.listen(forecastForProvider(_region), (_, _) {});
     addTearDown(sub.close);
     final seen = <bool>[];
     final refreshingSub =
@@ -147,11 +152,33 @@ void main() {
     expect(seen.last, isFalse, reason: '갱신 종료 시 false');
   });
 
+  test('갱신 시작 뒤에 구독해도(실기기: 라벨이 늦게 붙음) 진행 중 상태가 보임', () async {
+    // 실기기에서 인디케이터가 안 뜨던 회귀 시나리오: 화면(리스너)은 stale이
+    // 그려진 다음에야 regionRefreshing을 구독한다. autoDispose였다면 리스너
+    // 없는 set(true)가 인스턴스째 폐기돼 늦은 구독자는 false만 보게 된다.
+    await ForecastDiskCache()
+        .save(_region.id, _staleSuccess, DateTime.now().subtract(const Duration(hours: 1)));
+
+    final container = buildContainer(_FakeAdapter(delay: const Duration(milliseconds: 300)));
+    addTearDown(container.dispose);
+    final sub = container.listen(forecastForProvider(_region), (_, _) {});
+    addTearDown(sub.close);
+
+    // stale이 먼저 도착하고 — 이 시점 뒤에야 라벨이 구독을 시작한다.
+    await container.read(forecastForProvider(_region).future);
+    await Future<void>.delayed(const Duration(milliseconds: 50));
+
+    expect(container.read(regionRefreshingProvider(_region)), isTrue,
+        reason: '갱신(300ms 지연 응답)이 아직 진행 중');
+
+    await _pumpUntil(() => container.read(regionRefreshingProvider(_region)) == false);
+  });
+
   test('디스크 캐시가 없으면 평소처럼 네트워크를 기다림', () async {
     final adapter = _FakeAdapter();
     final container = buildContainer(adapter);
     addTearDown(container.dispose);
-    final sub = container.listen(forecastForProvider(_region), (_, __) {});
+    final sub = container.listen(forecastForProvider(_region), (_, _) {});
     addTearDown(sub.close);
 
     final first = await container.read(forecastForProvider(_region).future);
