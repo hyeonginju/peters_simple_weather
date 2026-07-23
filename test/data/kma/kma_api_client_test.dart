@@ -211,6 +211,20 @@ void main() {
     expect(adapter.callCount, 2);
   });
 
+  test('getWthrWrnMsg는 2회까지만 시도함 — 백엔드 재시도(3회)와 예산 중복 방지', () async {
+    // 두 번 연속 실패 후 세 번째에 성공하는 어댑터: 예보(3회)는 살아나지만
+    // 특보(2회)는 두 번째 실패에서 그대로 예외가 나와야 한다.
+    final adapter = _FlakyTwiceAdapter(_envelope(resultCode: '00', item: null));
+    final dio = Dio()..httpClientAdapter = adapter;
+    final client = KmaApiClient(dio: dio);
+
+    await expectLater(
+      client.getWthrWrnMsg(stnId: '133', fromTmFc: '20260718', toTmFc: '20260723'),
+      throwsA(isA<DioException>()),
+    );
+    expect(adapter.callCount, 2);
+  });
+
   test('getMidLandFcst가 day별 필드를 가진 단일 객체로 파싱함', () async {
     final dio = Dio()
       ..httpClientAdapter = _FakeAdapter(_envelope(
