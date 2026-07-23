@@ -25,4 +25,23 @@ class WeatherAlertStatus {
 
   /// 현재 발효 중인 특보가 있는지.
   bool get hasActiveAlert => currentAlerts.isNotEmpty;
+
+  Map<String, dynamic> toJson() => {
+        'regionLabel': regionLabel,
+        'announcedAt': announcedAt?.toIso8601String(),
+        'latestTitle': latestTitle,
+        'currentAlerts': currentAlerts,
+        'preliminaryAlerts': preliminaryAlerts,
+      };
+
+  factory WeatherAlertStatus.fromJson(Map<String, dynamic> json) {
+    final announcedAt = json['announcedAt'] as String?;
+    return WeatherAlertStatus(
+      regionLabel: json['regionLabel'] as String,
+      announcedAt: announcedAt == null ? null : DateTime.parse(announcedAt),
+      latestTitle: json['latestTitle'] as String,
+      currentAlerts: json['currentAlerts'] as String,
+      preliminaryAlerts: json['preliminaryAlerts'] as String,
+    );
+  }
 }

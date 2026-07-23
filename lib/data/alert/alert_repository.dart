@@ -1,16 +1,51 @@
 import '../kma/kma_api_client.dart';
+import 'alert_disk_cache.dart';
 import 'kma_stn_mapper.dart';
 import 'models/weather_alert.dart';
 
 class AlertRepository {
-  AlertRepository({KmaApiClient? client}) : _client = client ?? KmaApiClient();
+  AlertRepository({KmaApiClient? client, AlertDiskCache? diskCache})
+      : _client = client ?? KmaApiClient(),
+        _diskCache = diskCache ?? AlertDiskCache();
 
   final KmaApiClient _client;
+  final AlertDiskCache _diskCache;
+
+  /// 특보 폴러(백엔드)가 5분 주기로 도니, 그보다 자주 조회해도 새 통보문이
+  /// 있을 수 없다. 이 안에서는 화면 재진입 시 네트워크 없이 즉시 그린다.
+  static const _ttl = Duration(minutes: 5);
+
+  final Map<String, ({WeatherAlertStatus status, DateTime fetchedAt})> _cache = {};
+
+  /// 메모리 캐시가 TTL 안쪽인지 — 프로바이더가 stale 경로를 탈지 결정할 때 쓴다.
+  bool isFresh(String stnId, {DateTime? now}) {
+    final cached = _cache[stnId];
+    if (cached == null) return false;
+    return (now ?? DateTime.now()).difference(cached.fetchedAt) < _ttl;
+  }
+
+  /// TTL과 무관하게 "마지막으로 성공한 현황"을 돌려준다(stale-while-revalidate).
+  /// 메모리에 없으면 디스크에서 복원한다 — 없으면 null(호출부는 네트워크 대기).
+  Future<WeatherAlertStatus?> staleResult(String stnId, {DateTime? now}) async {
+    final cached = _cache[stnId];
+    if (cached != null) return cached.status;
+    final restored = await _diskCache.load(stnId, now ?? DateTime.now());
+    if (restored == null) return null;
+    _cache[stnId] = (status: restored.status, fetchedAt: restored.fetchedAt);
+    return restored.status;
+  }
+
+  /// 수동 새로고침용 — 다음 fetch가 캐시를 건너뛰고 네트워크를 타게 한다.
+  void invalidate(String stnId) => _cache.remove(stnId);
 
   /// 해당 관서(stnId) 권역의 최신 특보 통보문을 받아 발효 현황으로 가공한다.
   /// 통보문 조회 자체가 실패하면 예외를 그대로 던진다(호출부에서 에러 UI 처리).
   Future<WeatherAlertStatus> fetchByStnId(String stnId, {DateTime? now}) async {
     final currentTime = now ?? DateTime.now();
+    final cached = _cache[stnId];
+    if (cached != null && currentTime.difference(cached.fetchedAt) < _ttl) {
+      return cached.status;
+    }
     // 특보 API는 조회 기간이 최근 6일로 제한된다.
     final dto = await _client.getWthrWrnMsg(
       stnId: stnId,
@@ -19,23 +54,25 @@ class AlertRepository {
     );
 
     final label = KmaStnMapper.labelForStnId(stnId);
-    if (dto == null) {
-      return WeatherAlertStatus(
-        regionLabel: label,
-        announcedAt: null,
-        latestTitle: '',
-        currentAlerts: '',
-        preliminaryAlerts: '',
-      );
-    }
+    final status = dto == null
+        ? WeatherAlertStatus(
+            regionLabel: label,
+            announcedAt: null,
+            latestTitle: '',
+            currentAlerts: '',
+            preliminaryAlerts: '',
+          )
+        : WeatherAlertStatus(
+            regionLabel: label,
+            announcedAt: _parseTmFc(dto.tmFc),
+            latestTitle: (dto.t1 ?? '').trim(),
+            currentAlerts: _cleanAlertText(dto.t6),
+            preliminaryAlerts: _cleanAlertText(dto.t7),
+          );
 
-    return WeatherAlertStatus(
-      regionLabel: label,
-      announcedAt: _parseTmFc(dto.tmFc),
-      latestTitle: (dto.t1 ?? '').trim(),
-      currentAlerts: _cleanAlertText(dto.t6),
-      preliminaryAlerts: _cleanAlertText(dto.t7),
-    );
+    _cache[stnId] = (status: status, fetchedAt: currentTime);
+    await _diskCache.save(stnId, status, currentTime);
+    return status;
   }
 
   /// "o 없음"(중간 공백·개행 변형 포함)이면 빈 문자열로, 아니면 정리한 본문.

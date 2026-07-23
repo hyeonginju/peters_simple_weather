@@ -82,6 +82,10 @@ class KmaApiClient {
 
   /// 기상특보 통보문. 해당 관서(stnId)의 [fromTmFc]~[toTmFc](yyyyMMdd) 기간 중
   /// 가장 최근 통보문 1건. 통보문이 없으면 null.
+  ///
+  /// 재시도 2회 제한: 특보 API는 KMA 응답 자체가 느려 백엔드가 이미 15초×3회
+  /// 재시도를 하고 있다. 앱까지 30초×3회를 더하면 화면을 막는 특보 페이지에서
+  /// 에러 화면까지 최악 90초+가 걸린다 — 2회(최악 ~60초)로 줄여 예산을 맞춘다.
   Future<WthrWrnMsgDto?> getWthrWrnMsg({
     required String stnId,
     required String fromTmFc,
@@ -91,7 +95,7 @@ class KmaApiClient {
       'stnId': stnId,
       'fromTmFc': fromTmFc,
       'toTmFc': toTmFc,
-    });
+    }, maxAttempts: 2);
     return items.isEmpty ? null : WthrWrnMsgDto.fromJson(items.first);
   }
 
@@ -134,9 +138,10 @@ class KmaApiClient {
 
   Future<List<Map<String, dynamic>>> _getItems(
     String url,
-    Map<String, dynamic> queryParameters,
-  ) async {
-    final response = await _requestWithRetry(url, queryParameters);
+    Map<String, dynamic> queryParameters, {
+    int maxAttempts = _maxAttempts,
+  }) async {
+    final response = await _requestWithRetry(url, queryParameters, maxAttempts);
 
     final body = response.data!['response'] as Map<String, dynamic>;
     final header = body['header'] as Map<String, dynamic>;
@@ -166,16 +171,17 @@ class KmaApiClient {
   Future<Response<Map<String, dynamic>>> _requestWithRetry(
     String url,
     Map<String, dynamic> queryParameters,
+    int maxAttempts,
   ) async {
     for (var attempt = 1;; attempt++) {
       try {
         final response = await _dio.get<Map<String, dynamic>>(url, queryParameters: queryParameters);
-        if (attempt >= _maxAttempts || !_isRetryableResultCode(response)) {
+        if (attempt >= maxAttempts || !_isRetryableResultCode(response)) {
           return response;
         }
         await Future.delayed(_retryDelays[attempt - 1]);
       } on DioException catch (e) {
-        if (attempt >= _maxAttempts) rethrow;
+        if (attempt >= maxAttempts) rethrow;
         final isRateLimited = e.response?.statusCode == 429;
         await Future.delayed(
           (isRateLimited ? _rateLimitDelays : _retryDelays)[attempt - 1],

@@ -58,12 +58,11 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
             ),
           Expanded(
             child: statusAsync.when(
-              data: (status) => _AlertBody(status: status),
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (_, _) => ErrorFullScreen(onRetry: () async {
-                ref.invalidate(alertStatusProvider(stnId));
-                await ref.read(alertStatusProvider(stnId).future);
-              }),
+              data: (status) => _AlertBody(status: status, stnId: stnId),
+              loading: () => const _DelayedLoadingHint(),
+              error: (_, _) => ErrorFullScreen(
+                onRetry: () => ref.read(alertStatusProvider(stnId).notifier).forceRefresh(),
+              ),
             ),
           ),
         ],
@@ -135,15 +134,66 @@ class _ToggleItem extends StatelessWidget {
   }
 }
 
-class _AlertBody extends StatelessWidget {
-  const _AlertBody({required this.status});
+/// 특보 로딩 스피너. 서버(Render 무료 플랜)가 잠들어 있으면 깨우는 데 20초+
+/// 걸리는데, 스피너만 돌면 멈춘 것처럼 보인다 — 몇 초 지나면 이유를 알려준다.
+class _DelayedLoadingHint extends StatefulWidget {
+  const _DelayedLoadingHint();
 
-  final WeatherAlertStatus status;
+  @override
+  State<_DelayedLoadingHint> createState() => _DelayedLoadingHintState();
+}
+
+class _DelayedLoadingHintState extends State<_DelayedLoadingHint> {
+  static const _hintAfter = Duration(seconds: 5);
+
+  Timer? _timer;
+  bool _showHint = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer(_hintAfter, () => setState(() => _showHint = true));
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const CircularProgressIndicator(),
+          if (_showHint) ...[
+            const SizedBox(height: 18),
+            Text(
+              '서버를 깨우는 중이에요…\n최대 30초 정도 걸릴 수 있어요',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 13, height: 1.5, color: context.palette.textMuted),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _AlertBody extends ConsumerWidget {
+  const _AlertBody({required this.status, required this.stnId});
+
+  final WeatherAlertStatus status;
+  final String stnId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     final palette = context.palette;
     final announced = status.announcedAt;
+    final refreshing = ref.watch(alertRefreshingProvider(stnId));
+    final muted = TextStyle(fontSize: 12, color: palette.textMuted);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
@@ -158,8 +208,18 @@ class _AlertBody extends StatelessWidget {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: palette.textPrimary),
               ),
               const Spacer(),
-              if (announced != null)
-                Text(formatAnnouncedLabel(announced), style: TextStyle(fontSize: 12, color: palette.textMuted)),
+              // 직전 통보문(stale)을 먼저 그리고 뒤에서 갱신 중일 때의 표시 —
+              // 홈 _UpdatedLabel과 같은 SWR 인디케이터.
+              if (refreshing) ...[
+                const SizedBox(
+                  width: 10,
+                  height: 10,
+                  child: CircularProgressIndicator(strokeWidth: 1.6),
+                ),
+                const SizedBox(width: 5),
+                Text('업데이트 중', style: muted),
+              ] else if (announced != null)
+                Text(formatAnnouncedLabel(announced), style: muted),
             ],
           ),
           const SizedBox(height: 16),
