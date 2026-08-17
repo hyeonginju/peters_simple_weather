@@ -160,7 +160,7 @@ class _RegionPager extends StatelessWidget {
 }
 
 /// 현재 활성 지역의 마지막 업데이트 시각을 좌상단에 표시한다. 캐시를 먼저
-/// 보여주고 뒤에서 갱신 중(SWR revalidate)일 때는 옆에 '업데이트 중'을 띄운다.
+/// 보여주고 뒤에서 갱신 중(SWR revalidate)일 때는 아래에 '업데이트 중'을 띄운다.
 class _UpdatedLabel extends ConsumerWidget {
   const _UpdatedLabel();
 
@@ -172,18 +172,24 @@ class _UpdatedLabel extends ConsumerWidget {
     if (updated == null) return const SizedBox.shrink();
     final refreshing = ref.watch(regionRefreshingProvider(region));
     final muted = TextStyle(fontSize: 11.5, color: context.palette.textMuted);
-    return Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(formatUpdatedLabel(updated), style: muted),
         if (refreshing) ...[
-          const SizedBox(width: 8),
-          SizedBox(
-            width: 10,
-            height: 10,
-            child: CircularProgressIndicator(strokeWidth: 1.6, color: context.palette.textMuted),
+          const SizedBox(height: 4),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: 10,
+                height: 10,
+                child: CircularProgressIndicator(strokeWidth: 1.6, color: context.palette.textMuted),
+              ),
+              const SizedBox(width: 5),
+              Text('업데이트 중', style: muted),
+            ],
           ),
-          const SizedBox(width: 5),
-          Text('업데이트 중', style: muted),
         ],
       ],
     );
