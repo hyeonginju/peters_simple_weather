@@ -191,7 +191,9 @@ class WidgetService {
       // WorkManager의 최소 주기는 15분(더 짧게 요청해도 OS가 15분으로 강제).
       frequency: const Duration(minutes: 15),
       constraints: Constraints(networkType: NetworkType.connected),
-      existingWorkPolicy: ExistingPeriodicWorkPolicy.keep,
+      // update — keep이면 예전에 30분으로 등록된 작업이 그대로 남아 기존
+      // 사용자는 주기 변경을 못 받는다. 등록된 작업의 설정을 갱신한다.
+      existingWorkPolicy: ExistingPeriodicWorkPolicy.update,
     );
   }
 
