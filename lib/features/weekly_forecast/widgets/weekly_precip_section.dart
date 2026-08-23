@@ -18,6 +18,7 @@ class WeeklyPrecipSection extends StatelessWidget {
 
   static const _dayColWidth = 46.0;
   static const _iconColWidth = 30.0;
+  static const _tempColWidth = 62.0;
   static const _precipColWidth = 60.0;
 
   @override
@@ -62,6 +63,10 @@ class WeeklyPrecipSection extends StatelessWidget {
         children: [
           const SizedBox(width: _dayColWidth),
           const SizedBox(width: _iconColWidth),
+          SizedBox(
+            width: _tempColWidth,
+            child: Text('최저/최고', textAlign: TextAlign.center, style: style()),
+          ),
           Expanded(child: Text('오전', textAlign: TextAlign.center, style: style())),
           Expanded(child: Text('오후', textAlign: TextAlign.center, style: style())),
           SizedBox(
@@ -109,6 +114,24 @@ class _PrecipRow extends StatelessWidget {
           SizedBox(
             width: WeeklyPrecipSection._iconColWidth,
             child: Center(child: WeatherIcon(type: weatherIconTypeFor(sky, pty), size: 24)),
+          ),
+          SizedBox(
+            width: WeeklyPrecipSection._tempColWidth,
+            child: Text.rich(
+              TextSpan(children: [
+                TextSpan(
+                  text: '${day.minTemp.round()}°',
+                  style: TextStyle(color: palette.textMuted),
+                ),
+                TextSpan(text: ' / ', style: TextStyle(color: palette.textFaint)),
+                TextSpan(
+                  text: '${day.maxTemp.round()}°',
+                  style: TextStyle(fontWeight: FontWeight.w700, color: palette.textPrimary),
+                ),
+              ]),
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+            ),
           ),
           Expanded(child: _popText(day.amPop, palette)),
           Expanded(child: _popText(day.pmPop, palette)),
