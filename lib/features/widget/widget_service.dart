@@ -36,19 +36,23 @@ class WidgetService {
   /// fetch is skipped if the last refresh was within [_throttle] — this caps
   /// API calls regardless of how often the screen turns on. The manual ↻
   /// button passes [force] true.
-  static Future<void> refreshPrimaryRegion({WeatherRepository? repository, bool force = true}) async {
+  ///
+  /// Returns true when the widget now shows fresh (or intentionally kept) data,
+  /// false only on an actual fetch failure — so callers can retry. A throttled
+  /// or region-less call is not a failure and returns true.
+  static Future<bool> refreshPrimaryRegion({WeatherRepository? repository, bool force = true}) async {
     WidgetsFlutterBinding.ensureInitialized();
 
     // Keep background-style settings mirrored into widget storage.
     await _saveSettingsKeys(await WidgetSettings.load());
 
-    if (!force && await _isThrottled()) return;
+    if (!force && await _isThrottled()) return true;
 
     final regionRepo = RegionRepository();
     final savedIds = await regionRepo.loadSavedRegionIds();
     if (savedIds.isEmpty) {
       await _writeEmpty();
-      return;
+      return true;
     }
 
     final all = await regionRepo.loadAllRegions();
@@ -61,16 +65,21 @@ class WidgetService {
     }
     if (region == null) {
       await _writeEmpty();
-      return;
+      return true;
     }
 
+    var ok = false;
     try {
       final result = await (repository ?? WeatherRepository()).fetch(region);
       await writeForecast(region, result);
+      // ForecastFailure = 표시할 데이터 없이 실패. Partial은 데이터가 있어 성공 취급.
+      ok = result is! ForecastFailure;
     } catch (_) {
       await _writeError(region);
+      ok = false;
     }
     await _markRefreshed();
+    return ok;
   }
 
   static Future<bool> _isThrottled() async {
@@ -179,7 +188,8 @@ class WidgetService {
     await Workmanager().registerPeriodicTask(
       _periodicTaskName,
       'widgetAutoRefresh',
-      frequency: const Duration(minutes: 30),
+      // WorkManager의 최소 주기는 15분(더 짧게 요청해도 OS가 15분으로 강제).
+      frequency: const Duration(minutes: 15),
       constraints: Constraints(networkType: NetworkType.connected),
       existingWorkPolicy: ExistingPeriodicWorkPolicy.keep,
     );

@@ -45,10 +45,23 @@ class _CleanWeatherAppState extends ConsumerState<CleanWeatherApp> with WidgetsB
     // 위젯에 써서, 백그라운드 isolate가 별도 캐시로 중복 호출하던 것을 줄이고
     // 위젯이 일시적 429로 에러난 상태도 자가 치유한다.
     if (state == AppLifecycleState.resumed) {
-      unawaited(WidgetService.refreshPrimaryRegion(
-        repository: ref.read(weatherRepositoryProvider),
-        force: false,
-      ));
+      unawaited(_refreshWidgetOnResume());
+    }
+  }
+
+  /// 포그라운드 복귀 시 위젯을 갱신하되, 일시적 실패(429 등) 시 최대 3번까지
+  /// 재시도한다. 첫 시도는 포그라운드 캐시를 재사용(throttle 적용)하고, 재시도는
+  /// 실패로 이미 refresh 타임스탬프가 찍혀 throttle에 막히므로 force로 우회한다.
+  Future<void> _refreshWidgetOnResume() async {
+    final repository = ref.read(weatherRepositoryProvider);
+    if (await WidgetService.refreshPrimaryRegion(repository: repository, force: false)) {
+      return;
+    }
+    for (var attempt = 1; attempt <= 3; attempt++) {
+      await Future<void>.delayed(Duration(seconds: 2 * attempt));
+      if (await WidgetService.refreshPrimaryRegion(repository: repository, force: true)) {
+        return;
+      }
     }
   }
 
