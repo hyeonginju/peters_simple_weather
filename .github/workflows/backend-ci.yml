@@ -3,10 +3,10 @@ name: Backend CI
 on:
   pull_request:
     branches: [main]
-    paths: ['backend/**']
+    paths: ['backend/**', 'assets/data/regions.json']
   push:
     branches: [main]
-    paths: ['backend/**']
+    paths: ['backend/**', 'assets/data/regions.json']
 
 jobs:
   typecheck-and-build:

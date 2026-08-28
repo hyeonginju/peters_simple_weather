@@ -1,0 +1,2063 @@
+[
+  {
+    "id": "서울특별시/강남구",
+    "province": "서울특별시",
+    "name": "강남구",
+    "nx": 61,
+    "ny": 125,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B10101"
+  },
+  {
+    "id": "서울특별시/강동구",
+    "province": "서울특별시",
+    "name": "강동구",
+    "nx": 63,
+    "ny": 126,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B10101"
+  },
+  {
+    "id": "서울특별시/강북구",
+    "province": "서울특별시",
+    "name": "강북구",
+    "nx": 61,
+    "ny": 128,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B10101"
+  },
+  {
+    "id": "서울특별시/강서구",
+    "province": "서울특별시",
+    "name": "강서구",
+    "nx": 57,
+    "ny": 127,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B10101"
+  },
+  {
+    "id": "서울특별시/관악구",
+    "province": "서울특별시",
+    "name": "관악구",
+    "nx": 59,
+    "ny": 125,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B10101"
+  },
+  {
+    "id": "서울특별시/광진구",
+    "province": "서울특별시",
+    "name": "광진구",
+    "nx": 62,
+    "ny": 126,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B10101"
+  },
+  {
+    "id": "서울특별시/구로구",
+    "province": "서울특별시",
+    "name": "구로구",
+    "nx": 58,
+    "ny": 125,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B10101"
+  },
+  {
+    "id": "서울특별시/금천구",
+    "province": "서울특별시",
+    "name": "금천구",
+    "nx": 58,
+    "ny": 125,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B10101"
+  },
+  {
+    "id": "서울특별시/노원구",
+    "province": "서울특별시",
+    "name": "노원구",
+    "nx": 61,
+    "ny": 129,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B10101"
+  },
+  {
+    "id": "서울특별시/도봉구",
+    "province": "서울특별시",
+    "name": "도봉구",
+    "nx": 61,
+    "ny": 129,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B10101"
+  },
+  {
+    "id": "서울특별시/동대문구",
+    "province": "서울특별시",
+    "name": "동대문구",
+    "nx": 61,
+    "ny": 127,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B10101"
+  },
+  {
+    "id": "서울특별시/동작구",
+    "province": "서울특별시",
+    "name": "동작구",
+    "nx": 59,
+    "ny": 125,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B10101"
+  },
+  {
+    "id": "서울특별시/마포구",
+    "province": "서울특별시",
+    "name": "마포구",
+    "nx": 59,
+    "ny": 126,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B10101"
+  },
+  {
+    "id": "서울특별시/서대문구",
+    "province": "서울특별시",
+    "name": "서대문구",
+    "nx": 59,
+    "ny": 127,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B10101"
+  },
+  {
+    "id": "서울특별시/서초구",
+    "province": "서울특별시",
+    "name": "서초구",
+    "nx": 60,
+    "ny": 125,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B10101"
+  },
+  {
+    "id": "서울특별시/성동구",
+    "province": "서울특별시",
+    "name": "성동구",
+    "nx": 61,
+    "ny": 126,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B10101"
+  },
+  {
+    "id": "서울특별시/성북구",
+    "province": "서울특별시",
+    "name": "성북구",
+    "nx": 60,
+    "ny": 127,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B10101"
+  },
+  {
+    "id": "서울특별시/송파구",
+    "province": "서울특별시",
+    "name": "송파구",
+    "nx": 62,
+    "ny": 125,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B10101"
+  },
+  {
+    "id": "서울특별시/양천구",
+    "province": "서울특별시",
+    "name": "양천구",
+    "nx": 58,
+    "ny": 126,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B10101"
+  },
+  {
+    "id": "서울특별시/영등포구",
+    "province": "서울특별시",
+    "name": "영등포구",
+    "nx": 59,
+    "ny": 126,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B10101"
+  },
+  {
+    "id": "서울특별시/용산구",
+    "province": "서울특별시",
+    "name": "용산구",
+    "nx": 60,
+    "ny": 126,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B10101"
+  },
+  {
+    "id": "서울특별시/은평구",
+    "province": "서울특별시",
+    "name": "은평구",
+    "nx": 59,
+    "ny": 128,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B10101"
+  },
+  {
+    "id": "서울특별시/종로구",
+    "province": "서울특별시",
+    "name": "종로구",
+    "nx": 60,
+    "ny": 127,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B10101"
+  },
+  {
+    "id": "서울특별시/중구",
+    "province": "서울특별시",
+    "name": "중구",
+    "nx": 60,
+    "ny": 127,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B10101"
+  },
+  {
+    "id": "서울특별시/중랑구",
+    "province": "서울특별시",
+    "name": "중랑구",
+    "nx": 62,
+    "ny": 128,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B10101"
+  },
+  {
+    "id": "부산광역시/강서구",
+    "province": "부산광역시",
+    "name": "강서구",
+    "nx": 95,
+    "ny": 75,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20201"
+  },
+  {
+    "id": "부산광역시/금정구",
+    "province": "부산광역시",
+    "name": "금정구",
+    "nx": 98,
+    "ny": 77,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20201"
+  },
+  {
+    "id": "부산광역시/기장군",
+    "province": "부산광역시",
+    "name": "기장군",
+    "nx": 100,
+    "ny": 78,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20201"
+  },
+  {
+    "id": "부산광역시/남구",
+    "province": "부산광역시",
+    "name": "남구",
+    "nx": 98,
+    "ny": 75,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20201"
+  },
+  {
+    "id": "부산광역시/동구",
+    "province": "부산광역시",
+    "name": "동구",
+    "nx": 97,
+    "ny": 75,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20201"
+  },
+  {
+    "id": "부산광역시/동래구",
+    "province": "부산광역시",
+    "name": "동래구",
+    "nx": 98,
+    "ny": 76,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20201"
+  },
+  {
+    "id": "부산광역시/부산진구",
+    "province": "부산광역시",
+    "name": "부산진구",
+    "nx": 97,
+    "ny": 75,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20201"
+  },
+  {
+    "id": "부산광역시/북구",
+    "province": "부산광역시",
+    "name": "북구",
+    "nx": 96,
+    "ny": 76,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20201"
+  },
+  {
+    "id": "부산광역시/사상구",
+    "province": "부산광역시",
+    "name": "사상구",
+    "nx": 96,
+    "ny": 75,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20201"
+  },
+  {
+    "id": "부산광역시/사하구",
+    "province": "부산광역시",
+    "name": "사하구",
+    "nx": 96,
+    "ny": 74,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20201"
+  },
+  {
+    "id": "부산광역시/서구",
+    "province": "부산광역시",
+    "name": "서구",
+    "nx": 97,
+    "ny": 75,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20201"
+  },
+  {
+    "id": "부산광역시/수영구",
+    "province": "부산광역시",
+    "name": "수영구",
+    "nx": 99,
+    "ny": 75,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20201"
+  },
+  {
+    "id": "부산광역시/연제구",
+    "province": "부산광역시",
+    "name": "연제구",
+    "nx": 98,
+    "ny": 76,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20201"
+  },
+  {
+    "id": "부산광역시/영도구",
+    "province": "부산광역시",
+    "name": "영도구",
+    "nx": 98,
+    "ny": 74,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20201"
+  },
+  {
+    "id": "부산광역시/중구",
+    "province": "부산광역시",
+    "name": "중구",
+    "nx": 97,
+    "ny": 74,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20201"
+  },
+  {
+    "id": "부산광역시/해운대구",
+    "province": "부산광역시",
+    "name": "해운대구",
+    "nx": 99,
+    "ny": 76,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20201"
+  },
+  {
+    "id": "대구광역시/군위군",
+    "province": "대구광역시",
+    "name": "군위군",
+    "nx": 89,
+    "ny": 97,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10707"
+  },
+  {
+    "id": "대구광역시/남구",
+    "province": "대구광역시",
+    "name": "남구",
+    "nx": 89,
+    "ny": 90,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10701"
+  },
+  {
+    "id": "대구광역시/달서구",
+    "province": "대구광역시",
+    "name": "달서구",
+    "nx": 88,
+    "ny": 89,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10701"
+  },
+  {
+    "id": "대구광역시/달성군",
+    "province": "대구광역시",
+    "name": "달성군",
+    "nx": 86,
+    "ny": 88,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10701"
+  },
+  {
+    "id": "대구광역시/동구",
+    "province": "대구광역시",
+    "name": "동구",
+    "nx": 89,
+    "ny": 91,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10701"
+  },
+  {
+    "id": "대구광역시/북구",
+    "province": "대구광역시",
+    "name": "북구",
+    "nx": 89,
+    "ny": 91,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10701"
+  },
+  {
+    "id": "대구광역시/서구",
+    "province": "대구광역시",
+    "name": "서구",
+    "nx": 88,
+    "ny": 91,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10701"
+  },
+  {
+    "id": "대구광역시/수성구",
+    "province": "대구광역시",
+    "name": "수성구",
+    "nx": 89,
+    "ny": 90,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10701"
+  },
+  {
+    "id": "대구광역시/중구",
+    "province": "대구광역시",
+    "name": "중구",
+    "nx": 89,
+    "ny": 90,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10701"
+  },
+  {
+    "id": "인천광역시/강화군",
+    "province": "인천광역시",
+    "name": "강화군",
+    "nx": 51,
+    "ny": 131,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20201"
+  },
+  {
+    "id": "인천광역시/계양구",
+    "province": "인천광역시",
+    "name": "계양구",
+    "nx": 56,
+    "ny": 126,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20201"
+  },
+  {
+    "id": "인천광역시/남구",
+    "province": "인천광역시",
+    "name": "남구",
+    "nx": 54,
+    "ny": 124,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20201"
+  },
+  {
+    "id": "인천광역시/남동구",
+    "province": "인천광역시",
+    "name": "남동구",
+    "nx": 55,
+    "ny": 123,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20201"
+  },
+  {
+    "id": "인천광역시/동구",
+    "province": "인천광역시",
+    "name": "동구",
+    "nx": 54,
+    "ny": 125,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20201"
+  },
+  {
+    "id": "인천광역시/부평구",
+    "province": "인천광역시",
+    "name": "부평구",
+    "nx": 55,
+    "ny": 125,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20201"
+  },
+  {
+    "id": "인천광역시/서구",
+    "province": "인천광역시",
+    "name": "서구",
+    "nx": 54,
+    "ny": 126,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20201"
+  },
+  {
+    "id": "인천광역시/연수구",
+    "province": "인천광역시",
+    "name": "연수구",
+    "nx": 54,
+    "ny": 123,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20201"
+  },
+  {
+    "id": "인천광역시/옹진군",
+    "province": "인천광역시",
+    "name": "옹진군",
+    "nx": 45,
+    "ny": 119,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20201"
+  },
+  {
+    "id": "인천광역시/중구",
+    "province": "인천광역시",
+    "name": "중구",
+    "nx": 54,
+    "ny": 125,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20201"
+  },
+  {
+    "id": "광주광역시/광산구",
+    "province": "광주광역시",
+    "name": "광산구",
+    "nx": 57,
+    "ny": 74,
+    "midLandCode": "11F20000",
+    "midTaCode": "11F20501"
+  },
+  {
+    "id": "광주광역시/남구",
+    "province": "광주광역시",
+    "name": "남구",
+    "nx": 59,
+    "ny": 74,
+    "midLandCode": "11F20000",
+    "midTaCode": "11F20501"
+  },
+  {
+    "id": "광주광역시/동구",
+    "province": "광주광역시",
+    "name": "동구",
+    "nx": 59,
+    "ny": 74,
+    "midLandCode": "11F20000",
+    "midTaCode": "11F20501"
+  },
+  {
+    "id": "광주광역시/북구",
+    "province": "광주광역시",
+    "name": "북구",
+    "nx": 59,
+    "ny": 75,
+    "midLandCode": "11F20000",
+    "midTaCode": "11F20501"
+  },
+  {
+    "id": "광주광역시/서구",
+    "province": "광주광역시",
+    "name": "서구",
+    "nx": 59,
+    "ny": 74,
+    "midLandCode": "11F20000",
+    "midTaCode": "11F20501"
+  },
+  {
+    "id": "대전광역시/대덕구",
+    "province": "대전광역시",
+    "name": "대덕구",
+    "nx": 68,
+    "ny": 101,
+    "midLandCode": "11C20000",
+    "midTaCode": "11C20401"
+  },
+  {
+    "id": "대전광역시/동구",
+    "province": "대전광역시",
+    "name": "동구",
+    "nx": 68,
+    "ny": 100,
+    "midLandCode": "11C20000",
+    "midTaCode": "11C20401"
+  },
+  {
+    "id": "대전광역시/서구",
+    "province": "대전광역시",
+    "name": "서구",
+    "nx": 67,
+    "ny": 99,
+    "midLandCode": "11C20000",
+    "midTaCode": "11C20401"
+  },
+  {
+    "id": "대전광역시/유성구",
+    "province": "대전광역시",
+    "name": "유성구",
+    "nx": 66,
+    "ny": 101,
+    "midLandCode": "11C20000",
+    "midTaCode": "11C20401"
+  },
+  {
+    "id": "대전광역시/중구",
+    "province": "대전광역시",
+    "name": "중구",
+    "nx": 68,
+    "ny": 99,
+    "midLandCode": "11C20000",
+    "midTaCode": "11C20401"
+  },
+  {
+    "id": "울산광역시/남구",
+    "province": "울산광역시",
+    "name": "남구",
+    "nx": 102,
+    "ny": 84,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20101"
+  },
+  {
+    "id": "울산광역시/동구",
+    "province": "울산광역시",
+    "name": "동구",
+    "nx": 104,
+    "ny": 83,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20101"
+  },
+  {
+    "id": "울산광역시/북구",
+    "province": "울산광역시",
+    "name": "북구",
+    "nx": 103,
+    "ny": 85,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20101"
+  },
+  {
+    "id": "울산광역시/울주군",
+    "province": "울산광역시",
+    "name": "울주군",
+    "nx": 98,
+    "ny": 84,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20101"
+  },
+  {
+    "id": "울산광역시/중구",
+    "province": "울산광역시",
+    "name": "중구",
+    "nx": 102,
+    "ny": 84,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20101"
+  },
+  {
+    "id": "세종특별자치시/세종특별자치시",
+    "province": "세종특별자치시",
+    "name": "세종특별자치시",
+    "nx": 66,
+    "ny": 103,
+    "midLandCode": "11C20000",
+    "midTaCode": "11C20404"
+  },
+  {
+    "id": "경기도/가평군",
+    "province": "경기도",
+    "name": "가평군",
+    "nx": 69,
+    "ny": 133,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20404"
+  },
+  {
+    "id": "경기도/고양시",
+    "province": "경기도",
+    "name": "고양시",
+    "nx": 57,
+    "ny": 129,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20302"
+  },
+  {
+    "id": "경기도/과천시",
+    "province": "경기도",
+    "name": "과천시",
+    "nx": 60,
+    "ny": 124,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B10102"
+  },
+  {
+    "id": "경기도/광명시",
+    "province": "경기도",
+    "name": "광명시",
+    "nx": 58,
+    "ny": 124,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B10103"
+  },
+  {
+    "id": "경기도/광주시",
+    "province": "경기도",
+    "name": "광주시",
+    "nx": 59,
+    "ny": 75,
+    "midLandCode": "11B00000",
+    "midTaCode": "11F20501"
+  },
+  {
+    "id": "경기도/구리시",
+    "province": "경기도",
+    "name": "구리시",
+    "nx": 63,
+    "ny": 127,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20501"
+  },
+  {
+    "id": "경기도/군포시",
+    "province": "경기도",
+    "name": "군포시",
+    "nx": 59,
+    "ny": 122,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20610"
+  },
+  {
+    "id": "경기도/김포시",
+    "province": "경기도",
+    "name": "김포시",
+    "nx": 56,
+    "ny": 127,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20102"
+  },
+  {
+    "id": "경기도/남양주시",
+    "province": "경기도",
+    "name": "남양주시",
+    "nx": 64,
+    "ny": 129,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20502"
+  },
+  {
+    "id": "경기도/동두천시",
+    "province": "경기도",
+    "name": "동두천시",
+    "nx": 61,
+    "ny": 134,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20401"
+  },
+  {
+    "id": "경기도/부천시",
+    "province": "경기도",
+    "name": "부천시",
+    "nx": 56,
+    "ny": 125,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20204"
+  },
+  {
+    "id": "경기도/성남시",
+    "province": "경기도",
+    "name": "성남시",
+    "nx": 62,
+    "ny": 124,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20605"
+  },
+  {
+    "id": "경기도/수원시",
+    "province": "경기도",
+    "name": "수원시",
+    "nx": 60,
+    "ny": 121,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20601"
+  },
+  {
+    "id": "경기도/시흥시",
+    "province": "경기도",
+    "name": "시흥시",
+    "nx": 57,
+    "ny": 123,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20202"
+  },
+  {
+    "id": "경기도/안산시",
+    "province": "경기도",
+    "name": "안산시",
+    "nx": 57,
+    "ny": 121,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20203"
+  },
+  {
+    "id": "경기도/안성시",
+    "province": "경기도",
+    "name": "안성시",
+    "nx": 66,
+    "ny": 115,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20611"
+  },
+  {
+    "id": "경기도/안양시",
+    "province": "경기도",
+    "name": "안양시",
+    "nx": 59,
+    "ny": 123,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20602"
+  },
+  {
+    "id": "경기도/양주시",
+    "province": "경기도",
+    "name": "양주시",
+    "nx": 61,
+    "ny": 132,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20304"
+  },
+  {
+    "id": "경기도/양평군",
+    "province": "경기도",
+    "name": "양평군",
+    "nx": 69,
+    "ny": 125,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20503"
+  },
+  {
+    "id": "경기도/여주시",
+    "province": "경기도",
+    "name": "여주시",
+    "nx": 71,
+    "ny": 121,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20703"
+  },
+  {
+    "id": "경기도/연천군",
+    "province": "경기도",
+    "name": "연천군",
+    "nx": 61,
+    "ny": 138,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20402"
+  },
+  {
+    "id": "경기도/오산시",
+    "province": "경기도",
+    "name": "오산시",
+    "nx": 62,
+    "ny": 118,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20603"
+  },
+  {
+    "id": "경기도/용인시",
+    "province": "경기도",
+    "name": "용인시",
+    "nx": 63,
+    "ny": 120,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20612"
+  },
+  {
+    "id": "경기도/의왕시",
+    "province": "경기도",
+    "name": "의왕시",
+    "nx": 60,
+    "ny": 122,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20609"
+  },
+  {
+    "id": "경기도/의정부시",
+    "province": "경기도",
+    "name": "의정부시",
+    "nx": 61,
+    "ny": 130,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20301"
+  },
+  {
+    "id": "경기도/이천시",
+    "province": "경기도",
+    "name": "이천시",
+    "nx": 68,
+    "ny": 121,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20701"
+  },
+  {
+    "id": "경기도/파주시",
+    "province": "경기도",
+    "name": "파주시",
+    "nx": 56,
+    "ny": 131,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20305"
+  },
+  {
+    "id": "경기도/평택시",
+    "province": "경기도",
+    "name": "평택시",
+    "nx": 62,
+    "ny": 114,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20606"
+  },
+  {
+    "id": "경기도/포천시",
+    "province": "경기도",
+    "name": "포천시",
+    "nx": 64,
+    "ny": 134,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20403"
+  },
+  {
+    "id": "경기도/하남시",
+    "province": "경기도",
+    "name": "하남시",
+    "nx": 64,
+    "ny": 126,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20504"
+  },
+  {
+    "id": "경기도/화성시",
+    "province": "경기도",
+    "name": "화성시",
+    "nx": 57,
+    "ny": 119,
+    "midLandCode": "11B00000",
+    "midTaCode": "11B20604"
+  },
+  {
+    "id": "강원특별자치도/강릉시",
+    "province": "강원특별자치도",
+    "name": "강릉시",
+    "nx": 92,
+    "ny": 132,
+    "midLandCode": "11D20000",
+    "midTaCode": "11D20501"
+  },
+  {
+    "id": "강원특별자치도/고성군",
+    "province": "강원특별자치도",
+    "name": "고성군",
+    "nx": 85,
+    "ny": 145,
+    "midLandCode": "11D20000",
+    "midTaCode": "11D20402"
+  },
+  {
+    "id": "강원특별자치도/동해시",
+    "province": "강원특별자치도",
+    "name": "동해시",
+    "nx": 97,
+    "ny": 127,
+    "midLandCode": "11D20000",
+    "midTaCode": "11D20601"
+  },
+  {
+    "id": "강원특별자치도/삼척시",
+    "province": "강원특별자치도",
+    "name": "삼척시",
+    "nx": 98,
+    "ny": 125,
+    "midLandCode": "11D20000",
+    "midTaCode": "11D20602"
+  },
+  {
+    "id": "강원특별자치도/속초시",
+    "province": "강원특별자치도",
+    "name": "속초시",
+    "nx": 87,
+    "ny": 141,
+    "midLandCode": "11D20000",
+    "midTaCode": "11D20401"
+  },
+  {
+    "id": "강원특별자치도/양구군",
+    "province": "강원특별자치도",
+    "name": "양구군",
+    "nx": 77,
+    "ny": 139,
+    "midLandCode": "11D10000",
+    "midTaCode": "11D10202"
+  },
+  {
+    "id": "강원특별자치도/양양군",
+    "province": "강원특별자치도",
+    "name": "양양군",
+    "nx": 88,
+    "ny": 138,
+    "midLandCode": "11D20000",
+    "midTaCode": "11D20403"
+  },
+  {
+    "id": "강원특별자치도/영월군",
+    "province": "강원특별자치도",
+    "name": "영월군",
+    "nx": 86,
+    "ny": 119,
+    "midLandCode": "11D10000",
+    "midTaCode": "11D10501"
+  },
+  {
+    "id": "강원특별자치도/원주시",
+    "province": "강원특별자치도",
+    "name": "원주시",
+    "nx": 76,
+    "ny": 122,
+    "midLandCode": "11D10000",
+    "midTaCode": "11D10401"
+  },
+  {
+    "id": "강원특별자치도/인제군",
+    "province": "강원특별자치도",
+    "name": "인제군",
+    "nx": 82,
+    "ny": 138,
+    "midLandCode": "11D10000",
+    "midTaCode": "11D10201"
+  },
+  {
+    "id": "강원특별자치도/정선군",
+    "province": "강원특별자치도",
+    "name": "정선군",
+    "nx": 90,
+    "ny": 124,
+    "midLandCode": "11D10000",
+    "midTaCode": "11D10502"
+  },
+  {
+    "id": "강원특별자치도/철원군",
+    "province": "강원특별자치도",
+    "name": "철원군",
+    "nx": 68,
+    "ny": 142,
+    "midLandCode": "11D10000",
+    "midTaCode": "11D10101"
+  },
+  {
+    "id": "강원특별자치도/춘천시",
+    "province": "강원특별자치도",
+    "name": "춘천시",
+    "nx": 73,
+    "ny": 134,
+    "midLandCode": "11D10000",
+    "midTaCode": "11D10301"
+  },
+  {
+    "id": "강원특별자치도/태백시",
+    "province": "강원특별자치도",
+    "name": "태백시",
+    "nx": 95,
+    "ny": 119,
+    "midLandCode": "11D20000",
+    "midTaCode": "11D20301"
+  },
+  {
+    "id": "강원특별자치도/평창군",
+    "province": "강원특별자치도",
+    "name": "평창군",
+    "nx": 84,
+    "ny": 123,
+    "midLandCode": "11D10000",
+    "midTaCode": "11D10503"
+  },
+  {
+    "id": "강원특별자치도/홍천군",
+    "province": "강원특별자치도",
+    "name": "홍천군",
+    "nx": 75,
+    "ny": 130,
+    "midLandCode": "11D10000",
+    "midTaCode": "11D10302"
+  },
+  {
+    "id": "강원특별자치도/화천군",
+    "province": "강원특별자치도",
+    "name": "화천군",
+    "nx": 72,
+    "ny": 139,
+    "midLandCode": "11D10000",
+    "midTaCode": "11D10102"
+  },
+  {
+    "id": "강원특별자치도/횡성군",
+    "province": "강원특별자치도",
+    "name": "횡성군",
+    "nx": 77,
+    "ny": 125,
+    "midLandCode": "11D10000",
+    "midTaCode": "11D10402"
+  },
+  {
+    "id": "충청북도/괴산군",
+    "province": "충청북도",
+    "name": "괴산군",
+    "nx": 75,
+    "ny": 110,
+    "midLandCode": "11C10000",
+    "midTaCode": "11C10303"
+  },
+  {
+    "id": "충청북도/단양군",
+    "province": "충청북도",
+    "name": "단양군",
+    "nx": 84,
+    "ny": 115,
+    "midLandCode": "11C10000",
+    "midTaCode": "11C10202"
+  },
+  {
+    "id": "충청북도/보은군",
+    "province": "충청북도",
+    "name": "보은군",
+    "nx": 73,
+    "ny": 104,
+    "midLandCode": "11C10000",
+    "midTaCode": "11C10302"
+  },
+  {
+    "id": "충청북도/영동군",
+    "province": "충청북도",
+    "name": "영동군",
+    "nx": 74,
+    "ny": 97,
+    "midLandCode": "11C10000",
+    "midTaCode": "11C10402"
+  },
+  {
+    "id": "충청북도/옥천군",
+    "province": "충청북도",
+    "name": "옥천군",
+    "nx": 70,
+    "ny": 99,
+    "midLandCode": "11C10000",
+    "midTaCode": "11C10403"
+  },
+  {
+    "id": "충청북도/음성군",
+    "province": "충청북도",
+    "name": "음성군",
+    "nx": 72,
+    "ny": 113,
+    "midLandCode": "11C10000",
+    "midTaCode": "11C10103"
+  },
+  {
+    "id": "충청북도/제천시",
+    "province": "충청북도",
+    "name": "제천시",
+    "nx": 80,
+    "ny": 116,
+    "midLandCode": "11C10000",
+    "midTaCode": "11C10201"
+  },
+  {
+    "id": "충청북도/증평군",
+    "province": "충청북도",
+    "name": "증평군",
+    "nx": 71,
+    "ny": 110,
+    "midLandCode": "11C10000",
+    "midTaCode": "11C10304"
+  },
+  {
+    "id": "충청북도/진천군",
+    "province": "충청북도",
+    "name": "진천군",
+    "nx": 68,
+    "ny": 111,
+    "midLandCode": "11C10000",
+    "midTaCode": "11C10102"
+  },
+  {
+    "id": "충청북도/청주시",
+    "province": "충청북도",
+    "name": "청주시",
+    "nx": 69,
+    "ny": 107,
+    "midLandCode": "11C10000",
+    "midTaCode": "11C10301"
+  },
+  {
+    "id": "충청북도/충주시",
+    "province": "충청북도",
+    "name": "충주시",
+    "nx": 76,
+    "ny": 115,
+    "midLandCode": "11C10000",
+    "midTaCode": "11C10101"
+  },
+  {
+    "id": "충청남도/계룡시",
+    "province": "충청남도",
+    "name": "계룡시",
+    "nx": 64,
+    "ny": 99,
+    "midLandCode": "11C20000",
+    "midTaCode": "11C20403"
+  },
+  {
+    "id": "충청남도/공주시",
+    "province": "충청남도",
+    "name": "공주시",
+    "nx": 63,
+    "ny": 103,
+    "midLandCode": "11C20000",
+    "midTaCode": "11C20402"
+  },
+  {
+    "id": "충청남도/금산군",
+    "province": "충청남도",
+    "name": "금산군",
+    "nx": 69,
+    "ny": 96,
+    "midLandCode": "11C20000",
+    "midTaCode": "11C20601"
+  },
+  {
+    "id": "충청남도/논산시",
+    "province": "충청남도",
+    "name": "논산시",
+    "nx": 63,
+    "ny": 97,
+    "midLandCode": "11C20000",
+    "midTaCode": "11C20602"
+  },
+  {
+    "id": "충청남도/당진시",
+    "province": "충청남도",
+    "name": "당진시",
+    "nx": 55,
+    "ny": 113,
+    "midLandCode": "11C20000",
+    "midTaCode": "11C20103"
+  },
+  {
+    "id": "충청남도/보령시",
+    "province": "충청남도",
+    "name": "보령시",
+    "nx": 53,
+    "ny": 100,
+    "midLandCode": "11C20000",
+    "midTaCode": "11C20201"
+  },
+  {
+    "id": "충청남도/부여군",
+    "province": "충청남도",
+    "name": "부여군",
+    "nx": 58,
+    "ny": 98,
+    "midLandCode": "11C20000",
+    "midTaCode": "11C20501"
+  },
+  {
+    "id": "충청남도/서산시",
+    "province": "충청남도",
+    "name": "서산시",
+    "nx": 51,
+    "ny": 110,
+    "midLandCode": "11C20000",
+    "midTaCode": "11C20101"
+  },
+  {
+    "id": "충청남도/서천군",
+    "province": "충청남도",
+    "name": "서천군",
+    "nx": 55,
+    "ny": 95,
+    "midLandCode": "11C20000",
+    "midTaCode": "11C20202"
+  },
+  {
+    "id": "충청남도/아산시",
+    "province": "충청남도",
+    "name": "아산시",
+    "nx": 60,
+    "ny": 110,
+    "midLandCode": "11C20000",
+    "midTaCode": "11C20302"
+  },
+  {
+    "id": "충청남도/예산군",
+    "province": "충청남도",
+    "name": "예산군",
+    "nx": 57,
+    "ny": 107,
+    "midLandCode": "11C20000",
+    "midTaCode": "11C20303"
+  },
+  {
+    "id": "충청남도/천안시",
+    "province": "충청남도",
+    "name": "천안시",
+    "nx": 64,
+    "ny": 110,
+    "midLandCode": "11C20000",
+    "midTaCode": "11C20301"
+  },
+  {
+    "id": "충청남도/청양군",
+    "province": "충청남도",
+    "name": "청양군",
+    "nx": 58,
+    "ny": 102,
+    "midLandCode": "11C20000",
+    "midTaCode": "11C20502"
+  },
+  {
+    "id": "충청남도/태안군",
+    "province": "충청남도",
+    "name": "태안군",
+    "nx": 48,
+    "ny": 108,
+    "midLandCode": "11C20000",
+    "midTaCode": "11C20102"
+  },
+  {
+    "id": "충청남도/홍성군",
+    "province": "충청남도",
+    "name": "홍성군",
+    "nx": 54,
+    "ny": 105,
+    "midLandCode": "11C20000",
+    "midTaCode": "11C20104"
+  },
+  {
+    "id": "전북특별자치도/고창군",
+    "province": "전북특별자치도",
+    "name": "고창군",
+    "nx": 55,
+    "ny": 80,
+    "midLandCode": "11F10000",
+    "midTaCode": "21F10601"
+  },
+  {
+    "id": "전북특별자치도/군산시",
+    "province": "전북특별자치도",
+    "name": "군산시",
+    "nx": 55,
+    "ny": 91,
+    "midLandCode": "11F10000",
+    "midTaCode": "21F10501"
+  },
+  {
+    "id": "전북특별자치도/김제시",
+    "province": "전북특별자치도",
+    "name": "김제시",
+    "nx": 59,
+    "ny": 88,
+    "midLandCode": "11F10000",
+    "midTaCode": "21F10502"
+  },
+  {
+    "id": "전북특별자치도/남원시",
+    "province": "전북특별자치도",
+    "name": "남원시",
+    "nx": 68,
+    "ny": 80,
+    "midLandCode": "11F10000",
+    "midTaCode": "11F10401"
+  },
+  {
+    "id": "전북특별자치도/무주군",
+    "province": "전북특별자치도",
+    "name": "무주군",
+    "nx": 73,
+    "ny": 91,
+    "midLandCode": "11F10000",
+    "midTaCode": "11F10302"
+  },
+  {
+    "id": "전북특별자치도/부안군",
+    "province": "전북특별자치도",
+    "name": "부안군",
+    "nx": 55,
+    "ny": 86,
+    "midLandCode": "11F10000",
+    "midTaCode": "21F10602"
+  },
+  {
+    "id": "전북특별자치도/순창군",
+    "province": "전북특별자치도",
+    "name": "순창군",
+    "nx": 64,
+    "ny": 80,
+    "midLandCode": "11F10000",
+    "midTaCode": "11F10403"
+  },
+  {
+    "id": "전북특별자치도/완주군",
+    "province": "전북특별자치도",
+    "name": "완주군",
+    "nx": 63,
+    "ny": 89,
+    "midLandCode": "11F10000",
+    "midTaCode": "11F10204"
+  },
+  {
+    "id": "전북특별자치도/익산시",
+    "province": "전북특별자치도",
+    "name": "익산시",
+    "nx": 60,
+    "ny": 91,
+    "midLandCode": "11F10000",
+    "midTaCode": "11F10202"
+  },
+  {
+    "id": "전북특별자치도/임실군",
+    "province": "전북특별자치도",
+    "name": "임실군",
+    "nx": 65,
+    "ny": 84,
+    "midLandCode": "11F10000",
+    "midTaCode": "11F10402"
+  },
+  {
+    "id": "전북특별자치도/장수군",
+    "province": "전북특별자치도",
+    "name": "장수군",
+    "nx": 70,
+    "ny": 86,
+    "midLandCode": "11F10000",
+    "midTaCode": "11F10301"
+  },
+  {
+    "id": "전북특별자치도/전주시",
+    "province": "전북특별자치도",
+    "name": "전주시",
+    "nx": 63,
+    "ny": 89,
+    "midLandCode": "11F10000",
+    "midTaCode": "11F10201"
+  },
+  {
+    "id": "전북특별자치도/정읍시",
+    "province": "전북특별자치도",
+    "name": "정읍시",
+    "nx": 59,
+    "ny": 84,
+    "midLandCode": "11F10000",
+    "midTaCode": "11F10203"
+  },
+  {
+    "id": "전북특별자치도/진안군",
+    "province": "전북특별자치도",
+    "name": "진안군",
+    "nx": 68,
+    "ny": 89,
+    "midLandCode": "11F10000",
+    "midTaCode": "11F10303"
+  },
+  {
+    "id": "전라남도/강진군",
+    "province": "전라남도",
+    "name": "강진군",
+    "nx": 57,
+    "ny": 62,
+    "midLandCode": "11F20000",
+    "midTaCode": "11F20303"
+  },
+  {
+    "id": "전라남도/고흥군",
+    "province": "전라남도",
+    "name": "고흥군",
+    "nx": 67,
+    "ny": 62,
+    "midLandCode": "11F20000",
+    "midTaCode": "11F20403"
+  },
+  {
+    "id": "전라남도/곡성군",
+    "province": "전라남도",
+    "name": "곡성군",
+    "nx": 66,
+    "ny": 76,
+    "midLandCode": "11F20000",
+    "midTaCode": "11F20602"
+  },
+  {
+    "id": "전라남도/광양시",
+    "province": "전라남도",
+    "name": "광양시",
+    "nx": 72,
+    "ny": 72,
+    "midLandCode": "11F20000",
+    "midTaCode": "11F20402"
+  },
+  {
+    "id": "전라남도/구례군",
+    "province": "전라남도",
+    "name": "구례군",
+    "nx": 69,
+    "ny": 76,
+    "midLandCode": "11F20000",
+    "midTaCode": "11F20601"
+  },
+  {
+    "id": "전라남도/나주시",
+    "province": "전라남도",
+    "name": "나주시",
+    "nx": 55,
+    "ny": 72,
+    "midLandCode": "11F20000",
+    "midTaCode": "11F20503"
+  },
+  {
+    "id": "전라남도/담양군",
+    "province": "전라남도",
+    "name": "담양군",
+    "nx": 61,
+    "ny": 78,
+    "midLandCode": "11F20000",
+    "midTaCode": "11F20504"
+  },
+  {
+    "id": "전라남도/목포시",
+    "province": "전라남도",
+    "name": "목포시",
+    "nx": 50,
+    "ny": 67,
+    "midLandCode": "11F20000",
+    "midTaCode": "21F20801"
+  },
+  {
+    "id": "전라남도/무안군",
+    "province": "전라남도",
+    "name": "무안군",
+    "nx": 51,
+    "ny": 70,
+    "midLandCode": "11F20000",
+    "midTaCode": "21F20804"
+  },
+  {
+    "id": "전라남도/보성군",
+    "province": "전라남도",
+    "name": "보성군",
+    "nx": 64,
+    "ny": 67,
+    "midLandCode": "11F20000",
+    "midTaCode": "11F20404"
+  },
+  {
+    "id": "전라남도/순천시",
+    "province": "전라남도",
+    "name": "순천시",
+    "nx": 68,
+    "ny": 71,
+    "midLandCode": "11F20000",
+    "midTaCode": "11F20603"
+  },
+  {
+    "id": "전라남도/신안군",
+    "province": "전라남도",
+    "name": "신안군",
+    "nx": 45,
+    "ny": 67,
+    "midLandCode": "11F20000",
+    "midTaCode": "21F20803"
+  },
+  {
+    "id": "전라남도/여수시",
+    "province": "전라남도",
+    "name": "여수시",
+    "nx": 72,
+    "ny": 66,
+    "midLandCode": "11F20000",
+    "midTaCode": "11F20401"
+  },
+  {
+    "id": "전라남도/영광군",
+    "province": "전라남도",
+    "name": "영광군",
+    "nx": 51,
+    "ny": 77,
+    "midLandCode": "11F20000",
+    "midTaCode": "21F20102"
+  },
+  {
+    "id": "전라남도/영암군",
+    "province": "전라남도",
+    "name": "영암군",
+    "nx": 54,
+    "ny": 66,
+    "midLandCode": "11F20000",
+    "midTaCode": "21F20802"
+  },
+  {
+    "id": "전라남도/완도군",
+    "province": "전라남도",
+    "name": "완도군",
+    "nx": 56,
+    "ny": 56,
+    "midLandCode": "11F20000",
+    "midTaCode": "11F20301"
+  },
+  {
+    "id": "전라남도/장성군",
+    "province": "전라남도",
+    "name": "장성군",
+    "nx": 57,
+    "ny": 78,
+    "midLandCode": "11F20000",
+    "midTaCode": "11F20502"
+  },
+  {
+    "id": "전라남도/장흥군",
+    "province": "전라남도",
+    "name": "장흥군",
+    "nx": 59,
+    "ny": 64,
+    "midLandCode": "11F20000",
+    "midTaCode": "11F20304"
+  },
+  {
+    "id": "전라남도/진도군",
+    "province": "전라남도",
+    "name": "진도군",
+    "nx": 46,
+    "ny": 58,
+    "midLandCode": "11F20000",
+    "midTaCode": "21F20201"
+  },
+  {
+    "id": "전라남도/함평군",
+    "province": "전라남도",
+    "name": "함평군",
+    "nx": 53,
+    "ny": 73,
+    "midLandCode": "11F20000",
+    "midTaCode": "21F20101"
+  },
+  {
+    "id": "전라남도/해남군",
+    "province": "전라남도",
+    "name": "해남군",
+    "nx": 52,
+    "ny": 61,
+    "midLandCode": "11F20000",
+    "midTaCode": "11F20302"
+  },
+  {
+    "id": "전라남도/화순군",
+    "province": "전라남도",
+    "name": "화순군",
+    "nx": 61,
+    "ny": 71,
+    "midLandCode": "11F20000",
+    "midTaCode": "11F20505"
+  },
+  {
+    "id": "경상북도/경산시",
+    "province": "경상북도",
+    "name": "경산시",
+    "nx": 92,
+    "ny": 90,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10703"
+  },
+  {
+    "id": "경상북도/경주시",
+    "province": "경상북도",
+    "name": "경주시",
+    "nx": 100,
+    "ny": 90,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10202"
+  },
+  {
+    "id": "경상북도/고령군",
+    "province": "경상북도",
+    "name": "고령군",
+    "nx": 84,
+    "ny": 88,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10604"
+  },
+  {
+    "id": "경상북도/구미시",
+    "province": "경상북도",
+    "name": "구미시",
+    "nx": 84,
+    "ny": 98,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10602"
+  },
+  {
+    "id": "경상북도/김천시",
+    "province": "경상북도",
+    "name": "김천시",
+    "nx": 80,
+    "ny": 96,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10601"
+  },
+  {
+    "id": "경상북도/문경시",
+    "province": "경상북도",
+    "name": "문경시",
+    "nx": 81,
+    "ny": 106,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10301"
+  },
+  {
+    "id": "경상북도/봉화군",
+    "province": "경상북도",
+    "name": "봉화군",
+    "nx": 91,
+    "ny": 113,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10402"
+  },
+  {
+    "id": "경상북도/상주시",
+    "province": "경상북도",
+    "name": "상주시",
+    "nx": 81,
+    "ny": 102,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10302"
+  },
+  {
+    "id": "경상북도/성주군",
+    "province": "경상북도",
+    "name": "성주군",
+    "nx": 83,
+    "ny": 91,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10605"
+  },
+  {
+    "id": "경상북도/안동시",
+    "province": "경상북도",
+    "name": "안동시",
+    "nx": 91,
+    "ny": 106,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10501"
+  },
+  {
+    "id": "경상북도/영덕군",
+    "province": "경상북도",
+    "name": "영덕군",
+    "nx": 101,
+    "ny": 104,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10102"
+  },
+  {
+    "id": "경상북도/영양군",
+    "province": "경상북도",
+    "name": "영양군",
+    "nx": 98,
+    "ny": 109,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10403"
+  },
+  {
+    "id": "경상북도/영주시",
+    "province": "경상북도",
+    "name": "영주시",
+    "nx": 88,
+    "ny": 112,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10401"
+  },
+  {
+    "id": "경상북도/영천시",
+    "province": "경상북도",
+    "name": "영천시",
+    "nx": 96,
+    "ny": 94,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10702"
+  },
+  {
+    "id": "경상북도/예천군",
+    "province": "경상북도",
+    "name": "예천군",
+    "nx": 85,
+    "ny": 107,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10303"
+  },
+  {
+    "id": "경상북도/울릉군",
+    "province": "경상북도",
+    "name": "울릉군",
+    "nx": 127,
+    "ny": 128,
+    "midLandCode": "11H10000",
+    "midTaCode": "11E00101"
+  },
+  {
+    "id": "경상북도/울진군",
+    "province": "경상북도",
+    "name": "울진군",
+    "nx": 101,
+    "ny": 114,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10101"
+  },
+  {
+    "id": "경상북도/의성군",
+    "province": "경상북도",
+    "name": "의성군",
+    "nx": 89,
+    "ny": 101,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10502"
+  },
+  {
+    "id": "경상북도/청도군",
+    "province": "경상북도",
+    "name": "청도군",
+    "nx": 92,
+    "ny": 86,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10704"
+  },
+  {
+    "id": "경상북도/청송군",
+    "province": "경상북도",
+    "name": "청송군",
+    "nx": 96,
+    "ny": 103,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10503"
+  },
+  {
+    "id": "경상북도/칠곡군",
+    "province": "경상북도",
+    "name": "칠곡군",
+    "nx": 86,
+    "ny": 94,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10705"
+  },
+  {
+    "id": "경상북도/포항시",
+    "province": "경상북도",
+    "name": "포항시",
+    "nx": 102,
+    "ny": 96,
+    "midLandCode": "11H10000",
+    "midTaCode": "11H10201"
+  },
+  {
+    "id": "경상남도/거제시",
+    "province": "경상남도",
+    "name": "거제시",
+    "nx": 91,
+    "ny": 69,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20403"
+  },
+  {
+    "id": "경상남도/거창군",
+    "province": "경상남도",
+    "name": "거창군",
+    "nx": 77,
+    "ny": 86,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20502"
+  },
+  {
+    "id": "경상남도/고성군",
+    "province": "경상남도",
+    "name": "고성군",
+    "nx": 84,
+    "ny": 72,
+    "midLandCode": "11H20000",
+    "midTaCode": "11D20402"
+  },
+  {
+    "id": "경상남도/김해시",
+    "province": "경상남도",
+    "name": "김해시",
+    "nx": 94,
+    "ny": 77,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20304"
+  },
+  {
+    "id": "경상남도/남해군",
+    "province": "경상남도",
+    "name": "남해군",
+    "nx": 78,
+    "ny": 67,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20405"
+  },
+  {
+    "id": "경상남도/밀양시",
+    "province": "경상남도",
+    "name": "밀양시",
+    "nx": 92,
+    "ny": 82,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20601"
+  },
+  {
+    "id": "경상남도/사천시",
+    "province": "경상남도",
+    "name": "사천시",
+    "nx": 80,
+    "ny": 71,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20402"
+  },
+  {
+    "id": "경상남도/산청군",
+    "province": "경상남도",
+    "name": "산청군",
+    "nx": 76,
+    "ny": 79,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20703"
+  },
+  {
+    "id": "경상남도/양산시",
+    "province": "경상남도",
+    "name": "양산시",
+    "nx": 97,
+    "ny": 80,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20102"
+  },
+  {
+    "id": "경상남도/의령군",
+    "province": "경상남도",
+    "name": "의령군",
+    "nx": 83,
+    "ny": 80,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20602"
+  },
+  {
+    "id": "경상남도/진주시",
+    "province": "경상남도",
+    "name": "진주시",
+    "nx": 81,
+    "ny": 76,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20701"
+  },
+  {
+    "id": "경상남도/창녕군",
+    "province": "경상남도",
+    "name": "창녕군",
+    "nx": 87,
+    "ny": 83,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20604"
+  },
+  {
+    "id": "경상남도/창원시",
+    "province": "경상남도",
+    "name": "창원시",
+    "nx": 90,
+    "ny": 78,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20301"
+  },
+  {
+    "id": "경상남도/통영시",
+    "province": "경상남도",
+    "name": "통영시",
+    "nx": 86,
+    "ny": 69,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20401"
+  },
+  {
+    "id": "경상남도/하동군",
+    "province": "경상남도",
+    "name": "하동군",
+    "nx": 75,
+    "ny": 74,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20704"
+  },
+  {
+    "id": "경상남도/함안군",
+    "province": "경상남도",
+    "name": "함안군",
+    "nx": 86,
+    "ny": 78,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20603"
+  },
+  {
+    "id": "경상남도/함양군",
+    "province": "경상남도",
+    "name": "함양군",
+    "nx": 73,
+    "ny": 83,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20501"
+  },
+  {
+    "id": "경상남도/합천군",
+    "province": "경상남도",
+    "name": "합천군",
+    "nx": 81,
+    "ny": 84,
+    "midLandCode": "11H20000",
+    "midTaCode": "11H20503"
+  },
+  {
+    "id": "제주특별자치도/서귀포시",
+    "province": "제주특별자치도",
+    "name": "서귀포시",
+    "nx": 52,
+    "ny": 33,
+    "midLandCode": "11G00000",
+    "midTaCode": "11G00401"
+  },
+  {
+    "id": "제주특별자치도/제주시",
+    "province": "제주특별자치도",
+    "name": "제주시",
+    "nx": 53,
+    "ny": 38,
+    "midLandCode": "11G00000",
+    "midTaCode": "11G00201"
+  }
+]
