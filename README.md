@@ -1,17 +1,105 @@
-# peters_simple_weather
+# 피터의 심플 웨더
 
-A new Flutter project.
+기상청 공공 API를 쓰는 안드로이드 날씨 앱. 오늘 날씨와 옷차림 추천을 한 화면에서 보여주고,
+홈 화면 위젯과 기상특보 푸시 알림을 제공한다. Flutter 앱 + Node.js 백엔드 + Firebase
+스케줄러로 구성된 개인 프로젝트다.
 
-## Getting Started
+## 주요 기능
 
-This project is a starting point for a Flutter application.
+- **오늘 날씨** — 현재 기온·습도·강수확률·강수량, 시간별 예보, 미세먼지/초미세먼지 등급 배지
+- **옷차림 추천** — 기온대별 캐릭터 카드로 오늘 입을 옷을 한 줄로 안내
+- **주간 예보** — 7일 예보와 상세 화면(오전/오후 강수확률, 일자별 최저·최고 기온과 강수량)
+- **기상특보** — 내 지역 또는 전국의 발효 중인 특보 조회, 새 특보 발표 시 푸시 알림
+- **홈 화면 위젯** — 안드로이드 위젯 2종(기본형·소형), 자동 새로고침 주기 설정 가능
+- **지역 선택** — 전국 229개 시군구
+- **라이트/다크 모드**
 
-A few resources to get you started if this is your first Flutter project:
+## 아키텍처
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+```
+Flutter 앱 ──HTTPS──▶ 백엔드 프록시 (Render) ──▶ 기상청 / 에어코리아 API
+    │                        │
+    │                        └─ 응답 캐시 · IP당 레이트 리밋 · 파라미터 화이트리스트
+    │
+    └◀── FCM 푸시 ── Firebase Functions (5분 스케줄러) ──▶ 기상청 특보 API
+                              │
+                              └─ Firestore (특보 중복발송 방지 상태, 강수량 누적치)
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+**왜 백엔드를 뒀는가.** 초기엔 앱이 기상청 API를 직접 호출했는데, 그러면 서비스 키가 APK에
+들어가 디컴파일로 추출된다. 키를 서버 환경변수로 옮기고 앱은 프록시만 부르게 바꿔서 번들에서
+키를 없앴다.
+
+**왜 폴링을 Firebase로 옮겼는가.** 특보 푸시는 주기적 폴링이 필요한데, Render 무료 인스턴스를
+24시간 깨워두려면 월 750시간 무료 한도를 다 쓴다. 폴링만 Firebase 스케줄 함수로 떼어내니
+Render는 요청이 없을 때 잠들 수 있게 됐다. 대신 콜드 스타트가 생겨서(실측 24초) 앱에
+stale-while-revalidate 디스크 캐시를 넣어 체감 지연을 없앴다.
+
+## 기술 스택
+
+| 영역 | 사용 기술 |
+| --- | --- |
+| 앱 | Flutter, Riverpod, go_router, dio, freezed |
+| 위젯 | home_widget, workmanager, Kotlin(AppWidgetProvider) |
+| 백엔드 | TypeScript, Express, Render |
+| 배치·푸시 | Firebase Cloud Functions(스케줄러), Firestore, FCM |
+| 외부 API | 기상청 단기예보·중기예보·기상특보, 한국환경공단 에어코리아 |
+| 테스트·CI | flutter_test, mocktail, node:test, GitHub Actions |
+
+## 프로젝트 구조
+
+```
+lib/
+  core/       공통 유틸(격자 변환, 발표시각 계산), 테마, 라우팅
+  data/       기상청·특보·지역 API 클라이언트와 모델, 캐시
+  features/   화면 단위 기능(home, weekly_forecast, alerts, widget, ...)
+backend/      기상청 프록시 서버 (Render 배포)
+functions/    5분 주기 폴러 — 특보 푸시, 강수량 누적 (backend/src 재사용)
+assets/data/  regions.json — 전국 229개 시군구의 격자 좌표와 예보 구역 코드
+```
+
+## 작업하며 풀었던 문제들
+
+- **위젯이 간헐적으로 "데이터를 불러올 수 없음"을 띄우던 문제** — 일일 한도가 아니라 기상청의
+  단기 호출 제한(429)이 원인이었다. 실패 시 마지막 성공값을 유지하도록 바꿔 화면이 비지 않게 했다.
+- **특보 푸시가 다른 시/도까지 울리던 문제** — 기상청 특보는 시군구가 아니라 관서 단위로만
+  제공된다. 통보문 본문에 실제 영향 시/도가 적혀 있는 점을 이용해, 관서 토픽을 시/도 토픽으로
+  쪼개 관련 없는 알림을 없앴다.
+- **저녁마다 주간 예보에 하루 구멍이 생기던 문제** — 중기예보 18시 발표에는 4일 뒤 필드가
+  없다는 걸 확인하고, 저녁에는 06시 발표분을 계속 쓰도록 고쳤다.
+- **습도가 가끔 비던 문제** — 초단기실황이 매시 40분에 발표된다는 점을 놓쳐 발표 전 시각을
+  조회하고 있었다. 기준 시각 계산을 고쳐 해결했다.
+- **레포 공개 대비 하드닝** — 프록시 주소가 공개되므로 IP당 레이트 리밋, 요청 파라미터
+  화이트리스트(실제 지역 목록 대조), 응답 캐시를 넣어 무단 사용이 API 쿼터나 요금으로
+  이어지지 않게 막았다.
+
+## 로컬 실행
+
+**백엔드**
+
+```bash
+cd backend && npm install && cp .env.example .env && npm run dev
+```
+
+`.env`의 `KMA_SERVICE_KEY`에 [공공데이터포털](https://www.data.go.kr)에서 발급받은 키를 넣는다.
+특보 푸시까지 돌려보려면 `FIREBASE_SERVICE_ACCOUNT`도 필요하다(`.env.example` 주석 참고).
+
+**앱**
+
+```bash
+flutter pub get && flutter run
+```
+
+Firebase 설정 파일(`android/app/google-services.json`)은 저장소에 포함하지 않는다. 본인의
+Firebase 프로젝트에서 받아 같은 경로에 두면 된다. 앱은 기상청 키를 직접 쓰지 않고 백엔드
+프록시만 호출하므로 앱 쪽에 키 설정은 필요 없다.
+
+## 테스트
+
+```bash
+flutter test
+```
+
+```bash
+cd backend && npm test
+```
