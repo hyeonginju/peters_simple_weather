@@ -50,13 +50,35 @@ function sweep(now: number): void {
   }
 }
 
+/**
+ * 버킷 키로 쓸 클라이언트 IP를 고른다.
+ *
+ * Render는 Cloudflare 뒤에 있어 프록시 홉이 2단이다. req.ip만 믿으면 한 홉만
+ * 되돌려 회전하는 중간 프록시 주소가 잡히고, 그러면 서로 다른 사용자가 한
+ * 버킷을 공유해(= 남의 대량 호출에 우리 앱이 대신 막힘) 리밋이 부정확해진다.
+ *
+ * Cloudflare가 넣는 CF-Connecting-IP는 엣지에서 항상 덮어쓰므로 클라이언트가
+ * 위조해도 소용이 없다 — 이걸 우선 쓰고, 없을 때만 req.ip로 물러난다.
+ */
+export function clientKey(req: Request): { key: string; source: 'cf' | 'req-ip' | 'unknown' } {
+  const cf = req.headers['cf-connecting-ip'];
+  if (typeof cf === 'string' && cf !== '') return { key: cf, source: 'cf' };
+
+  const ip = req.ip;
+  if (typeof ip === 'string' && ip !== '') return { key: ip, source: 'req-ip' };
+
+  return { key: 'unknown', source: 'unknown' };
+}
+
 export function rateLimit(req: Request, res: Response, next: NextFunction): void {
   const now = Date.now();
-  // req.ip는 index.ts의 trust proxy 설정에 따라 실제 클라이언트 IP가 된다.
-  const result = consume(req.ip ?? 'unknown', now);
+  const { key, source } = clientKey(req);
+  const result = consume(key, now);
 
   res.setHeader('RateLimit-Limit', String(MAX_REQUESTS));
   res.setHeader('RateLimit-Remaining', String(result.remaining));
+  // 어떤 출처로 키를 잡았는지 확인용(IP 자체는 노출하지 않는다).
+  res.setHeader('RateLimit-Key-Source', source);
 
   if (!result.allowed) {
     const retryAfterSeconds = Math.max(1, Math.ceil((result.resetAt - now) / 1000));

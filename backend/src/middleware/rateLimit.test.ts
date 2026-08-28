@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { beforeEach, test } from 'node:test';
 
-import { MAX_REQUESTS, WINDOW_MS, consume, resetBuckets } from './rateLimit';
+import { MAX_REQUESTS, WINDOW_MS, clientKey, consume, resetBuckets } from './rateLimit';
 
 beforeEach(() => resetBuckets());
 
@@ -46,4 +46,28 @@ test('앱의 최악 버스트(분당 50회)는 한도에 닿지 않는다', () =
   for (let i = 0; i < 48; i++) {
     assert.equal(consume('1.1.1.1', T0 + i).allowed, true);
   }
+});
+
+// clientKey: Cloudflare 헤더 우선, 없으면 req.ip.
+type FakeReq = { headers: Record<string, string | undefined>; ip?: string };
+const asReq = (r: FakeReq) => r as unknown as Parameters<typeof clientKey>[0];
+
+test('clientKey: CF-Connecting-IP가 있으면 그걸 쓴다', () => {
+  const got = clientKey(asReq({ headers: { 'cf-connecting-ip': '1.2.3.4' }, ip: '10.0.0.1' }));
+  assert.deepEqual(got, { key: '1.2.3.4', source: 'cf' });
+});
+
+test('clientKey: CF 헤더가 없으면 req.ip로 물러난다', () => {
+  const got = clientKey(asReq({ headers: {}, ip: '10.0.0.1' }));
+  assert.deepEqual(got, { key: '10.0.0.1', source: 'req-ip' });
+});
+
+test('clientKey: 둘 다 없으면 unknown 한 버킷으로 모은다', () => {
+  const got = clientKey(asReq({ headers: {} }));
+  assert.deepEqual(got, { key: 'unknown', source: 'unknown' });
+});
+
+test('clientKey: 빈 문자열 CF 헤더는 무시한다', () => {
+  const got = clientKey(asReq({ headers: { 'cf-connecting-ip': '' }, ip: '10.0.0.1' }));
+  assert.deepEqual(got, { key: '10.0.0.1', source: 'req-ip' });
 });
